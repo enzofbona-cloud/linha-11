@@ -29,26 +29,22 @@ jobs:
           channel: dev
 
       # A publicação é sempre o último passo: qualquer falha acima mantém
-      # no ar a última versão funcional.
-      - name: Publicar build em /dev/
-        if: github.ref == 'refs/heads/development'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          deploy_key: ${{ secrets.WEB_DEPLOY_KEY }}
-          external_repository: ${{ github.repository_owner }}/linha-11-web
-          publish_branch: gh-pages
-          publish_dir: build/web
-          destination_dir: dev
-          commit_message: 'dev: ${{ github.sha }}'
+      # Monta o site (landing na raiz + build na pasta do canal) e publica em
+      # um único passo, sempre por último: qualquer falha acima mantém no ar a
+      # última versão funcional. keep_files preserva a pasta do outro canal.
+      - name: Montar site
+        run: |
+          mkdir -p build/site/dev
+          cp web/landing/index.html web/landing/style.css web/landing/app.js build/site/
+          cp -r build/web/. build/site/dev/
 
-      - name: Publicar página de testes
+      - name: Publicar em /dev/
         if: github.ref == 'refs/heads/development'
         uses: peaceiris/actions-gh-pages@v4
         with:
           deploy_key: ${{ secrets.WEB_DEPLOY_KEY }}
           external_repository: ${{ github.repository_owner }}/linha-11-web
           publish_branch: gh-pages
-          publish_dir: web/landing
+          publish_dir: build/site
           keep_files: true
-          exclude_assets: 'app.test.mjs,package.json'
-          commit_message: 'landing: ${{ github.sha }}'
+          commit_message: 'dev: ${{ github.sha }}'
