@@ -1,0 +1,9 @@
+.godot/
+build/
+build_info.json
+*.tmp
+*.pem
+*.key
+.env*
+.superpowers/
+node_modules/
