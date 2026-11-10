@@ -20,20 +20,23 @@ var _m_ceiling: StandardMaterial3D
 var _m_wood: StandardMaterial3D
 var _m_metal: StandardMaterial3D
 var _m_fabric: StandardMaterial3D
+var _m_trim: StandardMaterial3D
 
 
 func _ready() -> void:
-	_m_wall = LevelKit.material(Color(0.5, 0.48, 0.42), 0.95)
-	_m_floor = LevelKit.material(Color(0.2, 0.18, 0.16), 0.8, 0.5)
-	_m_ceiling = LevelKit.material(Color(0.36, 0.35, 0.33), 1.0)
-	_m_wood = LevelKit.material(Color(0.24, 0.15, 0.09), 0.7, 0.8)
-	_m_metal = LevelKit.material(Color(0.28, 0.3, 0.31), 0.5, 0.6)
-	_m_metal.metallic = 0.6
-	_m_fabric = LevelKit.material(Color(0.25, 0.27, 0.22), 1.0, 1.2)
+	_m_wall = LevelKit.textured("wall", 0.85, Color(0.78, 0.76, 0.68))
+	_m_floor = LevelKit.textured("floor", 0.55, Color(0.62, 0.56, 0.5))
+	_m_ceiling = LevelKit.textured("ceiling", 0.7, Color(0.7, 0.69, 0.66))
+	_m_wood = LevelKit.textured("wood", 0.9, Color(0.5, 0.4, 0.32))
+	_m_metal = LevelKit.textured("metal", 0.8, Color(0.55, 0.58, 0.6))
+	_m_metal.metallic = 0.7
+	_m_fabric = LevelKit.textured("fabric", 1.6, Color(0.45, 0.47, 0.4))
+	_m_trim = LevelKit.textured("door", 0.9, Color(0.3, 0.28, 0.25))
 
 	_build_environment()
 	_build_structure()
 	_build_doors()
+	_build_trim()
 	_build_furniture()
 	_build_lights()
 	_build_key()
@@ -67,7 +70,11 @@ func _process(delta: float) -> void:
 	_time += delta
 	if _flicker != null:
 		var n := sin(_time * 31.0) * sin(_time * 7.3)
-		_flicker.light_energy = 0.9 if n > -0.55 else 0.08
+		var on := n > -0.55
+		_flicker.light_energy = 1.2 if on else 0.06
+		var diffuser = _flicker.get_meta("diffuser", null)
+		if diffuser != null:
+			diffuser.visible = on
 
 	if get_tree().paused:
 		return
@@ -131,14 +138,22 @@ func _wall(node_name: String, center_xz: Vector2, size_xz: Vector2, y0 := 0.0, y
 func _build_environment() -> void:
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.005, 0.006, 0.008)
+	env.background_color = Color(0.004, 0.005, 0.007)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.13, 0.15, 0.2)
-	env.ambient_light_energy = 0.22
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	env.ambient_light_color = Color(0.2, 0.24, 0.32)
+	env.ambient_light_energy = 0.3
+	env.tonemap_mode = Environment.TONE_MAPPER_ACES
+	env.tonemap_exposure = 1.05
+	env.glow_enabled = true
+	env.glow_intensity = 0.5
+	env.glow_bloom = 0.05
+	env.glow_hdr_threshold = 1.1
 	env.fog_enabled = true
-	env.fog_light_color = Color(0.02, 0.025, 0.03)
-	env.fog_density = 0.035
+	env.fog_light_color = Color(0.03, 0.035, 0.045)
+	env.fog_density = 0.028
+	env.adjustment_enabled = true
+	env.adjustment_contrast = 1.08
+	env.adjustment_saturation = 0.88
 	var world := WorldEnvironment.new()
 	world.environment = env
 	add_child(world)
@@ -231,9 +246,33 @@ func _build_furniture() -> void:
 
 
 func _build_lights() -> void:
-	LevelKit.lamp(self, Vector3(0, 2.6, -2.5), Color(1, 0.85, 0.62), 0.9, 6.0, true)
-	_flicker = LevelKit.lamp(self, Vector3(0, 2.6, -10.5), Color(0.8, 0.9, 1.0), 0.9, 6.0)
-	LevelKit.lamp(self, Vector3(0, 1.4, -21.0), Color(1, 0.2, 0.12), 0.5, 4.5)
+	LevelKit.ceiling_light(self, Vector3(0, WALL_H - 0.1, -2.5), Color(1, 0.86, 0.66), 1.3, 7.0, true)
+	_flicker = LevelKit.ceiling_light(self, Vector3(0, WALL_H - 0.1, -10.5), Color(0.82, 0.92, 1.0), 1.2, 7.0, true)
+	# Abajur aceso no 302 e o brilho vermelho do telefone no 304
+	LevelKit.lamp(self, Vector3(-5.9, 0.9, -5.9), Color(1, 0.72, 0.42), 0.7, 4.5, true)
+	LevelKit.lamp(self, Vector3(0, 1.3, -20.9), Color(1, 0.18, 0.1), 0.6, 5.0)
+
+
+## Rodapés e batentes: detalhes que tiram a aparência de "caixa lisa".
+func _build_trim() -> void:
+	# rodapés do corredor
+	for side in [-1.0, 1.0]:
+		var x: float = side * 1.185
+		LevelKit.box(self, "Baseboard", Vector3(x, 0.05, -8.05), Vector3(0.03, 0.1, 15.9), _m_trim, false)
+	# batentes das três portas: [centro do vão, eixo da parede ("x" ou "z")]
+	_frame(Vector3(-1.3, 0, -5.5), true)
+	_frame(Vector3(1.3, 0, -10.5), true)
+	_frame(Vector3(0, 0, -16.1), false)
+
+
+func _frame(center: Vector3, along_z: bool) -> void:
+	var depth := T + 0.06
+	for s in [-1.0, 1.0]:
+		var offset := Vector3(0, DOOR_H / 2.0, s * 0.53) if along_z else Vector3(s * 0.53, DOOR_H / 2.0, 0)
+		var size := Vector3(depth, DOOR_H, 0.06) if along_z else Vector3(0.06, DOOR_H, depth)
+		LevelKit.box(self, "DoorJamb", center + offset, size, _m_trim, false)
+	var top_size := Vector3(depth, 0.06, 1.12) if along_z else Vector3(1.12, 0.06, depth)
+	LevelKit.box(self, "DoorHead", center + Vector3(0, DOOR_H + 0.03, 0), top_size, _m_trim, false)
 
 
 func _build_key() -> void:

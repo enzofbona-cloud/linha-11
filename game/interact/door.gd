@@ -35,9 +35,7 @@ func _build_panel() -> void:
 	body.sync_to_physics = false
 	body.position = Vector3(0, HEIGHT / 2.0, -WIDTH / 2.0)
 
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.27, 0.2, 0.15)
-	mat.roughness = 0.65
+	var mat := LevelKit.textured("door", 0.9, Color(0.62, 0.58, 0.5))
 
 	var mesh := MeshInstance3D.new()
 	var box := BoxMesh.new()
