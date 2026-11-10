@@ -12,12 +12,13 @@ config_version=5
 
 config/name="LINHA 11 — A Última Chamada"
 config/version="0.1.0"
-run/main_scene="res://game/scenes/boot/boot.tscn"
+run/main_scene="res://game/ui/main_menu.tscn"
 config/features=PackedStringArray("4.7")
 
 [autoload]
 
 BuildInfo="*res://game/core/build_info.gd"
+GameInput="*res://game/core/game_input.gd"
 
 [editor_plugins]
 

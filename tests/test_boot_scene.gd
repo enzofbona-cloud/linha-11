@@ -18,6 +18,3 @@ func test_texto_do_build_contem_versao_e_commit():
 	assert_string_contains(hud.build_text(), BuildInfo.version)
 	assert_string_contains(hud.build_text(), BuildInfo.commit)
 
-
-func test_cena_principal_do_projeto_e_o_boot():
-	assert_eq(ProjectSettings.get_setting("application/run/main_scene"), "res://game/scenes/boot/boot.tscn")

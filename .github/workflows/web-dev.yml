@@ -28,7 +28,6 @@ jobs:
         with:
           channel: dev
 
-      # A publicação é sempre o último passo: qualquer falha acima mantém
       # Monta o site (landing na raiz + build na pasta do canal) e publica em
       # um único passo, sempre por último: qualquer falha acima mantém no ar a
       # última versão funcional. keep_files preserva a pasta do outro canal.

@@ -1,0 +1,20 @@
+class_name Pickup
+extends StaticBody3D
+## Item que pode ser pego e vai para o inventário do jogador.
+
+@export var item_id := ""
+@export var item_name := ""
+
+
+func _init() -> void:
+	add_to_group("pickups")
+
+
+func get_prompt(_player: Player) -> String:
+	return "[E] Pegar %s" % item_name
+
+
+func interact(player: Player) -> void:
+	player.add_item(item_id, item_name)
+	player.notify("Você pegou: %s" % item_name)
+	queue_free()
