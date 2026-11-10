@@ -1,0 +1,180 @@
+:root {
+  --bg: #0b0c0d;
+  --surface: #131517;
+  --line: #262a2d;
+  --text: #d9d4c7;
+  --muted: #8b8a83;
+  --amber: #e0a458;
+  --red: #c8372d;
+  --ok: #7fa57a;
+  --display: "Bahnschrift", "DIN Alternate", "Roboto Condensed", "Arial Narrow", sans-serif;
+  --body: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --mono: "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(224, 164, 88, 0.10), transparent 70%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 56px 16px 40px;
+}
+
+.hero { margin-bottom: 32px; }
+
+.callsign {
+  margin: 0 0 20px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.led {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 10px var(--red);
+  animation: blink 2.4s steps(1) infinite;
+}
+
+@keyframes blink { 0%, 60% { opacity: 1; } 61%, 100% { opacity: 0.15; } }
+@media (prefers-reduced-motion: reduce) { .led { animation: none; } }
+
+h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(56px, 14vw, 128px);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  color: #efe9da;
+}
+
+.subtitle {
+  margin: 10px 0 24px;
+  font-family: var(--display);
+  font-size: clamp(18px, 3.4vw, 26px);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.lede { max-width: 58ch; margin: 0; color: #b9b5aa; }
+
+.notice {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--amber);
+  background: rgba(224, 164, 88, 0.07);
+  font-size: 14px;
+}
+.notice.warn { border-left-color: var(--red); background: rgba(200, 55, 45, 0.10); }
+.notice strong { color: #efe9da; }
+
+.channels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 32px 0 48px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--muted);
+  background: var(--surface);
+}
+.card[data-state="ok"] { border-top-color: var(--amber); }
+
+.card h2 {
+  margin: 0 0 6px;
+  font-family: var(--display);
+  font-size: 26px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.card-desc { margin: 0 0 20px; font-size: 14px; color: var(--muted); min-height: 3.1em; }
+
+dl { margin: 0 0 24px; }
+dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+dt { color: var(--muted); }
+dd { margin: 0; font-family: var(--mono); font-size: 13px; text-align: right; }
+.card[data-state="ok"] dd[data-field="status"] { color: var(--ok); }
+
+.play {
+  display: block;
+  margin-top: auto;
+  padding: 14px 16px;
+  background: var(--amber);
+  color: #17120a;
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 0.15s;
+}
+.play:hover { background: #f0b96d; }
+.play:focus-visible { outline: 2px solid #efe9da; outline-offset: 3px; }
+.play[aria-disabled="true"] {
+  background: transparent;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  cursor: not-allowed;
+}
+
+.info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.info h3 {
+  margin: 0 0 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.info p, .info ul { margin: 0; font-size: 14px; color: #b9b5aa; }
+.info ul { padding-left: 18px; }
+.info li { margin-bottom: 4px; }
+
+footer {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer p { margin: 0; max-width: 70ch; }

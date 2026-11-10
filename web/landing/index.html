@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>LINHA 11 — Página de testes</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header class="hero">
+    <p class="callsign"><span class="led" aria-hidden="true"></span>Distrito 11 · chamada em espera</p>
+    <h1>LINHA 11</h1>
+    <p class="subtitle">A Última Chamada</p>
+    <p class="lede">Terror cooperativo em primeira pessoa para dois jogadores. Esta página dá acesso às versões de teste que rodam direto no navegador.</p>
+  </header>
+
+  <p class="notice" role="note"><strong>Versão experimental.</strong> O jogo está em desenvolvimento: pode travar, faltar conteúdo e mudar a qualquer momento.</p>
+
+  <p class="notice warn" id="webgl-warning" hidden><strong>Seu navegador não tem WebGL2.</strong> O jogo não vai abrir aqui. Use uma versão recente do Chrome, Edge ou Firefox.</p>
+
+  <section class="channels" aria-label="Versões disponíveis">
+    <article class="card" data-channel="dev" data-state="loading">
+      <h2>Experimental</h2>
+      <p class="card-desc">A versão mais recente, atualizada automaticamente a cada etapa validada.</p>
+      <dl>
+        <div><dt>Compilação</dt><dd data-field="status">carregando…</dd></div>
+        <div><dt>Versão</dt><dd data-field="version">—</dd></div>
+        <div><dt>Commit</dt><dd data-field="commit">—</dd></div>
+        <div><dt>Atualizado em</dt><dd data-field="date">—</dd></div>
+      </dl>
+      <a class="play" data-field="play" aria-disabled="true">Jogar versão experimental</a>
+    </article>
+
+    <article class="card" data-channel="stable" data-state="loading">
+      <h2>Estável</h2>
+      <p class="card-desc">A última versão marcada como estável. Muda com menos frequência.</p>
+      <dl>
+        <div><dt>Compilação</dt><dd data-field="status">carregando…</dd></div>
+        <div><dt>Versão</dt><dd data-field="version">—</dd></div>
+        <div><dt>Commit</dt><dd data-field="commit">—</dd></div>
+        <div><dt>Atualizado em</dt><dd data-field="date">—</dd></div>
+      </dl>
+      <a class="play" data-field="play" aria-disabled="true">Jogar versão estável</a>
+    </article>
+  </section>
+
+  <section class="info">
+    <div>
+      <h3>Controles</h3>
+      <p>Nesta versão ainda não há controles: a tela mostra uma sala de teste com câmera fixa.</p>
+    </div>
+    <div>
+      <h3>Disponível agora</h3>
+      <ul>
+        <li>Sala 3D de verificação</li>
+        <li>Contador de FPS</li>
+        <li>Identificação da versão e do commit</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Ainda não disponível</h3>
+      <ul>
+        <li>Movimentação e interação</li>
+        <li>Cooperação online</li>
+        <li>Inventário, puzzles e inimigos</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Somente na versão PC</h3>
+      <ul>
+        <li>Integração e convites pela Steam</li>
+        <li>Qualidade gráfica alta e ultra</li>
+        <li>Chat de voz</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p>Requer navegador com WebGL2. Uma compilação só é publicada aqui depois de passar nos testes automáticos; se uma compilação falhar, a versão anterior continua no ar.</p>
+  </footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
