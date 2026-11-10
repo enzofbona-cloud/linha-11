@@ -10,5 +10,5 @@ cd "$(dirname "$0")/.."
 "$GODOT" --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
 
 if compgen -G "tools/*.test.mjs" >/dev/null || compgen -G "web/landing/*.test.mjs" >/dev/null; then
-	node --test tools/ web/landing/
+	node --test "tools/*.test.mjs" "web/landing/*.test.mjs"
 fi

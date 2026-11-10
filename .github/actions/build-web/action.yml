@@ -61,7 +61,7 @@ runs:
 
     - name: Testes das ferramentas e da landing (Node)
       shell: bash
-      run: node --test tools/ web/landing/
+      run: node --test "tools/*.test.mjs" "web/landing/*.test.mjs"
 
     - name: Gerar identificação do build
       shell: bash
