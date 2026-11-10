@@ -1,18 +1,43 @@
 extends Node3D
-## Protótipo da Fase 3: um andar de prédio do Distrito 11.
-## Corredor, dois apartamentos, uma porta trancada e o telefone que toca.
-## O cenário é montado por código com blocos (blocagem provisória).
+## Capítulo 1 — "O Primeiro Chamado" (primeira parte).
+## 3º andar do Edifício Aurora: corredor, apartamentos 302, 303 e 304.
+##
+## Sequência: sem energia -> achar o fusível no 302 -> religar o quadro ->
+## descobrir a senha do 303 no diário (03h17) -> pegar a chave do 304 ->
+## a luz cai e o Ouvinte aparece -> chegar ao 304 em silêncio -> atender.
+##
+## O cenário é montado por código com blocos texturizados (provisório).
 
 const WALL_H := 2.8
 const DOOR_H := 2.1
 const T := 0.2 # espessura das paredes
+const START := Vector3(0, 0.05, -1.0)
+const CHECKPOINT_303 := Vector3(3.6, 0.05, -10.5)
+const LISTENER_START_Z := -2.0
+
+const TEXT_NOTICE := "PREFEITURA MUNICIPAL — DEFESA CIVIL\n\nPor determinação sanitária, o Distrito 11 está INTERDITADO a partir de 9 de agosto.\n\nMoradores devem deixar os imóveis imediatamente. Não levem aparelhos telefônicos.\n\nNão atendam chamadas originadas dentro do perímetro."
+const TEXT_DIARY := "8 de agosto.\n\nO telefone do 304 tocou a noite inteira de novo. A dona Marta jura que o aparelho está desligado da parede.\n\nO síndico trocou a fechadura do 303 por uma de senha. Disse que escolheu um número que ninguém aqui vai esquecer: a hora em que todos os relógios do prédio pararam.\n\nO meu parou às três e dezessete."
+const TEXT_TRANSCRIPT := "LINHA 11 — TRANSCRIÇÃO AUTOMÁTICA\nRecebida: 9 de agosto, 02h51\n\n\"Edifício Aurora, terceiro andar. Somos dois técnicos. Está sem energia. Tem uma coisa no corredor, ela não enxerga, só escuta.\"\n\n\"…a gente achou a chave do 304.\"\n\nObservação do operador: a chamada descreve uma equipe que ainda não foi enviada."
 
 var player: Player
+var listener: Listener
+var power_on := false
+var chapter_ended := false
+
 var _hud: GameHud
 var _pause: PauseMenu
+var _modal: ModalLayer
+var _phone: Phone
+var _keypad: Keypad
 var _was_captured := false
 var _flicker: OmniLight3D
+var _power_lights: Array[OmniLight3D] = []
+var _light_energy := {}
 var _time := 0.0
+var _key_taken := false
+var _in_304 := false
+var _caught_lock := false
+var _sting: AudioStreamPlayer
 
 var _m_wall: StandardMaterial3D
 var _m_floor: StandardMaterial3D
@@ -21,6 +46,7 @@ var _m_wood: StandardMaterial3D
 var _m_metal: StandardMaterial3D
 var _m_fabric: StandardMaterial3D
 var _m_trim: StandardMaterial3D
+var _m_paper: StandardMaterial3D
 
 
 func _ready() -> void:
@@ -32,6 +58,12 @@ func _ready() -> void:
 	_m_metal.metallic = 0.7
 	_m_fabric = LevelKit.textured("fabric", 1.6, Color(0.45, 0.47, 0.4))
 	_m_trim = LevelKit.textured("door", 0.9, Color(0.3, 0.28, 0.25))
+	_m_paper = StandardMaterial3D.new()
+	_m_paper.albedo_color = Color(0.86, 0.82, 0.7)
+	_m_paper.roughness = 0.9
+	_m_paper.emission_enabled = true
+	_m_paper.emission = Color(0.86, 0.82, 0.7)
+	_m_paper.emission_energy_multiplier = 0.06
 
 	_build_environment()
 	_build_structure()
@@ -39,12 +71,21 @@ func _ready() -> void:
 	_build_trim()
 	_build_furniture()
 	_build_lights()
-	_build_key()
-	var phone := _build_phone()
+	_build_items()
+	_phone = _build_phone()
+
+	listener = Listener.new()
+	listener.position = Vector3(0, 0, LISTENER_START_Z)
+	listener.z_min = -15.0
+	listener.z_max = -1.0
+	add_child(listener)
+	listener.caught.connect(on_caught)
 
 	player = Player.new()
-	player.position = Vector3(0, 0.05, -1.0)
+	player.position = START
+	player.add_to_group("player_target")
 	add_child(player)
+	player.noise_made.connect(listener.hear)
 
 	_hud = GameHud.new()
 	add_child(_hud)
@@ -52,31 +93,47 @@ func _ready() -> void:
 	player.prompt_changed.connect(_hud.set_prompt)
 	player.inventory_changed.connect(_hud.set_inventory)
 
+	_modal = ModalLayer.new()
+	add_child(_modal)
+	player.document_requested.connect(_modal.open_document)
+	player.keypad_requested.connect(_modal.open_keypad)
+	_modal.opened.connect(func(): player.controls_enabled = false)
+	_modal.closed.connect(_on_modal_closed)
+
 	_pause = PauseMenu.new()
 	add_child(_pause)
 	_pause.resumed.connect(_resume)
 	_pause.quit_to_menu.connect(_quit_to_menu)
 
-	phone.answered.connect(_on_phone_answered)
+	_phone.answered.connect(_on_phone_answered)
+	_phone.call_finished.connect(_on_call_finished)
 
 	add_child(preload("res://game/ui/debug_hud.tscn").instantiate())
+	var hum := SoundKit.player_2d(self, SoundKit.hum(), -14.0)
+	hum.play()
+	_sting = SoundKit.player_2d(self, SoundKit.sting(), -3.0)
 
-	_hud.set_objective("Encontre a origem da chamada.")
-	_hud.show_message("Distrito 11 — Edifício Aurora, 3º andar.")
+	set_power(false)
+	_hud.set_objective("Restabeleça a energia do andar.")
+	_hud.show_message("Distrito 11 — Edifício Aurora, 3º andar. Sem energia. Use a lanterna [F].", 7.0)
 	_capture_mouse()
 
 
 func _process(delta: float) -> void:
 	_time += delta
-	if _flicker != null:
-		var n := sin(_time * 31.0) * sin(_time * 7.3)
-		var on := n > -0.55
-		_flicker.light_energy = 1.2 if on else 0.06
-		var diffuser = _flicker.get_meta("diffuser", null)
+	if _flicker != null and power_on:
+		var on := sin(_time * 31.0) * sin(_time * 7.3) > -0.55
+		_flicker.light_energy = _light_energy[_flicker] if on else 0.06
+		var diffuser = (_flicker.get_meta("diffuser") if _flicker.has_meta("diffuser") else null)
 		if diffuser != null:
 			diffuser.visible = on
 
-	if get_tree().paused:
+	if not _in_304 and player.global_position.z < -16.5:
+		_in_304 = true
+		listener.sleep()
+		_hud.set_objective("Atenda o telefone.")
+
+	if get_tree().paused or _modal.is_open or chapter_ended:
 		return
 	var captured := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
 	if captured:
@@ -91,16 +148,25 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
-		if get_tree().paused:
+		if chapter_ended:
+			_quit_to_menu()
+		elif get_tree().paused:
 			_resume()
 		else:
 			_pause_game()
-	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED and not get_tree().paused:
+	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED \
+			and not get_tree().paused and not _modal.is_open and not chapter_ended:
 		_capture_mouse()
 
 
 func _capture_mouse() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+func _on_modal_closed() -> void:
+	player.controls_enabled = true
+	_was_captured = false
+	_capture_mouse()
 
 
 func _pause_game() -> void:
@@ -122,9 +188,82 @@ func _quit_to_menu() -> void:
 	get_tree().change_scene_to_file("res://game/ui/main_menu.tscn")
 
 
+# --- eventos do capítulo ---
+
+func set_power(on: bool) -> void:
+	power_on = on
+	for light in _power_lights:
+		light.light_energy = _light_energy[light] if on else 0.0
+		var diffuser = (light.get_meta("diffuser") if light.has_meta("diffuser") else null)
+		if diffuser != null:
+			diffuser.visible = on
+	if _keypad != null:
+		_keypad.has_power = on
+
+
+func _on_power_restored() -> void:
+	set_power(true)
+	_phone.start_ringing()
+	_hud.set_objective("Um telefone está tocando. Encontre-o.")
+
+
+func _on_keypad_unlocked() -> void:
+	player.notify("A fechadura do 303 destravou.")
+	player.make_noise(Player.NOISE_DOOR)
+
+
+func _on_item_picked(id: String) -> void:
+	if id == "chave_304":
+		on_key_taken()
+
+
+func on_key_taken() -> void:
+	if _key_taken:
+		return
+	_key_taken = true
+	set_power(false)
+	listener.position.z = LISTENER_START_Z
+	listener.wake()
+	if _sting != null:
+		_sting.play()
+	_hud.set_objective("Chegue ao 304 sem fazer barulho.")
+	_hud.show_message("A luz caiu. Tem algo no corredor. Agache [Ctrl] ou ande devagar [Alt]: ele só escuta.", 9.0)
+
+
+func on_caught() -> void:
+	if _caught_lock or chapter_ended or _in_304:
+		return
+	_caught_lock = true
+	player.controls_enabled = false
+	_modal.blackout(_respawn)
+	_hud.show_message("Ele atendeu você.", 3.0)
+
+
+func _respawn() -> void:
+	player.global_position = CHECKPOINT_303
+	player.velocity = Vector3.ZERO
+	listener.position.z = LISTENER_START_Z
+	listener.wake()
+	listener.target_z = LISTENER_START_Z
+	listener.state = Listener.State.PATROL
+	player.controls_enabled = true
+	_caught_lock = false
+	_hud.show_message("Você acordou no 303. Silêncio desta vez.", 5.0)
+
+
 func _on_phone_answered() -> void:
-	_hud.set_objective("Fim do protótipo. Obrigado por testar.")
-	_hud.show_message("Fim do protótipo — aperte Esc para voltar ao menu.", 12.0)
+	listener.sleep()
+	_hud.set_objective("Escute.")
+
+
+func _on_call_finished() -> void:
+	chapter_ended = true
+	player.controls_enabled = false
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if _sting != null:
+		_sting.play()
+	_modal.show_ending("O PRIMEIRO CHAMADO",
+		"A voz no telefone sabia o seu nome.\n\nA transcrição no 303 descrevia esta noite, com 17 anos de antecedência.\n\nFim da primeira parte do Capítulo 1. Obrigado por testar.")
 
 
 # --- construção do cenário ---
@@ -207,9 +346,39 @@ func _door(node_name: String, hinge: Vector3, base_yaw_deg: float, open_deg: flo
 
 func _build_doors() -> void:
 	_door("Door302", Vector3(-1.3, 0, -5.0), 0, 90)
-	_door("Door303", Vector3(1.3, 0, -10.0), 0, -90)
+	var door303 := _door("Door303", Vector3(1.3, 0, -10.0), 0, -90)
+	door303.sealed = true
 	_door("Door304", Vector3(-0.5, 0, -16.1), -90, 90, "chave_304",
-		"Trancada. A placa diz 304. O telefone toca do outro lado.")
+		"Trancada. A placa diz 304. Parece vir daqui o toque.")
+
+	_keypad = Keypad.new()
+	_keypad.name = "Keypad303"
+	_keypad.code = "0317"
+	_keypad.door = door303
+	_keypad.position = Vector3(1.17, 1.25, -9.72)
+	_add_box_visual(_keypad, Vector3(0.04, 0.17, 0.11), _m_metal, Vector3(0.1, 0.22, 0.16))
+	add_child(_keypad)
+	_keypad.unlocked.connect(_on_keypad_unlocked)
+
+
+## Rodapés e batentes: detalhes que tiram a aparência de "caixa lisa".
+func _build_trim() -> void:
+	for side in [-1.0, 1.0]:
+		var x: float = side * 1.185
+		LevelKit.box(self, "Baseboard", Vector3(x, 0.05, -8.05), Vector3(0.03, 0.1, 15.9), _m_trim, false)
+	_frame(Vector3(-1.3, 0, -5.5), true)
+	_frame(Vector3(1.3, 0, -10.5), true)
+	_frame(Vector3(0, 0, -16.1), false)
+
+
+func _frame(center: Vector3, along_z: bool) -> void:
+	var depth := T + 0.06
+	for s in [-1.0, 1.0]:
+		var offset := Vector3(0, DOOR_H / 2.0, s * 0.53) if along_z else Vector3(s * 0.53, DOOR_H / 2.0, 0)
+		var size := Vector3(depth, DOOR_H, 0.06) if along_z else Vector3(0.06, DOOR_H, depth)
+		LevelKit.box(self, "DoorJamb", center + offset, size, _m_trim, false)
+	var top_size := Vector3(depth, 0.06, 1.12) if along_z else Vector3(1.12, 0.06, depth)
+	LevelKit.box(self, "DoorHead", center + Vector3(0, DOOR_H + 0.03, 0), top_size, _m_trim, false)
 
 
 func _table(prefix: String, center: Vector3, size: Vector2, height := 0.75) -> void:
@@ -234,9 +403,8 @@ func _build_furniture() -> void:
 	LevelKit.box(self, "BoxA", Vector3(2.2, 0.2, -8.6), Vector3(0.5, 0.4, 0.5), _m_fabric)
 	LevelKit.box(self, "BoxB", Vector3(2.5, 0.55, -8.5), Vector3(0.4, 0.3, 0.4), _m_fabric)
 
-	# Corredor: banco e extintor (bloco)
+	# Corredor: banco
 	LevelKit.box(self, "Bench", Vector3(0.95, 0.22, -3.0), Vector3(0.4, 0.44, 1.4), _m_wood)
-	LevelKit.box(self, "Cabinet", Vector3(-1.05, 0.5, -13.5), Vector3(0.3, 1.0, 0.8), _m_metal)
 
 	# 304: mesa do telefone, poltrona, armário
 	_table("PhoneTable", Vector3(0, 0, -21.2), Vector2(1.2, 0.6))
@@ -245,61 +413,81 @@ func _build_furniture() -> void:
 	LevelKit.box(self, "Cupboard", Vector3(2.7, 1.0, -18.5), Vector3(0.5, 2.0, 1.8), _m_wood)
 
 
+func _power_light(light: OmniLight3D) -> OmniLight3D:
+	_power_lights.append(light)
+	_light_energy[light] = light.light_energy
+	return light
+
+
 func _build_lights() -> void:
-	LevelKit.ceiling_light(self, Vector3(0, WALL_H - 0.1, -2.5), Color(1, 0.86, 0.66), 1.3, 7.0, true)
-	_flicker = LevelKit.ceiling_light(self, Vector3(0, WALL_H - 0.1, -10.5), Color(0.82, 0.92, 1.0), 1.2, 7.0, true)
-	# Abajur aceso no 302 e o brilho vermelho do telefone no 304
-	LevelKit.lamp(self, Vector3(-5.9, 0.9, -5.9), Color(1, 0.72, 0.42), 0.7, 4.5, true)
+	_power_light(LevelKit.ceiling_light(self, Vector3(0, WALL_H - 0.1, -2.5), Color(1, 0.86, 0.66), 1.3, 7.0, true))
+	_flicker = _power_light(LevelKit.ceiling_light(self, Vector3(0, WALL_H - 0.1, -10.5), Color(0.82, 0.92, 1.0), 1.2, 7.0, true))
+	# Abajur do 302 (depende da energia)
+	_power_light(LevelKit.lamp(self, Vector3(-5.9, 0.9, -5.9), Color(1, 0.72, 0.42), 0.7, 4.5, true))
+	# O brilho vermelho do telefone não depende de energia nenhuma
 	LevelKit.lamp(self, Vector3(0, 1.3, -20.9), Color(1, 0.18, 0.1), 0.6, 5.0)
 
 
-## Rodapés e batentes: detalhes que tiram a aparência de "caixa lisa".
-func _build_trim() -> void:
-	# rodapés do corredor
-	for side in [-1.0, 1.0]:
-		var x: float = side * 1.185
-		LevelKit.box(self, "Baseboard", Vector3(x, 0.05, -8.05), Vector3(0.03, 0.1, 15.9), _m_trim, false)
-	# batentes das três portas: [centro do vão, eixo da parede ("x" ou "z")]
-	_frame(Vector3(-1.3, 0, -5.5), true)
-	_frame(Vector3(1.3, 0, -10.5), true)
-	_frame(Vector3(0, 0, -16.1), false)
-
-
-func _frame(center: Vector3, along_z: bool) -> void:
-	var depth := T + 0.06
-	for s in [-1.0, 1.0]:
-		var offset := Vector3(0, DOOR_H / 2.0, s * 0.53) if along_z else Vector3(s * 0.53, DOOR_H / 2.0, 0)
-		var size := Vector3(depth, DOOR_H, 0.06) if along_z else Vector3(0.06, DOOR_H, depth)
-		LevelKit.box(self, "DoorJamb", center + offset, size, _m_trim, false)
-	var top_size := Vector3(depth, 0.06, 1.12) if along_z else Vector3(1.12, 0.06, depth)
-	LevelKit.box(self, "DoorHead", center + Vector3(0, DOOR_H + 0.03, 0), top_size, _m_trim, false)
-
-
-func _build_key() -> void:
-	var key := Pickup.new()
-	key.name = "Key304"
-	key.item_id = "chave_304"
-	key.item_name = "Chave do 304"
-	key.position = Vector3(4.6, 0.8, -11.6)
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.75, 0.62, 0.3)
-	mat.metallic = 0.9
-	mat.roughness = 0.3
-	mat.emission_enabled = true
-	mat.emission = Color(0.5, 0.38, 0.12)
-	mat.emission_energy_multiplier = 0.35
+func _add_box_visual(body: Node3D, size: Vector3, mat: Material, collision_size := Vector3.ZERO) -> void:
 	var mesh := MeshInstance3D.new()
 	var box := BoxMesh.new()
-	box.size = Vector3(0.09, 0.012, 0.03)
+	box.size = size
 	box.material = mat
 	mesh.mesh = box
-	key.add_child(mesh)
+	body.add_child(mesh)
 	var shape := CollisionShape3D.new()
-	var sphere := SphereShape3D.new()
-	sphere.radius = 0.14
-	shape.shape = sphere
-	key.add_child(shape)
-	add_child(key)
+	var box_shape := BoxShape3D.new()
+	box_shape.size = collision_size if collision_size != Vector3.ZERO else size
+	shape.shape = box_shape
+	body.add_child(shape)
+
+
+func _readable(node_name: String, title: String, body: String, pos: Vector3, size: Vector3) -> Readable:
+	var doc := Readable.new()
+	doc.name = node_name
+	doc.title = title
+	doc.body = body
+	doc.position = pos
+	_add_box_visual(doc, size, _m_paper, size + Vector3(0.12, 0.12, 0.12))
+	add_child(doc)
+	return doc
+
+
+func _pickup(node_name: String, id: String, display: String, pos: Vector3, size: Vector3, color: Color) -> Pickup:
+	var item := Pickup.new()
+	item.name = node_name
+	item.item_id = id
+	item.item_name = display
+	item.position = pos
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = color
+	mat.metallic = 0.85
+	mat.roughness = 0.3
+	mat.emission_enabled = true
+	mat.emission = color
+	mat.emission_energy_multiplier = 0.25
+	_add_box_visual(item, size, mat, Vector3(0.24, 0.2, 0.24))
+	item.picked.connect(_on_item_picked)
+	add_child(item)
+	return item
+
+
+func _build_items() -> void:
+	# Aviso da Defesa Civil colado na parede, logo na entrada
+	_readable("Notice", "Aviso de interdição", TEXT_NOTICE, Vector3(1.19, 1.5, -1.9), Vector3(0.01, 0.3, 0.21))
+	# 302: diário na cama e fusível no criado-mudo
+	_readable("Diary", "Diário (apto 302)", TEXT_DIARY, Vector3(-4.9, 0.515, -6.7), Vector3(0.15, 0.03, 0.21))
+	_pickup("Fuse", FuseBox.FUSE_ID, "Fusível", Vector3(-5.9, 0.59, -5.85), Vector3(0.03, 0.03, 0.09), Color(0.8, 0.75, 0.6))
+	# 303: transcrição e chave em cima da mesa
+	_readable("Transcript", "Transcrição da Linha 11", TEXT_TRANSCRIPT, Vector3(4.95, 0.78, -11.5), Vector3(0.21, 0.01, 0.3))
+	_pickup("Key304", "chave_304", "Chave do 304", Vector3(4.35, 0.79, -11.65), Vector3(0.09, 0.012, 0.03), Color(0.75, 0.62, 0.3))
+
+	# Quadro de força no corredor
+	var box := FuseBox.new()
+	box.position = Vector3(-1.14, 1.35, -13.5)
+	_add_box_visual(box, Vector3(0.12, 0.6, 0.45), _m_metal)
+	add_child(box)
+	box.power_restored.connect(_on_power_restored)
 
 
 func _build_phone() -> Phone:

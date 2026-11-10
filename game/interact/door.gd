@@ -11,12 +11,16 @@ const SWING_TIME := 0.55
 @export var open_angle_deg := 90.0
 @export var locked_key := ""
 @export var locked_text := "Trancada."
+## Lacrada por outro mecanismo (ex.: fechadura eletrônica). Nenhuma chave abre.
+var sealed := false
+var sealed_text := "Não abre. Há uma fechadura eletrônica ao lado."
 var is_open := false
 ## Desligado nos testes para o estado mudar na hora.
 var animate := true
 
 var _base_yaw := 0.0
 var _tween: Tween
+var _audio: AudioStreamPlayer3D
 
 
 func _init() -> void:
@@ -67,6 +71,8 @@ func _build_panel() -> void:
 
 
 func get_prompt(player: Player) -> String:
+	if sealed:
+		return "[E] Porta com fechadura eletrônica"
 	if locked_key != "" and not player.has_item(locked_key):
 		return "[E] Porta trancada"
 	if locked_key != "":
@@ -75,6 +81,9 @@ func get_prompt(player: Player) -> String:
 
 
 func interact(player: Player) -> void:
+	if sealed:
+		player.notify(sealed_text)
+		return
 	if locked_key != "":
 		if not player.has_item(locked_key):
 			player.notify(locked_text)
@@ -82,6 +91,13 @@ func interact(player: Player) -> void:
 		locked_key = ""
 		player.notify("A chave girou. A porta destrancou.")
 	toggle()
+	player.make_noise(Player.NOISE_DOOR)
+	if is_inside_tree() and animate:
+		if _audio == null:
+			_audio = SoundKit.player_3d(self, SoundKit.creak(), 14.0, -4.0)
+			_audio.position = Vector3(0, 1.0, -0.5)
+		_audio.pitch_scale = randf_range(0.85, 1.15)
+		_audio.play()
 
 
 func toggle() -> void:

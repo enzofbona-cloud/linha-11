@@ -2,6 +2,8 @@ class_name Pickup
 extends StaticBody3D
 ## Item que pode ser pego e vai para o inventário do jogador.
 
+signal picked(id: String)
+
 @export var item_id := ""
 @export var item_name := ""
 
@@ -17,4 +19,5 @@ func get_prompt(_player: Player) -> String:
 func interact(player: Player) -> void:
 	player.add_item(item_id, item_name)
 	player.notify("Você pegou: %s" % item_name)
+	picked.emit(item_id)
 	queue_free()

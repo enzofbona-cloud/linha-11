@@ -3,11 +3,12 @@ extends SceneTree
 ## Uso: godot --path . --rendering-method gl_compatibility --resolution 1280x720 -s tools/screenshot.gd -- <pasta de saída>
 
 const SHOTS := [
-	# [nome, posição, yaw em graus, lanterna]
-	["01_corredor", Vector3(0, 0.05, -1.0), 0.0, false],
-	["02_corredor_lanterna", Vector3(0, 0.05, -7.0), 0.0, true],
-	["03_porta_304", Vector3(0, 0.05, -13.6), 0.0, true],
-	["04_apto_303", Vector3(2.0, 0.05, -10.5), -75.0, true],
+	# [nome, posição, yaw em graus, lanterna, energia, ouvinte acordado em z (ou null)]
+	["01_inicio_sem_energia", Vector3(0, 0.05, -1.0), 0.0, true, false, null],
+	["02_corredor_com_energia", Vector3(0, 0.05, -7.0), 0.0, false, true, null],
+	["03_apto_302", Vector3(-2.2, 0.05, -5.5), 80.0, true, true, null],
+	["04_ouvinte_no_escuro", Vector3(0, 0.05, -12.0), 180.0, true, false, -7.5],
+	["05_telefone_304", Vector3(0, 0.05, -18.6), 0.0, false, false, null],
 ]
 
 
@@ -34,6 +35,13 @@ func _run() -> void:
 		player.global_position = shot[1]
 		player.rotation_degrees.y = shot[2]
 		player.flashlight.visible = shot[3]
+		scene.set_power(shot[4])
+		if shot[5] != null:
+			scene.listener.wake()
+			scene.listener.position.z = shot[5]
+			scene.listener.set_physics_process(false)
+		else:
+			scene.listener.sleep()
 		for i in 20:
 			await process_frame
 		var image := root.get_texture().get_image()

@@ -3,9 +3,11 @@
 Jogo cooperativo de terror em primeira pessoa para dois jogadores, em desenvolvimento.
 Versão comercial planejada para PC/Steam; versão Web usada para testes rápidos.
 
-**Estado atual: Fase 3 (protótipo), em andamento.** Já existe menu principal, movimentação em
-primeira pessoa, lanterna, portas, chave, porta trancada, inventário simples e um andar de
-prédio para explorar. Ainda não há multiplayer, inimigos, puzzles, áudio nem salvamento.
+**Estado atual: Fase 3 (protótipo), em andamento.** Está jogável a primeira parte do Capítulo 1:
+menu, movimentação em primeira pessoa, lanterna, portas, inventário, documentos, puzzle do
+fusível, fechadura com senha, o Ouvinte (inimigo que reage a som), furtividade e áudio gerado
+por código. Ainda não há multiplayer, combate, crafting, saúde, salvamento nem configurações
+gráficas. A história completa está em `docs/historia.md`.
 
 ## Endereço de testes
 
