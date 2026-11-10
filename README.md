@@ -3,13 +3,15 @@
 Jogo cooperativo de terror em primeira pessoa para dois jogadores, em desenvolvimento.
 Versão comercial planejada para PC/Steam; versão Web usada para testes rápidos.
 
-**Estado atual: Fase 2 (fundação).** Ainda não há jogabilidade. O projeto abre uma sala
-3D de verificação com a identificação do build e um contador de FPS.
+**Estado atual: Fase 3 (protótipo), em andamento.** Já existe menu principal, movimentação em
+primeira pessoa, lanterna, portas, chave, porta trancada, inventário simples e um andar de
+prédio para explorar. Ainda não há multiplayer, inimigos, puzzles, áudio nem salvamento.
 
 ## Endereço de testes
 
-Ainda não publicado. O endereço real será registrado aqui depois da primeira
-publicação bem-sucedida.
+- Página de testes: https://enzofbona-cloud.github.io/linha-11-web/
+- Experimental (branch `development`): https://enzofbona-cloud.github.io/linha-11-web/dev/
+- Estável (branch `main`): ainda não publicado.
 
 ## Tecnologia
 
@@ -70,8 +72,8 @@ repositório privado. Nenhuma credencial fica no código.
 | Arquivo | Tamanho |
 |---|---|
 | `index.wasm` (motor) | 37,7 MB |
-| `index.pck` (conteúdo do jogo) | menos de 0,1 MB |
-| Total | 38,0 MB |
+| `index.pck` (conteúdo do jogo, com texturas 1K) | 26,0 MB |
+| Total | 64,0 MB |
 
 Limites do GitHub Pages: 100 MB por arquivo e 1 GB por site. O script
 `tools/verify-web-build.mjs` barra builds que passem disso.
@@ -79,9 +81,13 @@ Limites do GitHub Pages: 100 MB por arquivo e 1 GB por site. O script
 ## Estrutura
 
 ```
-game/core/           autoloads (BuildInfo)
-game/scenes/boot/    cena de verificação
-game/ui/             HUD de depuração
+assets/textures/     texturas PBR (CC0, ver LICENCAS.md)
+game/core/           autoloads (BuildInfo, GameInput)
+game/player/         jogador em primeira pessoa
+game/interact/       portas, itens, telefone
+game/world/          peças para montar cenários
+game/scenes/         cenas (boot, protótipo)
+game/ui/             menus e HUD
 tests/               testes GUT
 tools/               scripts de build, verificação e teste
 web/landing/         página de testes
