@@ -1,0 +1,79 @@
+name: Compilar versão Web
+description: Testa o projeto, exporta a versão Web e verifica o build. Não publica nada.
+
+inputs:
+  channel:
+    description: Canal do build (dev ou stable)
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Ler versão do Godot
+      id: godot
+      shell: bash
+      run: |
+        version="$(tr -d '[:space:]' < .godot-version)"
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+        echo "templates=${version/-/.}" >> "$GITHUB_OUTPUT"
+
+    - name: Cache do Godot e dos templates Web
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/godot-bin
+          ~/.local/share/godot/export_templates
+        key: godot-${{ steps.godot.outputs.version }}-web-nothreads-v1
+
+    - name: Baixar Godot e templates Web
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        set -euo pipefail
+        version="${{ steps.godot.outputs.version }}"
+        base="https://github.com/godotengine/godot/releases/download/${version}"
+        mkdir -p ~/godot-bin "$HOME/.local/share/godot/export_templates/${{ steps.godot.outputs.templates }}"
+        curl -fsSL -o /tmp/godot.zip "${base}/Godot_v${version}_linux.x86_64.zip"
+        unzip -q -o /tmp/godot.zip -d /tmp/godot
+        mv "/tmp/godot/Godot_v${version}_linux.x86_64" ~/godot-bin/godot
+        chmod +x ~/godot-bin/godot
+        curl -fsSL -o /tmp/templates.tpz "${base}/Godot_v${version}_export_templates.tpz"
+        unzip -q -j -o /tmp/templates.tpz \
+          "templates/web_nothreads_release.zip" \
+          "templates/web_nothreads_debug.zip" \
+          "templates/version.txt" \
+          -d "$HOME/.local/share/godot/export_templates/${{ steps.godot.outputs.templates }}"
+        rm -f /tmp/godot.zip /tmp/templates.tpz
+
+    - name: Preparar Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+
+    - name: Importar projeto
+      shell: bash
+      run: ~/godot-bin/godot --headless --path . --import || true
+
+    - name: Testes do jogo (GUT)
+      shell: bash
+      run: ~/godot-bin/godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
+
+    - name: Testes das ferramentas e da landing (Node)
+      shell: bash
+      run: node --test tools/ web/landing/
+
+    - name: Gerar identificação do build
+      shell: bash
+      run: |
+        mkdir -p build/web
+        node tools/write-build-info.mjs --channel "${{ inputs.channel }}" --commit "$GITHUB_SHA" \
+          --out build_info.json --out build/web/version.json
+
+    - name: Exportar versão Web
+      shell: bash
+      run: ~/godot-bin/godot --headless --path . --export-release "Web" build/web/index.html
+
+    - name: Verificar build
+      shell: bash
+      run: node tools/verify-web-build.mjs build/web
