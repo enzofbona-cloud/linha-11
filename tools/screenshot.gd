@@ -6,7 +6,10 @@ const SHOTS := [
 	# [nome, posição, yaw em graus, lanterna, energia, ouvinte acordado em z (ou null)]
 	["01_inicio_sem_energia", Vector3(0, 0.05, -1.0), 0.0, true, false, null],
 	["02_corredor_com_energia", Vector3(0, 0.05, -7.0), 0.0, false, true, null],
-	["03_apto_302", Vector3(-2.2, 0.05, -5.5), 80.0, true, true, null],
+	["03_apto_302", Vector3(-1.9, 0.05, -5.5), 75.0, true, true, null],
+	["03b_apto_302_mesa", Vector3(-5.0, 0.05, -5.2), -110.0, true, true, null],
+	["06_apto_303", Vector3(1.9, 0.05, -10.5), -90.0, true, true, null],
+	["07_apto_304_sala", Vector3(0.3, 0.05, -16.8), 20.0, true, true, null],
 	["04_ouvinte_no_escuro", Vector3(0, 0.05, -12.0), 180.0, true, false, -7.5],
 	["05_telefone_304", Vector3(0, 0.05, -18.6), 0.0, false, false, null],
 ]

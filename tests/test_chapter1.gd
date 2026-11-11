@@ -358,7 +358,7 @@ func test_ouvinte_so_aparece_quando_o_jogador_sai_pela_porta_do_quarto():
 	var cena = load("res://game/scenes/prototype/prototype.tscn").instantiate()
 	add_child_autofree(cena)
 	await wait_physics_frames(5)
-	cena.player.global_position = Vector3(4.4, 0.05, -11.0) # dentro do 303, ao lado da chave
+	cena.player.global_position = Vector3(3.6, 0.05, -10.5) # dentro do 303
 	cena.get_node("Key304").interact(cena.player)
 	await wait_physics_frames(5)
 	assert_false(cena.power_on, "a luz cai na hora")

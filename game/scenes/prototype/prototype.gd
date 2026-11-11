@@ -365,14 +365,34 @@ func _frame(center: Vector3, along_z: bool) -> void:
 	LevelKit.box(self, "DoorHead", center + Vector3(0, DOOR_H + 0.03, 0), top_size, _m_trim, false)
 
 
-func _table(prefix: String, center: Vector3, size: Vector2, height := 0.75) -> void:
-	var top := LevelKit.box(self, prefix + "Top", center + Vector3(0, height, 0), Vector3(size.x, 0.05, size.y), _m_wood)
+## Tapete: dá um "centro" ao cômodo e junta os móveis em volta dele.
+func _rug(node_name: String, center: Vector3, size: Vector2, color: Color) -> void:
+	var rug := LevelKit.box(self, node_name, center + Vector3(0, 0.02, 0), Vector3(size.x, 0.04, size.y),
+		LevelKit.textured("fabric", 1.25, color), false)
+	_register_room_prop(rug, center)
+
+
+## Móvel com colisão apoiado no chão: `size` é a caixa (largura, altura,
+## profundidade) antes de girar e `scale` o ajuste do modelo.
+func _floor_furniture(node_name: String, path: String, floor_pos: Vector3, yaw: float,
+		size: Vector3, scale := Vector3.ONE, visual_z := 0.0) -> StaticBody3D:
+	var body := _room_furniture(node_name, path, floor_pos + Vector3(0, size.y / 2.0, 0), yaw, size)
+	var visual := body.get_node("Visual") as Node3D
+	visual.scale = scale
+	visual.position = Vector3(0, -size.y / 2.0, visual_z)
+	return body
+
+
+func _table(prefix: String, center: Vector3, size: Vector2, height := 0.75, yaw := 0.0) -> void:
+	var top := LevelKit.box(self, prefix + "Top", center + Vector3(0, height / 2.0, 0), Vector3(size.x, height, size.y), _m_wood)
+	top.rotation.y = yaw
 	for child in top.get_children():
 		if child is MeshInstance3D:
 			top.remove_child(child)
 			child.free()
 	var visual := LevelKit.model_visual("res://assets/models/polyhaven/WoodenTable_01/WoodenTable_01_1k.gltf")
 	visual.position = center
+	visual.rotation.y = yaw
 	visual.scale = Vector3(size.x / 1.799648, height / 0.548849, size.y / 0.657175)
 	_register_room_prop(visual, center)
 	add_child(visual)
@@ -453,17 +473,26 @@ func _build_furniture() -> void:
 		Vector3(-3.45, 0.45, -7.72), 0.0, Vector3(0.95, 0.9, 0.5))
 	dresser302.get_node("Visual").scale = Vector3(0.8, 0.76, 0.81)
 	dresser302.get_node("Visual").position.y = -0.45
-	var chair302 := _room_furniture("Chair302",
+	# Quarto de verdade: tapete no meio, penteadeira ao lado do guarda-roupa,
+	# escrivaninha com cadeira junto à parede do corredor, estante encostada.
+	_rug("Rug302", Vector3(-3.7, 0, -5.5), Vector2(2.4, 2.6), Color(0.36, 0.18, 0.14))
+	var vanity302 := _room_furniture("Vanity302", "res://assets/models/furniture/dresser_mirror_80s.glb",
+		Vector3(-5.35, 0.45, -3.29), 0.0, Vector3(0.93, 0.9, 0.54))
+	vanity302.get_node("Visual").position.y = 0.0
+	_table("Desk302", Vector3(-1.72, 0, -4.0), Vector2(1.1, 0.55), 0.74, PI / 2.0)
+	_room_prop("DeskBook302", "res://assets/models/props/open_book.glb", Vector3(-1.72, 0.76, -4.05), PI / 2.0)
+	_room_prop("DeskGlass302", "res://assets/models/props/glass_tumbler.glb", Vector3(-1.65, 0.74, -3.6))
+	_floor_furniture("Chair302",
 		"res://assets/models/polyhaven/painted_wooden_chair_02/painted_wooden_chair_02_1k.gltf",
-		Vector3(-2.1, 0.43, -5.95), 0.0, Vector3(0.48, 0.85, 0.48))
-	chair302.get_node("Visual").scale = Vector3(0.75, 0.68, 0.73)
-	chair302.get_node("Visual").position.y = -0.43
-	_room_prop("Bookcase302", "res://assets/models/polyhaven/Shelf_01/Shelf_01_1k.gltf",
-		Vector3(-2.0, 0.0, -7.25), PI / 2.0, Vector3(1.0, 1.0, 1.0))
+		Vector3(-2.35, 0, -4.0), PI / 2.0 + 0.25, Vector3(0.48, 0.86, 0.48), Vector3(0.75, 0.68, 0.73))
+	_floor_furniture("Bookcase302", "res://assets/models/polyhaven/Shelf_01/Shelf_01_1k.gltf",
+		Vector3(-2.0, 0, -7.87), 0.0, Vector3(1.0, 2.08, 0.26), Vector3.ONE, -0.13)
+	_room_prop("BookcaseBooks302", "res://assets/models/props/books_stack.glb", Vector3(-2.1, 1.05, -7.85), 0.1)
+	_room_prop("BookcaseBox302", "res://assets/models/props/shoebox_pair.glb", Vector3(-1.9, 0.59, -7.85), 0.1)
 	_room_prop("Suitcase302", "res://assets/models/furniture/suitcase_open_80s.glb",
-		Vector3(-4.75, 0.0, -4.2), 0.18)
+		Vector3(-3.3, 0.04, -6.5), 0.5)
 	_room_prop("StandingFan302", "res://assets/models/furniture/standing_fan_80s.glb",
-		Vector3(-2.1, 0.0, -3.9), -0.28)
+		Vector3(-1.85, 0.0, -6.75), 2.3)
 	var window302 := LevelKit.model(self, "Window302", "res://assets/models/furniture/window_curtains_80s.glb",
 		Vector3(-6.3, 1.45, -5.5), PI / 2.0, Vector3(1.46, 1.45, 0.08))
 	window302.add_to_group("room_props_chapter1")
@@ -503,32 +532,39 @@ func _build_furniture() -> void:
 
 	# 303: mesa, cadeira caída, estante de metal, caixas
 	_table("Table303", Vector3(4.6, 0, -11.6), Vector2(1.3, 0.8))
-	var chair303 := LevelKit.box(self, "Chair", Vector3(3.7, 0.22, -12.2), Vector3(0.45, 0.44, 0.9), _m_wood)
-	_replace_furniture_visual(chair303,
-		"res://assets/models/polyhaven/painted_wooden_chair_02/painted_wooden_chair_02_1k.gltf",
-		0.0, Vector3(0.72, 0.7, 0.72), Vector3(0, -0.22, 0))
+	# Sala do síndico: sofá sob a foto, tapete, poltrona, e a mesa com duas
+	# cadeiras onde ele deixou a chave e a transcrição.
+	var chair_path := "res://assets/models/polyhaven/painted_wooden_chair_02/painted_wooden_chair_02_1k.gltf"
+	_floor_furniture("Chair", chair_path, Vector3(3.62, 0, -11.6), PI / 2.0 - 0.2, Vector3(0.48, 0.86, 0.48), Vector3(0.75, 0.68, 0.73))
+	_floor_furniture("ChairB303", chair_path, Vector3(5.6, 0, -11.55), -PI / 2.0, Vector3(0.48, 0.86, 0.48), Vector3(0.75, 0.68, 0.73))
+	_floor_furniture("Sofa303", "res://assets/models/polyhaven/sofa_02/sofa_02_1k.gltf",
+		Vector3(4.1, 0, -8.47), PI, Vector3(2.1, 0.8, 0.9), Vector3(1.16, 1.18, 1.0))
+	_room_prop("SofaClothes303", "res://assets/models/props/clothes_pile.glb", Vector3(4.7, 0.5, -8.5), 0.4)
+	_rug("Rug303", Vector3(4.0, 0, -10.0), Vector2(2.8, 1.9), Color(0.3, 0.24, 0.16))
+	_floor_furniture("Armchair303", "res://assets/models/polyhaven/ArmChair_01/ArmChair_01_1k.gltf",
+		Vector3(5.65, 0, -10.35), -PI / 2.0 + 0.3, Vector3(0.85, 0.9, 0.77))
 	var shelf303 := LevelKit.box(self, "Shelf", Vector3(6.0, 0.95, -9.2), Vector3(0.4, 1.9, 1.4), _m_metal)
 	_replace_furniture_visual(shelf303,
 		"res://assets/models/polyhaven/Shelf_01/Shelf_01_1k.gltf",
-		PI / 2.0, Vector3(1.4, 0.91, 1.55), Vector3(0, -0.95, 0))
-	var box_a := LevelKit.box(self, "BoxA", Vector3(2.2, 0.2, -8.6), Vector3(0.5, 0.4, 0.5), _m_fabric)
+		-PI / 2.0, Vector3(1.4, 0.91, 1.55), Vector3(0.2, -0.95, 0))
+	var box_a := LevelKit.box(self, "BoxA", Vector3(1.8, 0.2, -12.6), Vector3(0.5, 0.4, 0.5), _m_fabric)
 	_replace_furniture_visual(box_a, "res://assets/models/furniture/crate_wood_80s.glb", 0.0, Vector3(0.96, 1.05, 1.19), Vector3(0, -0.2, 0))
-	var box_b := LevelKit.box(self, "BoxB", Vector3(2.5, 0.55, -8.5), Vector3(0.4, 0.3, 0.4), _m_fabric)
+	var box_b := LevelKit.box(self, "BoxB", Vector3(1.85, 0.55, -12.6), Vector3(0.4, 0.3, 0.4), _m_fabric)
 	_replace_furniture_visual(box_b, "res://assets/models/furniture/crate_wood_80s.glb", 0.2, Vector3(0.77, 0.8, 0.95), Vector3(0, -0.15, 0))
 	_room_prop("Books303", "res://assets/models/props/books_stack.glb", Vector3(6.0, 1.38, -9.2), 0.08)
 	_room_prop("LoosePapers303", "res://assets/models/props/paper_stack.glb", Vector3(4.05, 0.76, -11.84), -0.06)
-	_room_prop("Shoes303", "res://assets/models/props/slippers_pair.glb", Vector3(5.65, 0.0, -12.65), 0.18)
+	_room_prop("Shoes303", "res://assets/models/props/slippers_pair.glb", Vector3(3.6, 0.04, -9.2), 3.0)
 	_room_prop("FamilyPhoto303", "res://assets/models/props/photo_frame.glb", Vector3(4.65, 1.65, -8.0), PI)
 	var dresser303 := _room_furniture("Dresser303",
 		"res://assets/models/polyhaven/painted_wooden_cabinet/painted_wooden_cabinet_1k.gltf",
 		Vector3(5.2, 0.45, -12.65), 0.0, Vector3(1.0, 0.9, 0.54))
 	dresser303.get_node("Visual").scale = Vector3(0.84, 0.76, 0.88)
 	dresser303.get_node("Visual").position.y = -0.45
-	_room_prop("Suitcase303", "res://assets/models/furniture/suitcase_open_80s.glb", Vector3(2.05, 0.0, -12.55), -0.18)
-	_room_prop("Fan303", "res://assets/models/furniture/standing_fan_80s.glb", Vector3(2.0, 0.0, -9.45), 0.2)
+	_room_prop("Suitcase303", "res://assets/models/furniture/suitcase_open_80s.glb", Vector3(2.9, 0.04, -9.7), 1.2)
+	_room_prop("Fan303", "res://assets/models/furniture/standing_fan_80s.glb", Vector3(1.85, 0.0, -8.5), 0.8)
 	_room_prop("Calendar303", "res://assets/models/props/wall_calendar_august.glb", Vector3(1.43, 1.68, -9.0), PI / 2.0)
 	_room_prop("Crucifix303", "res://assets/models/props/wall_crucifix.glb", Vector3(6.19, 1.7, -10.5), -PI / 2.0)
-	_room_prop("ToyTruck303", "res://assets/models/props/toy_truck.glb", Vector3(3.05, 0.0, -12.7), 0.2)
+	_room_prop("ToyTruck303", "res://assets/models/props/toy_truck.glb", Vector3(3.3, 0.04, -10.4), 0.9)
 	_room_prop("Tumbler303", "res://assets/models/props/glass_tumbler.glb", Vector3(5.1, 0.76, -11.82))
 	_room_prop("BooksDresser303", "res://assets/models/props/books_stack.glb", Vector3(4.9, 0.9, -12.65), -0.08)
 	_room_prop("PapersDresser303", "res://assets/models/props/paper_stack.glb", Vector3(5.9, 0.9, -12.65), 0.06)
@@ -538,7 +574,7 @@ func _build_furniture() -> void:
 	_room_prop("Medicine303", "res://assets/models/props/medicine_blister.glb", Vector3(4.85, 0.9, -12.55), 0.0, Vector3(0.9, 1.0, 0.9))
 	_room_prop("ShelfBooksLower303", "res://assets/models/props/books_stack.glb", Vector3(6.0, 0.96, -9.35), 0.04)
 	_room_prop("ShelfPapers303", "res://assets/models/props/paper_stack.glb", Vector3(6.0, 0.54, -9.2), -0.04)
-	_room_prop("Crate303", "res://assets/models/furniture/crate_wood_80s.glb", Vector3(2.8, 0.0, -8.55), 0.06)
+	_room_prop("Crate303", "res://assets/models/furniture/crate_wood_80s.glb", Vector3(2.45, 0.0, -12.6), 0.2)
 
 	# Corredor: banco
 	var bench := LevelKit.box(self, "Bench", Vector3(0.95, 0.22, -3.0), Vector3(0.4, 0.44, 1.4), _m_wood)
@@ -570,14 +606,16 @@ func _build_furniture() -> void:
 
 	# 304: mesa do telefone, poltrona, armário
 	_table("PhoneTable", Vector3(0, 0, -21.2), Vector2(1.2, 0.6))
-	var armchair_base := LevelKit.box(self, "Armchair", Vector3(-2.2, 0.3, -20.6), Vector3(0.9, 0.6, 0.9), _m_fabric)
-	var armchair_back := LevelKit.box(self, "ArmchairBack", Vector3(-2.6, 0.75, -20.6), Vector3(0.15, 0.9, 0.9), _m_fabric)
-	for chair_part in [armchair_base, armchair_back]:
-		for child in chair_part.get_children():
-			if child is MeshInstance3D:
-				chair_part.remove_child(child)
-				child.free()
-	_room_prop("Armchair304", "res://assets/models/polyhaven/ArmChair_01/ArmChair_01_1k.gltf", Vector3(-2.2, 0.0, -20.6))
+	# Sala de estar virada para o telefone: sofá e mesa de centro no tapete,
+	# poltrona do outro lado, tudo de frente para a mesinha do aparelho.
+	_rug("Rug304", Vector3(-0.3, 0, -19.3), Vector2(3.6, 2.8), Color(0.34, 0.16, 0.13))
+	_floor_furniture("Sofa304", "res://assets/models/polyhaven/sofa_02/sofa_02_1k.gltf",
+		Vector3(-2.53, 0, -19.3), PI / 2.0, Vector3(2.1, 0.8, 0.9), Vector3(1.16, 1.18, 1.0))
+	_table("CoffeeTable304", Vector3(-1.35, 0, -19.3), Vector2(1.0, 0.5), 0.42, PI / 2.0)
+	_room_prop("CoffeeBooks304", "res://assets/models/props/books_stack.glb", Vector3(-1.35, 0.42, -19.0), 0.4)
+	_room_prop("CoffeeGlass304", "res://assets/models/props/glass_tumbler.glb", Vector3(-1.3, 0.42, -19.6))
+	_floor_furniture("Armchair304", "res://assets/models/polyhaven/ArmChair_01/ArmChair_01_1k.gltf",
+		Vector3(2.2, 0, -20.2), -PI / 2.0 - 0.35, Vector3(0.85, 0.9, 0.77))
 	var cupboard := LevelKit.box(self, "Cupboard", Vector3(2.7, 1.0, -18.5), Vector3(0.5, 2.0, 1.8), _m_wood)
 	_replace_furniture_visual(cupboard,
 		"res://assets/models/polyhaven/GothicCabinet_01/GothicCabinet_01_1k.gltf",
@@ -586,25 +624,23 @@ func _build_furniture() -> void:
 	_room_prop("Papers304", "res://assets/models/props/paper_stack.glb", Vector3(0.38, 0.76, -21.4), 0.04)
 	_room_prop("Suitcase304", "res://assets/models/furniture/suitcase_open_80s.glb", Vector3(-2.65, 0.0, -17.9), -0.3)
 	_room_prop("Photo304", "res://assets/models/props/photo_frame.glb", Vector3(2.9, 1.55, -16.25), PI)
-	_room_prop("Clothes304", "res://assets/models/props/clothes_pile.glb", Vector3(-2.8, 0.0, -20.2), 0.2)
+	_room_prop("Clothes304", "res://assets/models/props/clothes_pile.glb", Vector3(-2.55, 0.5, -19.9), 1.2)
 	var nightstand304 := _room_furniture("Nightstand304",
 		"res://assets/models/polyhaven/painted_wooden_nightstand/painted_wooden_nightstand_1k.gltf",
 		Vector3(-2.7, 0.28, -21.6), 0.0, Vector3(0.45, 0.56, 0.45))
 	nightstand304.get_node("Visual").scale = Vector3(0.9, 0.91, 0.88)
 	nightstand304.get_node("Visual").position.y = -0.28
-	_room_prop("Bookcase304", "res://assets/models/polyhaven/Shelf_01/Shelf_01_1k.gltf", Vector3(2.75, 0.0, -21.5), PI / 2.0)
+	_floor_furniture("Bookcase304", "res://assets/models/polyhaven/Shelf_01/Shelf_01_1k.gltf", Vector3(2.87, 0, -21.3), -PI / 2.0, Vector3(1.0, 2.08, 0.26), Vector3.ONE, -0.13)
 	_room_prop("Fan304", "res://assets/models/furniture/standing_fan_80s.glb", Vector3(2.95, 0.0, -17.35), -0.18)
-	_room_prop("Chair304", "res://assets/models/polyhaven/painted_wooden_chair_02/painted_wooden_chair_02_1k.gltf",
-		Vector3(2.15, 0.0, -20.45), -0.3, Vector3(0.75, 0.68, 0.73))
-	_room_prop("PhotoWall304", "res://assets/models/props/photo_frame.glb", Vector3(-3.1, 1.65, -19.0), PI / 2.0)
+	_room_prop("PhotoWall304", "res://assets/models/props/photo_frame.glb", Vector3(-2.97, 1.7, -19.3), PI / 2.0)
 	_room_prop("PhotoBackWall304", "res://assets/models/props/photo_frame.glb", Vector3(-2.6, 1.65, -22.0))
-	_room_prop("Calendar304", "res://assets/models/props/wall_calendar_august.glb", Vector3(3.1, 1.65, -19.2), -PI / 2.0)
+	_room_prop("Calendar304", "res://assets/models/props/wall_calendar_august.glb", Vector3(2.97, 1.65, -20.4), -PI / 2.0)
 	_room_prop("Crucifix304", "res://assets/models/props/wall_crucifix.glb", Vector3(1.7, 1.65, -22.0))
 	_room_prop("BooksNightstand304", "res://assets/models/props/books_stack.glb", Vector3(-2.82, 0.56, -21.7), -0.05)
 	_room_prop("ClockNightstand304", "res://assets/models/props/alarm_clock_analog.glb", Vector3(-2.55, 0.56, -21.6))
 	_room_prop("CupCupboard304", "res://assets/models/props/glass_tumbler.glb", Vector3(2.84, 2.0, -18.4))
-	_room_prop("Slippers304", "res://assets/models/props/slippers_pair.glb", Vector3(-2.72, 0.0, -20.82), 0.16)
-	_room_prop("ToyTruck304", "res://assets/models/props/toy_truck.glb", Vector3(2.55, 0.0, -20.15), -0.1)
+	_room_prop("Slippers304", "res://assets/models/props/slippers_pair.glb", Vector3(-1.9, 0.04, -18.5), 1.3)
+	_room_prop("ToyTruck304", "res://assets/models/props/toy_truck.glb", Vector3(0.9, 0.04, -18.7), -0.6)
 	_room_prop("PerfumeCupboard304", "res://assets/models/props/perfume_bottle.glb", Vector3(2.5, 2.0, -18.25))
 	_room_prop("CombNightstand304", "res://assets/models/props/comb.glb", Vector3(-2.75, 0.56, -21.45), 0.1)
 	_room_prop("MedicineCupboard304", "res://assets/models/props/medicine_blister.glb", Vector3(2.65, 2.0, -18.75), 0.0, Vector3(0.9, 1.0, 0.9))
