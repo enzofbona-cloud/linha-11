@@ -218,7 +218,7 @@ func _build_overlay() -> void:
 	var hint := UiKit.label("O mouse vira a câmera.  Esc solta o mouse e pausa.", 17)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(hint)
-	var keys := UiKit.label("WASD andar  ·  Shift correr  ·  Ctrl agachar  ·  E interagir  ·  F lanterna", 15, UiKit.MUTED)
+	var keys := UiKit.label("WASD andar  ·  Shift correr  ·  %s agachar  ·  E interagir  ·  F lanterna" % GameInput.crouch_key_name(), 15, UiKit.MUTED)
 	keys.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(keys)
 

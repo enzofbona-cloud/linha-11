@@ -14,6 +14,9 @@ const T := 0.2 # espessura das paredes
 const START := Vector3(0, 0.05, -1.0)
 const CHECKPOINT_303 := Vector3(3.6, 0.05, -10.5)
 const LISTENER_START_Z := -2.0
+const LISTENER_FAR_Z := -14.5
+## Meia largura do corredor: além disso o jogador ainda está dentro de um quarto.
+const CORRIDOR_EDGE := 1.05
 
 const TEXT_NOTICE := "PREFEITURA MUNICIPAL — DEFESA CIVIL\n\nPor determinação sanitária, o Distrito 11 está INTERDITADO a partir de 9 de agosto.\n\nMoradores devem deixar os imóveis imediatamente. Não levem aparelhos telefônicos.\n\nNão atendam chamadas originadas dentro do perímetro."
 const TEXT_DIARY := "8 de agosto.\n\nO telefone do 304 tocou a noite inteira de novo. A dona Marta jura que o aparelho está desligado da parede.\n\nO síndico trocou a fechadura do 303 por uma de senha. Disse que escolheu um número que ninguém aqui vai esquecer: a hora em que todos os relógios do prédio pararam.\n\nO meu parou às três e dezessete."
@@ -37,6 +40,7 @@ var _time := 0.0
 var _key_taken := false
 var _in_304 := false
 var _caught_lock := false
+var _listener_armed := false
 var _sting: AudioStreamPlayer
 
 var _m_wall: StandardMaterial3D
@@ -131,8 +135,10 @@ func _process(delta: float) -> void:
 		if diffuser != null:
 			diffuser.visible = on
 
+	_check_listener_release()
 	if not _in_304 and player.global_position.z < -16.5:
 		_in_304 = true
+		_listener_armed = false
 		listener.sleep()
 		session.set_objective("Atenda o telefone.")
 
@@ -171,12 +177,37 @@ func on_key_taken() -> void:
 		return
 	_key_taken = true
 	set_power(false)
-	listener.position.z = LISTENER_START_Z
-	listener.wake()
 	if _sting != null:
 		_sting.play()
 	session.set_objective("Chegue ao 304 sem fazer barulho.")
-	_hud.show_message("A luz caiu. Tem algo no corredor. Agache [Ctrl] ou ande devagar [Alt]: ele só escuta.", 9.0)
+	_hud.show_message("A luz caiu. Agache [%s] ou ande devagar [%s] antes de sair: tem algo que só escuta." % [
+		GameInput.crouch_key_name(), GameInput.slow_key_name()], 9.0)
+	_arm_listener()
+
+
+## O Ouvinte só aparece quando o jogador sai pela porta do quarto para o
+## corredor. Dentro do quarto ainda dá tempo de respirar e se preparar.
+func _arm_listener() -> void:
+	listener.sleep()
+	_listener_armed = true
+	_check_listener_release()
+
+
+func is_in_corridor(pos: Vector3) -> bool:
+	return absf(pos.x) < CORRIDOR_EDGE and pos.z > -16.0
+
+
+func _check_listener_release() -> void:
+	if not _listener_armed or _in_304 or not is_in_corridor(player.global_position):
+		return
+	_listener_armed = false
+	# Nasce na ponta do corredor mais longe do jogador e vem andando até ele.
+	var player_z := player.global_position.z
+	var from_start := absf(player_z - LISTENER_START_Z) >= absf(player_z - LISTENER_FAR_Z)
+	listener.position.z = LISTENER_START_Z if from_start else LISTENER_FAR_Z
+	listener.wake()
+	listener.walk_toward(player_z)
+	_hud.show_message("Algo se arrasta no fundo do corredor. Está vindo.", 5.0)
 
 
 func on_caught() -> void:
@@ -191,12 +222,9 @@ func on_caught() -> void:
 func _respawn() -> void:
 	player.global_position = CHECKPOINT_303
 	player.velocity = Vector3.ZERO
-	listener.position.z = LISTENER_START_Z
-	listener.wake()
-	listener.target_z = LISTENER_START_Z
-	listener.state = Listener.State.PATROL
 	player.controls_enabled = true
 	_caught_lock = false
+	_arm_listener()
 	_hud.show_message("Você acordou no 303. Silêncio desta vez.", 5.0)
 
 

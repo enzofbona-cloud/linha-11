@@ -93,3 +93,30 @@ func test_capitulo_2_tem_luz_suficiente_para_jogar():
 	assert_gte(luzes, 8, "abajures ao longo do apartamento")
 	assert_almost_eq(scene.player.flashlight.light_energy, 6.0, 0.01, "lanterna com a força padrão")
 	get_tree().paused = false
+
+
+func test_cada_telefone_fica_em_um_comodo_diferente_e_mobiliado():
+	var scene = load("res://game/scenes/chapter2/apartment_304.tscn").instantiate()
+	add_child_autofree(scene)
+	await wait_physics_frames(2)
+	var comodos := {}
+	for i in 3:
+		var fone: Node3D = scene.get_node("SequencePhone%d" % i)
+		assert_gt(absf(fone.position.x), 1.2, "telefone dentro de um cômodo, não no corredor")
+		comodos[scene._room_index(fone.position.z, scene.LEFT_PARTITIONS)] = true
+	assert_eq(comodos.size(), 3, "sala, quarto e escritório")
+	for grupo in ["living", "dining", "bedroom", "boy", "office", "storage", "hall"]:
+		var total := get_tree().get_nodes_in_group("room_props_ch2_" + grupo).size()
+		assert_gte(total, 12, "cômodo '%s' mobiliado" % grupo)
+	get_tree().paused = false
+
+
+func test_moveis_do_304_ficam_dentro_das_paredes():
+	var scene = load("res://game/scenes/chapter2/apartment_304.tscn").instantiate()
+	add_child_autofree(scene)
+	await wait_physics_frames(2)
+	for node in get_tree().get_nodes_in_group("room_props_chapter2"):
+		var pos: Vector3 = (node as Node3D).position
+		assert_lt(absf(pos.x), 5.85, "%s atravessa a parede de fora" % node.name)
+		assert_between(pos.z, -28.9, 4.95, "%s fora do apartamento" % node.name)
+	get_tree().paused = false

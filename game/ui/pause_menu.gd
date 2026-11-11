@@ -36,7 +36,7 @@ func _init() -> void:
 
 	box.add_child(UiKit.label(" ", 10))
 	box.add_child(UiKit.label("CONTROLES", 14, UiKit.AMBER))
-	box.add_child(UiKit.label(GameInput.HELP_TEXT, 15, UiKit.MUTED))
+	box.add_child(UiKit.label(GameInput.help_text(), 15, UiKit.MUTED))
 
 
 func open() -> void:

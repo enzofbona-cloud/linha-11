@@ -33,6 +33,12 @@ const NOISE_LAND := 8.0
 const NOISE_DOOR := 7.0
 const STRIDE_WALK := 0.8
 const STRIDE_SPRINT := 1.1
+## Volume dos passos do jogador (dB). Baixos de propósito: o que tem de se
+## ouvir é o prédio e o Ouvinte, não o próprio pé.
+const STEP_DB_WALK := -21.0
+const STEP_DB_SPRINT := -14.0
+const STEP_DB_QUIET := -34.0
+const STEP_DB_LAND := -12.0
 
 var camera: Camera3D
 var flashlight: SpotLight3D
@@ -212,7 +218,7 @@ func _physics_process(delta: float) -> void:
 		velocity.y = JUMP_VELOCITY
 	if on_floor and not _was_on_floor:
 		make_noise(NOISE_LAND)
-		_play_step(0.0)
+		_play_step(STEP_DB_LAND)
 	_was_on_floor = on_floor
 
 	var direction := (global_transform.basis * Vector3(input.x, 0, input.y))
@@ -242,9 +248,9 @@ func _update_steps(delta: float, on_floor: bool, sprinting: bool, crouching: boo
 	var radius := noise_radius_for(true, sprinting, crouching, slow)
 	if radius > 0.0:
 		make_noise(radius)
-		_play_step(-2.0 if sprinting else -9.0)
+		_play_step(STEP_DB_SPRINT if sprinting else STEP_DB_WALK)
 	else:
-		_play_step(-24.0)
+		_play_step(STEP_DB_QUIET)
 
 
 func _play_step(volume_db: float) -> void:

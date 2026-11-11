@@ -36,17 +36,63 @@ const JOY_AXES := {
 
 ## Texto dos controles mostrado no menu e na pausa.
 const HELP_TEXT := "W A S D — andar\nMouse — olhar\nShift — correr\nCtrl ou C — agachar\nAlt — andar devagar\nEspaço — pular\nE — interagir\nF — lanterna\nEsc ou P — pausar"
+const HELP_TEXT_WEB := "W A S D — andar\nMouse — olhar\nShift — correr\nC — agachar\nX — andar devagar\nEspaço — pular\nE — interagir\nF — lanterna\nEsc ou P — pausar"
+
+## No navegador, Ctrl e Alt são teclas de atalho do próprio navegador e o jogo
+## não consegue bloqueá-las: Ctrl+W (agachar + andar) FECHA A ABA, Ctrl+T abre
+## outra, Alt+seta volta a página. Por isso, na Web, essas teclas ficam de fora.
+const WEB_UNSAFE_KEYS := [KEY_CTRL, KEY_ALT]
+const WEB_EXTRA_KEYS := {"walk_slow": [KEY_X]}
 
 
 func _enter_tree() -> void:
 	register_actions()
+	if OS.has_feature("web"):
+		_guard_browser_tab()
+
+
+static func is_web() -> bool:
+	return OS.has_feature("web")
+
+
+static func help_text(web := is_web()) -> String:
+	return HELP_TEXT_WEB if web else HELP_TEXT
+
+
+## Nome da tecla de agachar, para as mensagens do jogo.
+static func crouch_key_name(web := is_web()) -> String:
+	return "C" if web else "Ctrl"
+
+
+static func slow_key_name(web := is_web()) -> String:
+	return "X" if web else "Alt"
+
+
+## Teclas de uma ação, já sem as que o navegador usa como atalho.
+static func keys_for(action: String, web := is_web()) -> Array:
+	var keys: Array = KEYS[action].duplicate()
+	if web:
+		for key in WEB_UNSAFE_KEYS:
+			keys.erase(key)
+		keys.append_array(WEB_EXTRA_KEYS.get(action, []))
+	return keys
+
+
+## Rede de segurança: com o jogo em andamento (mouse preso), o navegador
+## pergunta antes de fechar ou sair da página.
+func _guard_browser_tab() -> void:
+	JavaScriptBridge.eval("""
+		window.addEventListener('beforeunload', function (e) {
+			if (document.pointerLockElement) { e.preventDefault(); e.returnValue = ''; }
+		});
+	""", true)
 
 
 static func register_actions() -> void:
 	for action in KEYS:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action, 0.3)
-		for key in KEYS[action]:
+		for key in keys_for(action):
 			var ev := InputEventKey.new()
 			ev.physical_keycode = key
 			if not InputMap.action_has_event(action, ev):

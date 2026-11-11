@@ -1,10 +1,15 @@
 extends SceneTree
 
 const CAPTURES := [
-	["01_304_entrada", Vector3(0, 0.05, 1.0), 0.0],
-	["02_fotografia_riscada", Vector3(6.4, 0.05, -5.2), -90.0],
-	["03_telefone_puzzle", Vector3(-3.3, 0.05, -23.0), 90.0],
-	["04_gravador", Vector3(4.4, 0.05, -9.9), -90.0],
+	["01_entrada_corredor", Vector3(0, 0.05, 3.6), 0.0],
+	["02_sala_tv", Vector3(-2.0, 0.05, 0.6), 136.0],
+	["03_sala_leitura", Vector3(-2.2, 0.05, 1.2), 31.0],
+	["04_sala_jantar", Vector3(1.7, 0.05, 3.9), -37.0],
+	["05_quarto_casal", Vector3(-1.5, 0.05, -5.6), 90.0],
+	["06_quarto_menino", Vector3(1.6, 0.05, -4.4), -90.0],
+	["07_escritorio", Vector3(-1.6, 0.05, -11.1), 90.0],
+	["08_deposito", Vector3(1.6, 0.05, -9.7), -90.0],
+	["09_corredor_fundo", Vector3(0, 0.05, -14.2), 0.0],
 ]
 
 

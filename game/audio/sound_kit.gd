@@ -108,6 +108,63 @@ static func clicks() -> AudioStreamWAV:
 		return _wav(s, true))
 
 
+## Rosnado gutural do Ouvinte, em laço: um ronco grave e rouco que cresce,
+## racha, some, e dá lugar a uma respiração molhada antes de recomeçar.
+static func growl() -> AudioStreamWAV:
+	return _cached("growl", func():
+		var length := 5.0
+		var s := PackedFloat32Array()
+		s.resize(int(RATE * length))
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 1109
+		var phase := 0.0
+		var jitter := 0.0
+		var breath := 0.0
+		var band := 0.0
+		var band_vel := 0.0
+		var body := 0.0
+		for i in s.size():
+			var t := float(i) / RATE
+			# rosnado: de 0,2 s a 3,0 s
+			var g := clampf((t - 0.2) / 0.9, 0.0, 1.0) * clampf((3.0 - t) / 0.7, 0.0, 1.0)
+			# respiração puxada: de 3,3 s a 4,7 s
+			var b := sin(clampf((t - 3.3) / 1.4, 0.0, 1.0) * PI)
+			jitter = lerpf(jitter, rng.randf_range(-1.0, 1.0), 0.02)
+			var freq := 46.0 + 9.0 * sin(t * 2.1) + jitter * 14.0 + g * 8.0
+			phase = fmod(phase + freq / RATE, 1.0)
+			# pulso de garganta: estalo seco que decai (rico em harmônicos)
+			var pulse := pow(1.0 - phase, 5.0) * 2.0 - 0.33
+			# a garganta "racha" em rajadas irregulares
+			var crack := 0.55 + 0.45 * sin(t * 23.0 + jitter * 6.0)
+			# ressonância da boca (por volta de 380 Hz) para aparecer em caixa pequena
+			var drive := pulse * g * crack
+			band_vel += (drive - band) * 0.0115 - band_vel * 0.06
+			band += band_vel
+			body = lerpf(body, drive, 0.18)
+			breath = lerpf(breath, rng.randf_range(-1.0, 1.0), 0.22)
+			var rasp := breath * (b * 0.5 + g * 0.16)
+			s[i] = clampf(body * 0.55 + band * 0.5 + rasp, -1.0, 1.0) * 0.8
+		return _wav(s, true))
+
+
+## Passo do Ouvinte: pancada pesada, com um arrastar depois.
+static func monster_step() -> AudioStreamWAV:
+	return _cached("monster_step", func():
+		var s := PackedFloat32Array()
+		s.resize(int(RATE * 0.42))
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 77
+		var drag := 0.0
+		for i in s.size():
+			var t := float(i) / RATE
+			var thud := sin(TAU * (62.0 - 60.0 * t) * t) * exp(-t * 22.0)
+			var slap := rng.randf_range(-1.0, 1.0) * exp(-t * 70.0) * 0.5
+			drag = lerpf(drag, rng.randf_range(-1.0, 1.0), 0.12)
+			var scrape := drag * sin(clampf((t - 0.08) / 0.34, 0.0, 1.0) * PI) * 0.35
+			s[i] = clampf(thud * 0.9 + slap + scrape, -1.0, 1.0) * 0.8
+		return _wav(s))
+
+
 ## Um passo: batida curta e abafada.
 static func step() -> AudioStreamWAV:
 	return _cached("step", func():

@@ -33,6 +33,13 @@ var _patrol_dir := -1.0
 var _time := 0.0
 var _body: Node3D
 var _audio: AudioStreamPlayer3D
+var _growl: AudioStreamPlayer3D
+var _step: AudioStreamPlayer3D
+## Quantos passos ele já deu (cada um soa uma pancada no chão).
+var steps_taken := 0
+
+const GROWL_DB := {State.PATROL: 1.0, State.INVESTIGATE: 4.0, State.CHASE: 8.0}
+const GROWL_PITCH := {State.PATROL: 0.92, State.INVESTIGATE: 1.05, State.CHASE: 1.28}
 
 
 static func hears(distance: float, radius: float) -> bool:
@@ -48,6 +55,10 @@ func _init() -> void:
 func _ready() -> void:
 	_audio = SoundKit.player_3d(self, SoundKit.clicks(), 18.0, -2.0)
 	_audio.position.y = 1.7
+	_growl = SoundKit.player_3d(self, SoundKit.growl(), 26.0, GROWL_DB[State.PATROL])
+	_growl.position.y = 1.5
+	_step = SoundKit.player_3d(self, SoundKit.monster_step(), 24.0, 1.0)
+	_step.position.y = 0.1
 
 
 func _physics_process(delta: float) -> void:
@@ -63,13 +74,26 @@ func wake() -> void:
 	_set_state(State.PATROL)
 	if _audio != null and not _audio.playing:
 		_audio.play()
+	if _growl != null and not _growl.playing:
+		_growl.play()
+
+
+## Faz a patrulha começar andando na direção de `z` (ex.: onde está o jogador).
+func walk_toward(z: float) -> void:
+	_patrol_dir = 1.0 if z > position.z else -1.0
 
 
 func sleep() -> void:
 	visible = false
 	_set_state(State.DORMANT)
-	if _audio != null:
-		_audio.stop()
+	for voice in [_audio, _growl, _step]:
+		if voice != null:
+			voice.stop()
+
+
+## Verdadeiro enquanto o rosnado está tocando (ele está acordado e por perto).
+func is_growling() -> bool:
+	return _growl != null and _growl.playing
 
 
 func hear(origin: Vector3, radius: float) -> void:
@@ -129,6 +153,10 @@ func _set_state(new_state: int) -> void:
 		return
 	state = new_state
 	_search = 0.0
+	# Quanto mais perto de atacar, mais alto e mais agudo ele rosna.
+	if _growl != null and GROWL_DB.has(new_state):
+		_growl.volume_db = GROWL_DB[new_state]
+		_growl.pitch_scale = GROWL_PITCH[new_state]
 	state_changed.emit(new_state)
 
 
@@ -156,7 +184,14 @@ func _animate() -> void:
 	if absf(moved) > 0.5:
 		moved = 0.0
 	var speed := absf(moved) / delta
+	var step_before := floori(_gait_phase / PI)
 	_gait_phase += absf(moved) * GAIT_PER_METER
+	# cada meia volta da fase é um pé no chão: aí soa a pancada do passo
+	if moved != 0.0 and floori(_gait_phase / PI) != step_before:
+		steps_taken += 1
+		if _step != null and is_inside_tree():
+			_step.pitch_scale = randf_range(0.82, 1.0)
+			_step.play()
 	# parado, ele ainda oscila devagar, como quem escuta
 	if speed < 0.05:
 		_gait_phase += delta * 0.5

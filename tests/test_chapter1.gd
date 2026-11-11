@@ -350,3 +350,58 @@ func test_sorteio_de_passos_nao_repete_o_anterior():
 		var atual: AudioStream = SoundKit.pick(SoundKit.FOOTSTEPS)
 		assert_ne(atual, anterior)
 		anterior = atual
+
+
+# --- pedidos de 11/11: passos, Ctrl no navegador, Ouvinte ---
+
+func test_ouvinte_so_aparece_quando_o_jogador_sai_pela_porta_do_quarto():
+	var cena = load("res://game/scenes/prototype/prototype.tscn").instantiate()
+	add_child_autofree(cena)
+	await wait_physics_frames(5)
+	cena.player.global_position = Vector3(4.4, 0.05, -11.0) # dentro do 303, ao lado da chave
+	cena.get_node("Key304").interact(cena.player)
+	await wait_physics_frames(5)
+	assert_false(cena.power_on, "a luz cai na hora")
+	assert_eq(cena.listener.state, Listener.State.DORMANT, "dentro do quarto ele ainda não veio")
+	assert_false(cena.listener.visible)
+	cena.player.global_position = Vector3(0.6, 0.05, -10.5) # atravessou a porta
+	await wait_physics_frames(5)
+	assert_ne(cena.listener.state, Listener.State.DORMANT, "saiu para o corredor: ele vem")
+	assert_true(cena.listener.visible)
+	assert_gt(absf(cena.listener.position.z - cena.player.global_position.z), 6.0, "nasce longe e vem andando")
+	assert_true(cena.listener.is_growling(), "vem rosnando")
+
+
+func test_ouvinte_vem_andando_na_direcao_do_jogador_e_faz_som_de_passo():
+	var l := _listener()
+	l.walk_toward(-12.0)
+	var z0 := l.position.z
+	for i in 300:
+		l.tick(1.0 / 60.0, Vector3(5, 0, -30))
+	assert_lt(l.position.z, z0 - 2.0)
+	assert_gte(l.steps_taken, 3, "cada passo soa uma pancada")
+
+
+func test_rosnado_do_ouvinte_existe_e_fica_mais_forte_na_perseguicao():
+	var rosnado := SoundKit.growl()
+	assert_gt(rosnado.data.size(), 22050 * 2 * 3, "laço de vários segundos")
+	assert_eq(rosnado.loop_mode, AudioStreamWAV.LOOP_FORWARD)
+	assert_gt(Listener.GROWL_DB[Listener.State.CHASE], Listener.GROWL_DB[Listener.State.PATROL])
+
+
+func test_passos_do_jogador_sao_baixos():
+	assert_lte(Player.STEP_DB_WALK, -18.0)
+	assert_lte(Player.STEP_DB_SPRINT, -12.0)
+	assert_lt(Player.STEP_DB_QUIET, Player.STEP_DB_WALK)
+
+
+func test_no_navegador_agachar_nao_usa_ctrl():
+	# Ctrl+W fecha a aba do navegador: agachar andando não pode depender de Ctrl.
+	var agachar: Array = GameInput.keys_for("crouch", true)
+	assert_does_not_have(agachar, KEY_CTRL)
+	assert_has(agachar, KEY_C)
+	var devagar: Array = GameInput.keys_for("walk_slow", true)
+	assert_does_not_have(devagar, KEY_ALT)
+	assert_gt(devagar.size(), 0, "andar devagar continua tendo uma tecla")
+	assert_has(GameInput.keys_for("crouch", false), KEY_CTRL, "no PC o Ctrl continua valendo")
+	assert_false(GameInput.help_text(true).contains("Ctrl"))
