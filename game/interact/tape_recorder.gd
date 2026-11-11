@@ -7,7 +7,7 @@ var _static: AudioStreamPlayer3D
 
 
 func _ready() -> void:
-	_static = SoundKit.player_3d(self, SoundKit.static_noise(), 12.0, -10.0)
+	_static = SoundKit.player_3d(self, SoundKit.tape_roll(), 9.0, -16.0)
 	var body := MeshInstance3D.new()
 	var box := BoxMesh.new()
 	box.size = Vector3(0.27, 0.1, 0.18)
@@ -42,5 +42,7 @@ func interact(player: Player) -> void:
 		"Íris: Você nunca saiu.",
 		"[A fita continua girando, embora tenha acabado.]",
 	]
+	# a fita para sozinha depois da última fala, em vez de ficar tocando para sempre
+	get_tree().create_timer(lines.size() * 3.1 + 2.0).timeout.connect(_static.stop)
 	for i in lines.size():
 		get_tree().create_timer(i * 3.1).timeout.connect(player.notify.bind(lines[i]))

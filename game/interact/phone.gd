@@ -28,7 +28,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	_ring = SoundKit.player_3d(self, SoundKit.ring(), 30.0, 2.0)
-	_static = SoundKit.player_3d(self, SoundKit.static_noise(), 8.0, -6.0)
+	_static = SoundKit.player_3d(self, SoundKit.static_noise(), 8.0, -14.0)
 
 
 func set_led(led: MeshInstance3D) -> void:

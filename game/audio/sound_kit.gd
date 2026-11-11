@@ -232,6 +232,26 @@ static func sting() -> AudioStreamWAV:
 		return _wav(s))
 
 
+## Fita rodando: motorzinho grave, um leve balanço e o estalo da emenda.
+## Sem chiado: é som de máquina, não de rádio fora do ar.
+static func tape_roll() -> AudioStreamWAV:
+	return _cached("tape_roll", func():
+		var s := PackedFloat32Array()
+		s.resize(RATE * 2)
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 903
+		var soft := 0.0
+		for i in s.size():
+			var t := float(i) / RATE
+			var wow := 1.0 + 0.012 * sin(TAU * 1.5 * t)
+			var motor := sin(TAU * 58.0 * wow * t) * 0.16 + sin(TAU * 116.0 * wow * t) * 0.05
+			soft = lerpf(soft, rng.randf_range(-1.0, 1.0), 0.03) # ruído bem abafado
+			var tick_t := fmod(t, 1.0)
+			var tick := sin(TAU * 900.0 * tick_t) * exp(-tick_t * 140.0) * 0.12
+			s[i] = motor + soft * 0.22 + tick
+		return _wav(s, true))
+
+
 ## Chiado de linha telefônica.
 static func static_noise() -> AudioStreamWAV:
 	return _cached("static", func():
@@ -239,8 +259,11 @@ static func static_noise() -> AudioStreamWAV:
 		s.resize(RATE * 2)
 		var rng := RandomNumberGenerator.new()
 		rng.seed = 304
+		var muffled := 0.0
 		for i in s.size():
-			s[i] = rng.randf_range(-1.0, 1.0) * 0.12 * (0.6 + 0.4 * sin(TAU * 3.0 * float(i) / RATE))
+			# abafado (passa-baixa) e mais baixo: ruído de linha, não chiado agudo
+			muffled = lerpf(muffled, rng.randf_range(-1.0, 1.0), 0.08)
+			s[i] = muffled * 0.2 * (0.6 + 0.4 * sin(TAU * 0.5 * float(i) / RATE))
 		return _wav(s, true))
 
 

@@ -519,7 +519,7 @@ func _tv(pos: Vector3, yaw: float) -> void:
 		antenna.rotation.z = -sx * 0.45
 	_tv_light = LevelKit.lamp(self, pos + Vector3(-0.9, 0.3, 0), Color(0.55, 0.68, 1.0), 0.5, 4.5, false)
 	_tv_light.name = "TvGlow"
-	var hiss := SoundKit.player_3d(tv, SoundKit.static_noise(), 7.0, -24.0)
+	var hiss := SoundKit.player_3d(tv, SoundKit.static_noise(), 5.0, -30.0)
 	hiss.position.y = 0.25
 	hiss.play()
 
