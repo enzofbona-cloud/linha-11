@@ -30,6 +30,7 @@ var _modal: ModalLayer
 var _phone: Phone
 var _keypad: Keypad
 var _was_captured := false
+var _controls_started := false
 var _flicker: OmniLight3D
 var _power_lights: Array[OmniLight3D] = []
 var _light_energy := {}
@@ -85,6 +86,7 @@ func _ready() -> void:
 	player.position = START
 	player.add_to_group("player_target")
 	add_child(player)
+	player.flashlight.visible = true
 	player.noise_made.connect(listener.hear)
 
 	_hud = GameHud.new()
@@ -92,6 +94,8 @@ func _ready() -> void:
 	player.message.connect(_hud.show_message)
 	player.prompt_changed.connect(_hud.set_prompt)
 	player.inventory_changed.connect(_hud.set_inventory)
+	player.pause_requested.connect(_pause_game)
+	player.touch_mode_activated.connect(_on_touch_mode_activated)
 
 	_modal = ModalLayer.new()
 	add_child(_modal)
@@ -115,8 +119,15 @@ func _ready() -> void:
 
 	set_power(false)
 	_hud.set_objective("Restabeleça a energia do andar.")
-	_hud.show_message("Distrito 11 — Edifício Aurora, 3º andar. Sem energia. Use a lanterna [F].", 7.0)
-	_capture_mouse()
+	if player.has_touch_controls():
+		_hud.set_click_hint_text("Joystick: andar  •  deslize à direita: olhar")
+		_hud.set_click_hint(false)
+		_hud.show_message("Use o joystick para andar. A lanterna ja esta ligada; toque em LUZ para alternar.", 7.0)
+	else:
+		_hud.set_click_hint_text("WASD: andar  •  mouse: olhar  •  F: lanterna  •  E: interagir")
+		_hud.set_click_hint(true)
+		_hud.show_message("Distrito 11 - Edificio Aurora, 3o andar. Sem energia. Use F para alternar a lanterna.", 7.0)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
 func _process(delta: float) -> void:
@@ -134,6 +145,9 @@ func _process(delta: float) -> void:
 		_hud.set_objective("Atenda o telefone.")
 
 	if get_tree().paused or _modal.is_open or chapter_ended:
+		return
+	if OS.has_feature("web"):
+		_hud.set_click_hint(not _controls_started and not player.has_touch_controls())
 		return
 	var captured := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
 	if captured:
@@ -156,11 +170,27 @@ func _unhandled_input(event: InputEvent) -> void:
 			_pause_game()
 	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED \
 			and not get_tree().paused and not _modal.is_open and not chapter_ended:
-		_capture_mouse()
+		if OS.has_feature("web"):
+			_controls_started = true
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			_hud.set_click_hint(false)
+		else:
+			_capture_mouse()
 
 
 func _capture_mouse() -> void:
+	if OS.has_feature("web"):
+		_controls_started = true
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		_hud.set_click_hint(false)
+		return
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func _on_touch_mode_activated() -> void:
+	_controls_started = true
+	_hud.set_click_hint_text("Joystick: andar  •  deslize à direita: olhar  •  LUZ: lanterna  •  USAR: interagir")
+	_hud.set_click_hint(false)
+	_hud.show_message("Controles de toque ativados. O botao LUZ alterna a lanterna.", 6.0)
 
 
 func _on_modal_closed() -> void:

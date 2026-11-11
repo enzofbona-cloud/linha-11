@@ -87,3 +87,6 @@ func set_inventory(names: Array) -> void:
 
 func set_click_hint(show: bool) -> void:
 	_click_hint.visible = show
+
+func set_click_hint_text(text: String) -> void:
+	_click_hint.text = text

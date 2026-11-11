@@ -17,6 +17,7 @@ var _floor_mat: StandardMaterial3D
 var _wood_mat: StandardMaterial3D
 var _trim_mat: StandardMaterial3D
 var _was_captured := false
+var _controls_started := false
 
 
 func _ready() -> void:
@@ -38,6 +39,9 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if chapter_ended or _modal.is_open or get_tree().paused:
 		return
+	if OS.has_feature("web"):
+		_hud.set_click_hint(not _controls_started and not player.has_touch_controls())
+		return
 	var captured := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
 	if captured:
 		_was_captured = true
@@ -58,7 +62,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			_pause_game()
 	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED \
 			and not get_tree().paused and not _modal.is_open and not chapter_ended:
-		_capture_mouse()
+		if OS.has_feature("web"):
+			_controls_started = true
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			_hud.set_click_hint(false)
+		else:
+			_capture_mouse()
 
 
 func _build_environment() -> void:
@@ -268,11 +277,14 @@ func _build_player_and_ui() -> void:
 	player.flashlight.light_energy = 3.8
 	player.flashlight.spot_angle = 31.0
 	add_child(player)
+	player.flashlight.visible = true
 	_hud = GameHud.new()
 	add_child(_hud)
 	player.message.connect(_hud.show_message)
 	player.prompt_changed.connect(_hud.set_prompt)
 	player.inventory_changed.connect(_hud.set_inventory)
+	player.pause_requested.connect(_pause_game)
+	player.touch_mode_activated.connect(_on_touch_mode_activated)
 	_modal = ModalLayer.new()
 	add_child(_modal)
 	player.document_requested.connect(_modal.open_document)
@@ -288,7 +300,13 @@ func _build_player_and_ui() -> void:
 	add_child(preload("res://game/ui/debug_hud.tscn").instantiate())
 	_hud.set_objective("Descubra por que o 304 é maior por dentro.")
 	_hud.show_message("A porta fechou atrás de você. O corredor não termina.\nA fita está no aparador.", 8.0)
-	_capture_mouse()
+	if player.has_touch_controls():
+		_hud.set_click_hint_text("Joystick: andar  •  deslize à direita: olhar")
+		_hud.set_click_hint(false)
+	else:
+		_hud.set_click_hint_text("WASD: andar  •  mouse: olhar  •  F: lanterna  •  E: interagir")
+		_hud.set_click_hint(true)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
 func _on_sequence_solved() -> void:
@@ -312,7 +330,18 @@ func _box(node_name: String, center: Vector3, size: Vector3, mat: Material, soli
 
 
 func _capture_mouse() -> void:
+	if OS.has_feature("web"):
+		_controls_started = true
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		_hud.set_click_hint(false)
+		return
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func _on_touch_mode_activated() -> void:
+	_controls_started = true
+	_hud.set_click_hint_text("Joystick: andar  •  deslize à direita: olhar  •  LUZ: lanterna  •  USAR: interagir")
+	_hud.set_click_hint(false)
+	_hud.show_message("Controles de toque ativados. O botao LUZ alterna a lanterna.", 6.0)
 
 
 func _pause_game() -> void:

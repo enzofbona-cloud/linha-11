@@ -205,6 +205,7 @@ func test_capitulo_comeca_sem_energia_e_com_ouvinte_dormindo():
 	add_child_autofree(cena)
 	await wait_physics_frames(5)
 	assert_false(cena.power_on)
+	assert_true(cena.player.flashlight.visible, "lanterna deve iniciar ligada para o corredor ser visivel" )
 	assert_eq(cena.listener.state, Listener.State.DORMANT)
 	assert_true(cena.get_node("Door303").sealed)
 

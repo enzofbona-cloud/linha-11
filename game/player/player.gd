@@ -8,6 +8,8 @@ signal prompt_changed(text: String)
 signal inventory_changed(names: Array)
 signal document_requested(title: String, body: String)
 signal keypad_requested(keypad: Node)
+signal pause_requested
+signal touch_mode_activated
 ## Emitido sempre que o jogador faz barulho (posição e raio em metros).
 signal noise_made(origin: Vector3, radius: float)
 
@@ -36,7 +38,15 @@ var camera: Camera3D
 var flashlight: SpotLight3D
 var inventory: Dictionary = {}
 ## Falso enquanto um painel (documento, teclado) está aberto.
-var controls_enabled := true
+var controls_enabled := true:
+	set(value):
+		controls_enabled = value
+		if not value:
+			_touch_move = Vector2.ZERO
+			_touch_sprinting = false
+			_touch_crouching = false
+		if _touch_controls != null:
+			_touch_controls.gameplay_enabled = value
 
 var _shape: CapsuleShape3D
 var _collider: CollisionShape3D
@@ -47,6 +57,10 @@ var _stride := 0.0
 var _was_on_floor := true
 var _step_audio: AudioStreamPlayer
 var _click_audio: AudioStreamPlayer
+var _touch_controls: TouchControls
+var _touch_move := Vector2.ZERO
+var _touch_sprinting := false
+var _touch_crouching := false
 
 
 ## Velocidade alvo conforme o estado. Agachar e andar devagar vencem correr.
@@ -94,7 +108,7 @@ func _init() -> void:
 	flashlight.spot_angle = 34.0
 	flashlight.spot_attenuation = 1.1
 	flashlight.spot_angle_attenuation = 2.2
-	flashlight.shadow_enabled = true
+	flashlight.shadow_enabled = not OS.has_feature("web")
 	flashlight.visible = false
 	camera.add_child(flashlight)
 
@@ -110,13 +124,54 @@ func _init() -> void:
 func _ready() -> void:
 	_ray.add_exception(self)
 	camera.current = true
+	var touch_layer := CanvasLayer.new()
+	touch_layer.name = "TouchControlsLayer"
+	touch_layer.layer = 8
+	_touch_controls = TouchControls.new()
+	_touch_controls.name = "TouchControls"
+	touch_layer.add_child(_touch_controls)
+	_touch_controls.touch_detected.connect(func(): touch_mode_activated.emit())
+	add_child(touch_layer)
+	_touch_controls.move_changed.connect(_on_touch_move_changed)
+	_touch_controls.look_changed.connect(_on_touch_look_changed)
+	_touch_controls.interact_pressed.connect(_on_touch_interact)
+	_touch_controls.flashlight_pressed.connect(_on_touch_flashlight)
+	_touch_controls.sprint_changed.connect(_on_touch_sprint_changed)
+	_touch_controls.crouch_changed.connect(_on_touch_crouch_changed)
+	_touch_controls.pause_pressed.connect(func(): pause_requested.emit())
+	_touch_controls.gameplay_enabled = controls_enabled
+
+func has_touch_controls() -> bool:
+	return _touch_controls != null and _touch_controls.is_touch_device
+
+func _on_touch_move_changed(value: Vector2) -> void:
+	_touch_move = value
+
+func _on_touch_look_changed(delta: Vector2) -> void:
+	if controls_enabled:
+		_look(-delta.x * MOUSE_SENSITIVITY, -delta.y * MOUSE_SENSITIVITY)
+
+func _on_touch_interact() -> void:
+	if controls_enabled:
+		interact_with_target()
+
+func _on_touch_flashlight() -> void:
+	if controls_enabled:
+		toggle_flashlight()
+
+func _on_touch_sprint_changed(pressed: bool) -> void:
+	_touch_sprinting = pressed
+
+func _on_touch_crouch_changed(pressed: bool) -> void:
+	_touch_crouching = pressed
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not controls_enabled or Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+	if not controls_enabled:
 		return
 	if event is InputEventMouseMotion:
-		_look(-event.relative.x * MOUSE_SENSITIVITY, -event.relative.y * MOUSE_SENSITIVITY)
+		if OS.has_feature("web") or Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			_look(-event.relative.x * MOUSE_SENSITIVITY, -event.relative.y * MOUSE_SENSITIVITY)
 	elif event.is_action_pressed("flashlight"):
 		toggle_flashlight()
 	elif event.is_action_pressed("interact"):
@@ -136,8 +191,10 @@ func _physics_process(delta: float) -> void:
 		if stick.length() > 0.2:
 			_look(-stick.x * STICK_LOOK_SPEED * delta, -stick.y * STICK_LOOK_SPEED * delta)
 		input = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-		crouching = Input.is_action_pressed("crouch")
-		sprinting = Input.is_action_pressed("sprint")
+		if _touch_move.length_squared() > 0.001:
+			input = _touch_move
+		crouching = Input.is_action_pressed("crouch") or _touch_crouching
+		sprinting = Input.is_action_pressed("sprint") or _touch_sprinting
 		slow = Input.is_action_pressed("walk_slow")
 		wants_jump = Input.is_action_just_pressed("jump")
 
