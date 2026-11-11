@@ -4,10 +4,12 @@ local ContextActionService = game:GetService("ContextActionService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local remote = ReplicatedStorage:WaitForChild("Linha11Remote")
+local Campaign = require(ReplicatedStorage.Shared.Campaign)
 
 local COLORS = {
 	panel = Color3.fromRGB(17, 17, 18),
@@ -98,7 +100,7 @@ local overlay = Instance.new("Frame")
 overlay.Name = "FundoMenu"
 overlay.Size = UDim2.fromScale(1, 1)
 overlay.BackgroundColor3 = Color3.fromRGB(8, 8, 9)
-overlay.BackgroundTransparency = 0.1
+overlay.BackgroundTransparency = 0.57
 overlay.BorderSizePixel = 0
 overlay.Parent = gui
 local gradient = Instance.new("UIGradient")
@@ -124,7 +126,63 @@ teaser.TextYAlignment = Enum.TextYAlignment.Top
 
 local startButton = button(menu, "Comecar", UDim2.new(0.075, 0, 0.58, 0), UDim2.new(0.28, 0, 0.075, 0), "INICIAR INVESTIGAÇÃO", true)
 local shopMenuButton = button(menu, "Cosmeticos", UDim2.new(0.075, 0, 0.67, 0), UDim2.new(0.28, 0, 0.065, 0), "COSMÉTICOS OPCIONAIS", false)
-local version = label(menu, "Versao", UDim2.new(0.075, 0, 0.86, 0), UDim2.new(0.34, 0, 0.035, 0), "PROTÓTIPO ROBLOX  •  0.1.0", Enum.Font.Gotham, 12, COLORS.muted)
+local chaptersButton = button(menu, "Capitulos", UDim2.new(0.075, 0, 0.75, 0), UDim2.new(0.28, 0, 0.065, 0), "CAPÍTULOS", false)
+local version = label(menu, "Versao", UDim2.new(0.075, 0, 0.92, 0), UDim2.new(0.34, 0, 0.035, 0), "PROTÓTIPO ROBLOX  •  0.1.0", Enum.Font.Gotham, 12, COLORS.muted)
+
+local chapterPanel = panel("SelecaoCapitulos", UDim2.new(0.72, 0, 0.78, 0), UDim2.new(0.14, 0, 0.11, 0))
+chapterPanel.BackgroundTransparency = 0.02
+local chapterHeader = label(chapterPanel, "Cabecalho", UDim2.new(0.055, 0, 0.035, 0), UDim2.new(0.72, 0, 0.09, 0), "CAMPANHA  •  12 CAPÍTULOS", Enum.Font.Garamond, 29, COLORS.text)
+chapterHeader.TextXAlignment = Enum.TextXAlignment.Left
+label(chapterPanel, "Duracao", UDim2.new(0.06, 0, 0.125, 0), UDim2.new(0.85, 0, 0.055, 0), "Meta de duração: pelo menos 165 min • tempos ainda não validados em sessões", Enum.Font.Gotham, 13, COLORS.muted)
+local chapterClose = button(chapterPanel, "Fechar", UDim2.new(0.82, 0, 0.04, 0), UDim2.new(0.12, 0, 0.075, 0), "VOLTAR", false)
+local chapterList = Instance.new("ScrollingFrame")
+chapterList.Name = "Lista"
+chapterList.Position = UDim2.new(0.055, 0, 0.22, 0)
+chapterList.Size = UDim2.new(0.89, 0, 0.64, 0)
+chapterList.BackgroundColor3 = COLORS.panel2
+chapterList.BackgroundTransparency = 0.18
+chapterList.BorderSizePixel = 0
+chapterList.ScrollBarThickness = 6
+chapterList.AutomaticCanvasSize = Enum.AutomaticSize.Y
+chapterList.CanvasSize = UDim2.new(0, 0, 0, 0)
+chapterList.Parent = chapterPanel
+corner(chapterList, 5)
+local chapterLayout = Instance.new("UIListLayout")
+chapterLayout.Padding = UDim.new(0, 7)
+chapterLayout.SortOrder = Enum.SortOrder.LayoutOrder
+chapterLayout.Parent = chapterList
+local chapterPadding = Instance.new("UIPadding")
+chapterPadding.PaddingTop = UDim.new(0, 9)
+chapterPadding.PaddingBottom = UDim.new(0, 9)
+chapterPadding.PaddingLeft = UDim.new(0, 9)
+chapterPadding.PaddingRight = UDim.new(0, 9)
+chapterPadding.Parent = chapterList
+for _, chapter in ipairs(Campaign.Chapters) do
+	local status = chapter.playable and "DISPONÍVEL" or "EM DESENVOLVIMENTO"
+	local row = button(
+		chapterList,
+		"Capitulo" .. tostring(chapter.id),
+		UDim2.new(),
+		UDim2.new(1, -18, 0, 48),
+		string.format("%02d  •  %s   |   %d–%d min   |   %s", chapter.id, chapter.title, chapter.minMinutes, chapter.maxMinutes, status),
+		chapter.playable
+	)
+	row.LayoutOrder = chapter.id
+	row.TextXAlignment = Enum.TextXAlignment.Left
+	if not chapter.playable then
+		row.Active = false
+		row.AutoButtonColor = false
+		row.TextColor3 = COLORS.muted
+		row.BackgroundTransparency = 0.3
+	end
+	if chapter.playable then
+		row.Activated:Connect(function()
+			chapterPanel.Visible = false
+			remote:FireServer("Start")
+		end)
+	end
+end
+label(chapterPanel, "Aviso", UDim2.new(0.06, 0, 0.89, 0), UDim2.new(0.88, 0, 0.06, 0), "Somente o capítulo 1 está jogável nesta versão privada de desenvolvimento.", Enum.Font.Gotham, 13, COLORS.gold)
 
 local controls = Instance.new("Frame")
 controls.Name = "Controles"
@@ -169,8 +227,8 @@ shopHudButton.Visible = false
 local toast = Instance.new("TextLabel")
 toast.Name = "Aviso"
 toast.AnchorPoint = Vector2.new(0.5, 0)
-toast.Position = UDim2.new(0.5, 0, 0.08, 0)
-toast.Size = UDim2.new(0.62, 0, 0.07, 0)
+toast.Position = UDim2.new(0.5, 0, 0.21, 0)
+toast.Size = UDim2.new(0.52, 0, 0.06, 0)
 toast.BackgroundColor3 = COLORS.panel
 toast.BackgroundTransparency = 0.08
 toast.BorderSizePixel = 0
@@ -214,6 +272,7 @@ local function formatCode(value)
 	return string.sub(spaced, 1, #spaced - 1)
 end
 local flashlightOn = true
+local flashlightHolder
 local modalActive = false
 local playing = false
 local menuActive = true
@@ -222,14 +281,25 @@ local introIndex = 0
 local readySent = false
 local finalShown = false
 local toastToken = 0
-local menuCameraCFrame = CFrame.lookAt(Vector3.new(18.6, 6.5, 21.0), Vector3.new(12, 3.7, 7.5))
+local menuCameraCFrame = CFrame.lookAt(Vector3.new(-48.5, 5.8, 2.2), Vector3.new(-2, 5.0, 2.2))
 local menuLightPart
+local menuLightingOriginal
 
 local function showMenuCamera()
 	local camera = workspace.CurrentCamera
 	if not camera then
 		return
 	end
+	if not menuLightingOriginal then
+		menuLightingOriginal = {
+			Ambient = Lighting.Ambient,
+			OutdoorAmbient = Lighting.OutdoorAmbient,
+			Brightness = Lighting.Brightness,
+		}
+	end
+	Lighting.Ambient = Color3.fromRGB(53, 48, 42)
+	Lighting.OutdoorAmbient = Color3.fromRGB(32, 29, 25)
+	Lighting.Brightness = 1.4
 	camera.CameraType = Enum.CameraType.Scriptable
 	camera.CFrame = menuCameraCFrame
 	if not menuLightPart then
@@ -241,15 +311,18 @@ local function showMenuCamera()
 		menuLightPart.CanCollide = false
 		menuLightPart.CanTouch = false
 		menuLightPart.CanQuery = false
-		local light = Instance.new("PointLight")
+		local attachment = Instance.new("Attachment")
+		attachment.Parent = menuLightPart
+		local light = Instance.new("SpotLight")
 		light.Color = Color3.fromRGB(255, 205, 151)
-		light.Brightness = 1.1
+		light.Angle = 72
+		light.Brightness = 5
 		light.Range = 48
 		light.Shadows = false
-		light.Parent = menuLightPart
+		light.Parent = attachment
 	end
 	menuLightPart.CFrame = menuCameraCFrame
-	menuLightPart.Parent = camera
+	menuLightPart.Parent = workspace
 end
 
 local function restoreGameplayCamera()
@@ -259,6 +332,12 @@ local function restoreGameplayCamera()
 	end
 	if menuLightPart then
 		menuLightPart.Parent = nil
+	end
+	if menuLightingOriginal then
+		Lighting.Ambient = menuLightingOriginal.Ambient
+		Lighting.OutdoorAmbient = menuLightingOriginal.OutdoorAmbient
+		Lighting.Brightness = menuLightingOriginal.Brightness
+		menuLightingOriginal = nil
 	end
 	camera.CameraType = Enum.CameraType.Custom
 	local character = player.Character
@@ -326,13 +405,8 @@ local function showDocument(data)
 end
 
 local function ensureFlashlight()
-	local camera = workspace.CurrentCamera
-	if not camera then
-		return nil
-	end
-	local holder = camera:FindFirstChild("Linha11Flashlight")
-	if not holder then
-		holder = Instance.new("Part")
+	if not flashlightHolder or not flashlightHolder.Parent then
+		local holder = Instance.new("Part")
 		holder.Name = "Linha11Flashlight"
 		holder.Size = Vector3.new(0.1, 0.1, 0.1)
 		holder.Transparency = 1
@@ -340,17 +414,19 @@ local function ensureFlashlight()
 		holder.CanCollide = false
 		holder.CanTouch = false
 		holder.CanQuery = false
-		holder.Parent = camera
 		local attachment = Instance.new("Attachment")
 		attachment.Parent = holder
 		local light = Instance.new("SpotLight")
 		light.Name = "Facho"
-		light.Angle = 57
-		light.Range = 36
-		light.Brightness = 2.7
+		light.Angle = 70
+		light.Range = 44
+		light.Brightness = 4.8
 		light.Shadows = false
 		light.Parent = attachment
+		holder.Parent = workspace
+		flashlightHolder = holder
 	end
+	local holder = flashlightHolder
 	local attachment = holder:FindFirstChildWhichIsA("Attachment")
 	local light = attachment and attachment:FindFirstChild("Facho")
 	if light then
@@ -366,9 +442,9 @@ local function completeIntro()
 	end
 	readySent = true
 	intro.Visible = false
-	playing = true
 	menuActive = false
 	restoreGameplayCamera()
+	playing = true
 	flashlightOn = true
 	ensureFlashlight()
 	hud.Visible = true
@@ -544,8 +620,7 @@ end
 
 remote.OnClientEvent:Connect(function(eventName, data)
 	if eventName == "StartGame" then
-		menuActive = false
-		restoreGameplayCamera()
+		chapterPanel.Visible = false
 		overlay.Visible = false
 		menu.Visible = false
 		playing = false
@@ -579,6 +654,18 @@ remote.OnClientEvent:Connect(function(eventName, data)
 	elseif eventName == "Caught" then
 		showToast(data.text or "O Ouvinte encontrou você.", "error")
 	end
+end)
+
+chaptersButton.Activated:Connect(function()
+	menu.Visible = false
+	chapterPanel.Visible = true
+	setCapture(false)
+end)
+
+chapterClose.Activated:Connect(function()
+	chapterPanel.Visible = false
+	menu.Visible = true
+	setCapture(false)
 end)
 
 local shopFunction = function()
@@ -632,11 +719,13 @@ RunService:BindToRenderStep("Linha11CameraLight", Enum.RenderPriority.Camera.Val
 	if not camera then
 		return
 	end
-	local holder = camera:FindFirstChild("Linha11Flashlight")
-	if playing and not holder then
-		ensureFlashlight()
-		holder = camera:FindFirstChild("Linha11Flashlight")
+	if menuActive and menuLightPart then
+		menuLightPart.CFrame = camera.CFrame
 	end
+	if playing and (not flashlightHolder or not flashlightHolder.Parent) then
+		ensureFlashlight()
+	end
+	local holder = flashlightHolder
 	if holder then
 		holder.CFrame = camera.CFrame
 		local attachment = holder:FindFirstChildWhichIsA("Attachment")

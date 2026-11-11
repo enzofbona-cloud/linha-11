@@ -100,6 +100,13 @@ function ListenerAI.new(parent, playerProvider, onCatch)
 	end
 
 	self.AnimatedParts = animated
+	self.OriginalTransparency = {}
+	for _, part in ipairs(model:GetDescendants()) do
+		if part:IsA("BasePart") then
+			self.OriginalTransparency[part] = part.Transparency
+			part.Transparency = 1
+		end
+	end
 	self.Model:PivotTo(CFrame.new(self.Position))
 	self.Connection = RunService.Heartbeat:Connect(function(dt)
 		self:Step(dt)
@@ -114,6 +121,12 @@ function ListenerAI:Wake()
 	self.Awake = true
 	self.LastNoiseAt = os.clock()
 	self.LastNoiseX = self.Position.X
+	for part, transparency in pairs(self.OriginalTransparency) do
+		if part.Parent then
+			part.Transparency = transparency
+		end
+	end
+	table.clear(self.OriginalTransparency)
 	self.Model:SetAttribute("Awake", true)
 end
 

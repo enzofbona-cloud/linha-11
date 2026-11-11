@@ -5,7 +5,7 @@ Story.Version = "Roblox Prototype 0.1.0"
 Story.Code = "0317"
 
 Story.Prologue = {
-	"ORDEM DE SERVIÇO • 02:41",
+	"Às 02:41, uma chamada interrompe o plantão municipal.",
 	"Dois técnicos municipais são enviados ao Edifício Aurora, no Distrito 11.",
 	"O prédio será demolido ao amanhecer. A central ainda recebe chamadas de um circuito que deveria estar morto há dezessete anos.",
 	"Restaure o repetidor do terceiro andar, recupere a fita física do arquivo e desligue o circuito antes das 03:17.",

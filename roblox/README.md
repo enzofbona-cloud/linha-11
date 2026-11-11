@@ -2,6 +2,8 @@
 
 Esta é a reconstrução ativa do jogo como experiência cooperativa do Roblox. A versão Godot permanece no histórico e nos arquivos antigos do repositório; ela não é a experiência atual.
 
+O plano da campanha Roblox, com 12 capítulos e metas de duração, está em [docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md](../docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md). Por enquanto, somente o capítulo 1 é jogável; a duração total ainda não foi validada em sessões.
+
 ## Abrir e jogar no Roblox Studio
 
 1. Instale o Roblox Studio e abra roblox/LINHA11_Roblox.rbxlx.

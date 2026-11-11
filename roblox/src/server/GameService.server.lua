@@ -132,7 +132,8 @@ local function teleportToStart(player)
 	if not character then
 		return
 	end
-	character:PivotTo(CFrame.new(spawnPoint.Position + Vector3.new(0, 3.4, 0)))
+	local playerPosition = spawnPoint.Position + Vector3.new(0, 3.4, 0)
+	character:PivotTo(CFrame.lookAt(playerPosition, playerPosition + Vector3.xAxis))
 	local root = character:FindFirstChild("HumanoidRootPart")
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 	if root then

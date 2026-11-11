@@ -22,6 +22,7 @@ local prompts = {}
 local doors = {}
 local lights = {}
 local roomPositions = {}
+local levers = {}
 
 local function makePart(parent, name, size, cf, color, material, transparency, canCollide, shape)
 	local item = Instance.new("Part")
@@ -383,11 +384,12 @@ local function buildWorld()
 	doors = {}
 	lights = {}
 	roomPositions = {}
+	levers = {}
 
 	Lighting.ClockTime = 0.15
-	Lighting.Brightness = 0.55
-	Lighting.Ambient = Color3.fromRGB(21, 23, 26)
-	Lighting.OutdoorAmbient = Color3.fromRGB(10, 12, 16)
+	Lighting.Brightness = 0.8
+	Lighting.Ambient = Color3.fromRGB(29, 30, 32)
+	Lighting.OutdoorAmbient = Color3.fromRGB(16, 17, 19)
 	Lighting.FogColor = Color3.fromRGB(24, 26, 29)
 	Lighting.FogStart = 24
 	Lighting.FogEnd = 135
@@ -475,7 +477,7 @@ local function buildWorld()
 	local spawn = Instance.new("SpawnLocation")
 	spawn.Name = "InicioDoTurno"
 	spawn.Size = Vector3.new(5, 0.6, 5)
-	spawn.CFrame = CFrame.new(-53, 0.1, 0)
+	spawn.CFrame = CFrame.lookAt(Vector3.new(-53, 0.1, 0), Vector3.new(-48, 0.1, 0))
 	spawn.Anchored = true
 	spawn.Transparency = 1
 	spawn.CanCollide = false
