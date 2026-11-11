@@ -1,120 +1,49 @@
 # LINHA 11 — A Última Chamada
 
-Jogo cooperativo de terror em primeira pessoa para dois jogadores, em desenvolvimento.
-Versão comercial planejada para PC/Steam; versão Web usada para testes rápidos.
+## Direção atual: Roblox
 
-**Estado atual: protótipos jogáveis dos Capítulos 1 e 2, em andamento.** O menu principal usa arte original, permite iniciar os dois capítulos, ajustar o volume e sair; “Continuar” fica desativado até existir salvamento. O Capítulo 1 inclui exploração, lanterna, documentos, fusível, senha em fragmentos, furtividade e o Ouvinte. O Capítulo 2, no Apartamento 304, usa arte original para o papel de parede e a fotografia, gravação legendada de uma discussão futura e puzzle de três telefones. Ainda não há cooperação online, combate, crafting, saúde, salvamento ou configurações gráficas completas. A história está em `docs/historia.md`.
+O jogo está sendo reconstruído como uma experiência cooperativa no Roblox. A missão atual, a história e a configuração do lugar ficam em roblox/. O projeto Godot anterior continua preservado no histórico e nos diretórios antigos; ele não é mais a versão ativa.
 
-## Ambientes implementados
+### Abrir para testar
 
-- Capítulo 1: corredor, Apartamentos 301, 302, 303, 305, zeladoria e acesso ao 304, com móveis agrupados por cômodo, objetos pessoais e mapas PBR envelhecidos. A energia, a gaveta trancada, os três fragmentos da senha e a barricada formam a progressão; o Ouvinte só aparece ao sair do 303.
-- Capítulo 2: salas de estar, jantar e quarto do Apartamento 304, com móveis de madeira e tecido, objetos de época, tapetes e iluminação quente de baixo custo.
-- O Ouvinte usa o modelo 3D GLB enviado pelo usuário. O arquivo tem uma malha rígida, sem esqueleto; o movimento de corpo inteiro acompanha a passada, e a face recebe um pequeno borrão escuro. Não há animação articulada por ossos.
-- Os outros quatro capítulos da campanha ainda não têm cenários jogáveis construídos.
+Arquivo de lugar para Roblox Studio: roblox/LINHA11_Roblox.rbxlx.
 
-## Endereço de testes
+No Studio, abra esse arquivo e pressione **Play**. Para testar cooperação, use **Test → 2 Players → Start**. O lugar cria o mapa quando a sessão começa. Depois de publicado no Roblox, convide um amigo pela própria plataforma.
 
-- Página de testes: https://enzofbona-cloud.github.io/linha-11-web/
-- Experimental (branch `development`): https://enzofbona-cloud.github.io/linha-11-web/dev/
-- Estável (branch `main`): ainda não publicado.
+O Roblox Studio não está instalado neste ambiente, então o arquivo foi gerado pelo Rojo e os scripts foram compilados com Luau; a execução dentro do Studio ainda precisa ser confirmada. Esta experiência não pode ser testada no navegador por GitHub Pages, e ainda não foi publicada na conta Roblox. Não há link público de jogo para fornecer neste momento.
 
-## Tecnologia
+### História
 
-| Item | Escolha |
-|---|---|
-| Motor | Godot 4.7.2 (versão fixada em `.godot-version`) |
-| Linguagem | GDScript |
-| Renderizador | Forward+ no PC, Compatibility (WebGL2) no navegador |
-| Testes do jogo | GUT 9.7.1 (`addons/gut`) |
-| Testes das ferramentas | Node (`node --test`) |
-| CI e publicação | GitHub Actions + GitHub Pages |
+Dois técnicos são enviados ao Edifício Aurora antes da demolição para recuperar a fita do circuito ECO. Dezessete anos antes, às 03:17, onze chamadas de emergência ficaram sobrepostas durante uma queda de energia. A cidade registrou uma evacuação sem assinaturas; os registros físicos foram escondidos. O Ouvinte repete trechos dessas chamadas, segue ruídos e pode ser evitado em salas e armários.
 
-## Como abrir o projeto
+A missão tem começo, descoberta, cooperação nas alavancas e dois finais. O roteiro canônico está em roblox/docs/historia-e-missao.md.
 
-1. Instale o Godot 4.7.2: `winget install --id GodotEngine.GodotEngine --version 4.7.2 --exact`
-2. Abra o Godot, clique em **Importar** e escolha o arquivo `project.godot` desta pasta.
-3. Aperte F5 para rodar.
+### Controles
 
-## Como rodar os testes
+- WASD e mouse: mover e olhar.
+- E: interagir, abrir portas, ler e esconder-se.
+- F: lanterna, que começa ligada.
+- Shift: correr; correr atrai o Ouvinte.
+- Celular e controle: controles padrão do Roblox, prompts e botões na tela.
 
-```bash
-GODOT="/caminho/para/Godot_v4.7.2-stable_win64_console.exe" tools/test.sh
-```
+### Monetização
 
-## Como testar a versão Web no próprio computador
+A entrada e toda a história são gratuitas. A loja prepara dois passes cosméticos opcionais: uma cor âmbar para a lanterna e um distintivo visual. Eles não dão vantagem de jogo. Os IDs estão zerados e a compra fica desativada até a experiência e os passes serem publicados no Creator Hub; o prompt do Roblox exibirá o preço oficial depois disso. Não há loot boxes, checkout externo ou cobrança para avançar na história.
 
-Requer os templates de export do Godot 4.7.2 instalados (no editor: Editor →
-Gerenciar modelos de exportação).
+O Creator Hub permite cobrar acesso único em Robux, mas isso fecharia o jogo para quem não puder ou não quiser pagar. Para uma experiência que pode ser jogada por menores, mantive a entrada gratuita e os cosméticos opcionais. A hospedagem do multiplayer não tem mensalidade separada. Para liberar a experiência pública a todas as idades, o Roblox exige idade verificada, 2FA e, atualmente, dois meses de Roblox Plus/Premium ou uma taxa única reembolsável de 1.000 Robux, além da avaliação. O Roblox oferece controles parentais de gastos.
 
-```bash
-GODOT="/caminho/para/godot" tools/build-site.sh dev
-node tools/serve.mjs build/site 4173
-```
+### Gerar o arquivo do Studio
 
-Depois abra `http://localhost:4173`.
+Com Rojo 7.7.1 e Luau 0.746 em build/rojo/rojo.exe e build/luau/luau-compile.exe, execute:
 
-## Como a publicação funciona
+    .\roblox\tools\build-place.ps1
 
-Há dois repositórios:
+Isso compila os arquivos Luau e gera o .rbxlx. O workflow **Roblox place** faz a mesma validação a cada alteração em roblox/ na branch development e guarda o lugar como artefato do GitHub Actions. Esse workflow não publica automaticamente uma experiência Roblox na conta.
 
-- `linha-11` (privado): código, cenas, assets e documentação.
-- `linha-11-web` (público): somente os arquivos compilados, servidos pelo GitHub Pages.
+### O que já existe e o que falta
 
-| Branch | Workflow | Publica em |
-|---|---|---|
-| `development` | `web-dev.yml` | `/dev/` (experimental) |
-| `main` | `web-stable.yml` | `/stable/` (estável) |
-| `ci-ensaio/**` | `web-dev.yml` | nada (só testa e compila) |
+Existe um andar completo em blocos Roblox nativos, com apartamentos 301, 302, 303, 304, 305, zeladoria e repetidor; portas, documentos, senha 0317, fusível, energia, esconderijos, perseguição por ruído, alavancas cooperativas, menu, lanterna, dois finais e loja cosmética.
 
-Cada workflow roda os testes, exporta a versão Web, verifica o build e só então
-publica. Se qualquer passo falhar, a versão que já está no ar não é alterada.
+Ainda faltam o teste de execução no Studio, publicação na conta Roblox, salvamento entre servidores, áudio enviado ao Roblox, malhas e animações finais e capítulos adicionais. O Ouvinte atual é uma silhueta 3D procedural; o arquivo GLB enviado ainda não foi convertido/importado para o Studio.
 
-A publicação usa uma chave de deploy guardada no segredo `WEB_DEPLOY_KEY` do
-repositório privado. Nenhuma credencial fica no código.
-
-## Tamanho do build Web (medido em 2026-11-11)
-
-| Arquivo | Tamanho |
-|---|---|
-| `index.wasm` (motor) | 37,7 MB |
-| `index.pck` (conteúdo do jogo, móveis, mapas PBR e fundo do menu) | 89,7 MB |
-| Total | 127,7 MB |
-
-Limites do GitHub Pages: 100 MB por arquivo e 1 GB por site. O script
-`tools/verify-web-build.mjs` barra builds que passem disso.
-
-## Estrutura
-
-```
-assets/textures/     texturas PBR (CC0, ver LICENCAS.md)
-assets/models/       móveis Poly Haven CC0 e objetos originais do jogo
-assets/models/characters/ Ouvinte 3D
-assets/ui/           fundo original do menu
-game/core/           autoloads (BuildInfo, GameInput)
-game/player/         jogador em primeira pessoa
-game/interact/       portas, itens, telefone
-game/world/          peças para montar cenários
-game/scenes/         cenas (boot, protótipo, capítulo 2)
-game/ui/             menus e HUD
-tests/               testes GUT
-tools/               scripts de build, verificação e teste
-web/landing/         página de testes
-.github/             workflows e action de build
-docs/superpowers/    especificações e planos de cada fase
-```
-
-## Metas de desempenho (ainda não medidas)
-
-| | Mínimo | Recomendado |
-|---|---|---|
-| Alvo | 30 FPS, Muito Baixa, 720p | 60 FPS, Média, 1080p |
-| Vídeo | Integrado (Intel HD 620) | GTX 1050 Ti |
-| Memória | 8 GB | 16 GB |
-
-Tamanho instalado: meta de 5 a 10 GB, teto de 20 GB.
-
-## Dependências externas e custos
-
-- GitHub (conta gratuita): repositórios, Actions (2.000 min/mês em repositório privado) e Pages.
-- Git LFS: cota gratuita limitada; a reavaliar quando entrarem assets pesados.
-- Godot e GUT: gratuitos, licença MIT.
+O endereço antigo de GitHub Pages ainda corresponde à build Godot legada e não é um endereço para jogar esta versão Roblox.

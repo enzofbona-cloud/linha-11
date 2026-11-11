@@ -1,0 +1,2349 @@
+<roblox version="4">
+  <Item class="ReplicatedStorage" referent="0">
+    <Properties>
+      <string name="Name">ReplicatedStorage</string>
+    </Properties>
+    <Item class="Folder" referent="1">
+      <Properties>
+        <string name="Name">Shared</string>
+      </Properties>
+      <Item class="ModuleScript" referent="2">
+        <Properties>
+          <string name="Name">MonetizationConfig</string>
+          <string name="Source"><![CDATA[local MonetizationConfig = {}
+
+-- Crie estes passes no Creator Hub depois de publicar a experiência.
+-- Substitua 0 pelos IDs reais. IDs zerados mantêm a compra desativada no protótipo.
+MonetizationConfig.Passes = {
+	AmberLight = {
+		id = 0,
+		name = "Lanterna âmbar",
+		description = "Uma cor alternativa para a lanterna. Não aumenta o alcance nem a força.",
+		kind = "cosmetic",
+	},
+	AuroraBadge = {
+		id = 0,
+		name = "Distintivo Aurora",
+		description = "Um distintivo visual de apoiador sobre o personagem.",
+		kind = "cosmetic",
+	},
+}
+
+return MonetizationConfig
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="3">
+        <Properties>
+          <string name="Name">Story</string>
+          <string name="Source"><![CDATA[local Story = {}
+
+Story.Title = "LINHA 11 — A ÚLTIMA CHAMADA"
+Story.Version = "Roblox Prototype 0.1.0"
+Story.Code = "0317"
+
+Story.Prologue = {
+	"ORDEM DE SERVIÇO • 02:41",
+	"Dois técnicos municipais são enviados ao Edifício Aurora, no Distrito 11.",
+	"O prédio será demolido ao amanhecer. A central ainda recebe chamadas de um circuito que deveria estar morto há dezessete anos.",
+	"Restaure o repetidor do terceiro andar, recupere a fita física do arquivo e desligue o circuito antes das 03:17.",
+	"Não atendam chamadas que usem os nomes de vocês.",
+}
+
+Story.Clues = {
+	Clue03 = {
+		title = "REGISTRO DE MANUTENÇÃO",
+		text = "03 — Às 03:17, o repetidor ECO voltou a transmitir mesmo sem alimentação. A equipe de evacuação registrou onze chamadas abertas.",
+	},
+	Clue1 = {
+		title = "RECIBO DE EVACUAÇÃO",
+		text = "1 — Um único rolo de fita foi retirado do arquivo na noite do fechamento. O livro de saída não informa quem o levou.",
+	},
+	Clue7 = {
+		title = "ANOTAÇÃO DO ZELADOR",
+		text = "7 — A linha do apartamento 304 continuou tocando depois que o quadro geral foi desligado. Ninguém admite ter atendido.",
+	},
+	Tape = {
+		title = "FITA 11 • TRANSCRIÇÃO PARCIAL",
+		text = "A gravação não prevê o futuro. Ela repete chamadas gravadas no circuito enquanto alguém continua respondendo do outro lado. No fim, uma voz pede que o técnico corte a linha.",
+	},
+	Phone = {
+		title = "CHAMADA RECEBIDA",
+		text = "A voz do outro lado repete a ordem de serviço, palavra por palavra. Então diz: “Vocês chegaram juntos. Não saiam separados.”",
+	},
+	Photo304 = {
+		title = "FOTOGRAFIA DO PRÉDIO",
+		text = "Uma turma posa diante do Edifício Aurora. Onze rostos foram riscados com tinta escura; no verso, alguém escreveu: “A lista de evacuação está incompleta.”",
+	},
+	LogPlantao = {
+		title = "LIVRO DO PLANTÃO",
+		text = "A ordem de serviço veio da prefeitura, mas o circuito 11 não aparece na planta do prédio. A anotação mais recente termina às 03:17.",
+	},
+}
+
+Story.Objectives = {
+	[0] = "Leia a ordem de serviço e entre no terceiro andar.",
+	[1] = "Encontre a chave do armário de manutenção no apartamento 305.",
+	[2] = "Use a chave para abrir a gaveta de fusíveis no apartamento 301.",
+	[3] = "Recolha os três fragmentos da senha nos apartamentos 301, 302 e 305.",
+	[4] = "Instale o fusível no quadro do corredor.",
+	[5] = "Digite 0317 no teclado do arquivo 303.",
+	[6] = "Recupere a fita e verifique o telefone do apartamento 304.",
+	[7] = "Encontre o pé de cabra no 304 e abra a sala do repetidor.",
+	[8] = "Ative as duas alavancas do repetidor. Fiquem juntos e em silêncio.",
+	[9] = "Decidam o destino da última gravação.",
+	[10] = "Turno encerrado.",
+}
+
+Story.Endings = {
+	Transmit = {
+		title = "A LINHA FICA ABERTA",
+		text = "A fita é enviada à central. As onze chamadas chegam ao público, junto com o relatório que a prefeitura enterrou. O repetidor responde com uma décima segunda chamada — agora de dentro da viatura.",
+	},
+	Cut = {
+		title = "SILÊNCIO NO DISTRITO 11",
+		text = "O repetidor é cortado. O prédio fica em silêncio e os dois técnicos deixam o Aurora com a fita. A cidade ainda não conhece a verdade, mas, pela primeira vez em dezessete anos, ninguém atende do outro lado.",
+	},
+}
+
+function Story.GetObjective(stage: number): string
+	return Story.Objectives[stage] or Story.Objectives[10]
+end
+
+return Story
+
+]]></string>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="ServerScriptService" referent="4">
+    <Properties>
+      <string name="Name">ServerScriptService</string>
+    </Properties>
+    <Item class="Folder" referent="5">
+      <Properties>
+        <string name="Name">Server</string>
+      </Properties>
+      <Item class="Script" referent="6">
+        <Properties>
+          <string name="Name">GameService</string>
+          <token name="RunContext">0</token>
+          <string name="Source"><![CDATA[local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local MarketplaceService = game:GetService("MarketplaceService")
+local RunService = game:GetService("RunService")
+
+local Story = require(ReplicatedStorage.Shared.Story)
+local MonetizationConfig = require(ReplicatedStorage.Shared.MonetizationConfig)
+local MapBuilder = require(script.Parent.MapBuilder)
+local ListenerAI = require(script.Parent.ListenerAI)
+
+local remote = ReplicatedStorage:FindFirstChild("Linha11Remote")
+if not remote then
+	remote = Instance.new("RemoteEvent")
+	remote.Name = "Linha11Remote"
+	remote.Parent = ReplicatedStorage
+end
+
+local world, spawnPoint = MapBuilder.Build()
+MapBuilder.SetPower(false)
+
+local mission = {
+	started = false,
+	key = false,
+	fuse = false,
+	power = false,
+	clues = { Clue03 = false, Clue1 = false, Clue7 = false },
+	archiveOpen = false,
+	tape = false,
+	phone = false,
+	crowbar = false,
+	relayOpen = false,
+	relay = { A = nil, B = nil },
+	ending = nil,
+	stage = 0,
+}
+local remoteCooldowns = {}
+local noiseCooldowns = {}
+local purchaseCooldowns = {}
+
+local function startedPlayers()
+	local result = {}
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player:GetAttribute("Linha11Started") then
+			table.insert(result, player)
+		end
+	end
+	return result
+end
+
+local function makeSnapshot()
+	return {
+		stage = mission.stage,
+		objective = Story.GetObjective(mission.stage),
+		power = mission.power,
+		key = mission.key,
+		fuse = mission.fuse,
+		clues = {
+			Clue03 = mission.clues.Clue03,
+			Clue1 = mission.clues.Clue1,
+			Clue7 = mission.clues.Clue7,
+		},
+		archiveOpen = mission.archiveOpen,
+		tape = mission.tape,
+		phone = mission.phone,
+		crowbar = mission.crowbar,
+		relayOpen = mission.relayOpen,
+		relayA = mission.relay.A ~= nil,
+		relayB = mission.relay.B ~= nil,
+		ending = mission.ending,
+	}
+end
+
+local function send(player, eventName, payload)
+	if player and player.Parent == Players then
+		remote:FireClient(player, eventName, payload)
+	end
+end
+
+local function broadcast(eventName, payload)
+	for _, player in ipairs(startedPlayers()) do
+		remote:FireClient(player, eventName, payload)
+	end
+end
+
+local function tell(player, text, kind)
+	send(player, "Message", { text = text, kind = kind or "story" })
+end
+
+local function tellAll(text, kind)
+	broadcast("Message", { text = text, kind = kind or "story" })
+end
+
+local function updateStage()
+	if not mission.started then
+		mission.stage = 0
+	elseif not mission.key then
+		mission.stage = 1
+	elseif not mission.fuse then
+		mission.stage = 2
+	elseif not (mission.clues.Clue03 and mission.clues.Clue1 and mission.clues.Clue7) then
+		mission.stage = 3
+	elseif not mission.power then
+		mission.stage = 4
+	elseif not mission.archiveOpen then
+		mission.stage = 5
+	elseif not mission.tape or not mission.phone then
+		mission.stage = 6
+	elseif not mission.crowbar or not mission.relayOpen then
+		mission.stage = 7
+	elseif not (mission.relay.A and mission.relay.B) then
+		mission.stage = 8
+	elseif not mission.ending then
+		mission.stage = 9
+	else
+		mission.stage = 10
+	end
+end
+
+local function publishState()
+	updateStage()
+	broadcast("MissionState", makeSnapshot())
+end
+
+local function playerNear(player, position, maxDistance)
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	return root and (root.Position - position).Magnitude <= maxDistance
+end
+
+local function teleportToStart(player)
+	local character = player.Character
+	if not character then
+		return
+	end
+	character:PivotTo(CFrame.new(spawnPoint.Position + Vector3.new(0, 3.4, 0)))
+	local root = character:FindFirstChild("HumanoidRootPart")
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if root then
+		root.Anchored = false
+	end
+	if humanoid then
+		humanoid.WalkSpeed = 16
+		humanoid.JumpPower = 42
+		humanoid.Health = math.max(humanoid.Health, humanoid.MaxHealth * 0.45)
+	end
+end
+
+local function startPlayer(player)
+	mission.started = true
+	player:SetAttribute("Linha11Started", true)
+	player:SetAttribute("Linha11Hidden", false)
+	player:SetAttribute("Linha11IntroPending", true)
+	updateStage()
+	local character = player.Character
+	if character then
+		teleportToStart(player)
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.WalkSpeed = 0
+			humanoid.JumpPower = 0
+		end
+	end
+	send(player, "StartGame", {
+		prologue = Story.Prologue,
+		state = makeSnapshot(),
+	})
+	broadcast("MissionState", makeSnapshot())
+end
+
+local function setCharacterVisibility(character, hidden)
+	for _, item in ipairs(character:GetDescendants()) do
+		if item:IsA("BasePart") and item.Name ~= "HumanoidRootPart" then
+			if hidden then
+				item:SetAttribute("Linha11OriginalTransparency", item.Transparency)
+				item.Transparency = 0.88
+			else
+				local previous = item:GetAttribute("Linha11OriginalTransparency")
+				if previous ~= nil then
+					item.Transparency = previous
+					item:SetAttribute("Linha11OriginalTransparency", nil)
+				end
+			end
+		end
+	end
+end
+
+local function handleCatch(player)
+	if not player:GetAttribute("Linha11Started") or player:GetAttribute("Linha11Hidden") then
+		return
+	end
+	local character = player.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		humanoid:TakeDamage(28)
+	end
+	teleportToStart(player)
+	send(player, "Caught", { text = "O Ouvinte encontrou você. A equipe recuou para a entrada; a investigação continua." })
+end
+
+local ai = ListenerAI.new(world, function()
+	return Players:GetPlayers()
+end, handleCatch)
+
+local function setPlayerPass(player, passKey, owned)
+	if passKey == "AmberLight" then
+		player:SetAttribute("Linha11AmberLight", owned)
+	elseif passKey == "AuroraBadge" then
+		player:SetAttribute("Linha11AuroraBadge", owned)
+	end
+end
+
+local function applyBadge(player)
+	local character = player.Character
+	local head = character and character:FindFirstChild("Head")
+	if not head then
+		return
+	end
+	local old = head:FindFirstChild("Linha11SupporterBadge")
+	if old then
+		old:Destroy()
+	end
+	if not player:GetAttribute("Linha11AuroraBadge") then
+		return
+	end
+	local badge = Instance.new("BillboardGui")
+	badge.Name = "Linha11SupporterBadge"
+	badge.Size = UDim2.fromOffset(145, 28)
+	badge.StudsOffset = Vector3.new(0, 2.3, 0)
+	badge.AlwaysOnTop = true
+	badge.MaxDistance = 45
+	badge.Adornee = head
+	badge.Parent = head
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundColor3 = Color3.fromRGB(37, 30, 23)
+	label.BackgroundTransparency = 0.18
+	label.BorderSizePixel = 0
+	label.Text = "APOIADOR AURORA"
+	label.TextColor3 = Color3.fromRGB(224, 183, 113)
+	label.TextStrokeTransparency = 0.65
+	label.Font = Enum.Font.Garamond
+	label.TextSize = 15
+	label.Parent = badge
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 5)
+	corner.Parent = label
+end
+
+local function loadPassOwnership(player)
+	for key, pass in pairs(MonetizationConfig.Passes) do
+		setPlayerPass(player, key, false)
+		if pass.id and pass.id > 0 then
+			task.spawn(function()
+				local ok, owns = pcall(function()
+					return MarketplaceService:UserOwnsGamePassAsync(player.UserId, pass.id)
+				end)
+				if ok and player.Parent == Players then
+					setPlayerPass(player, key, owns == true)
+					if key == "AuroraBadge" then
+						applyBadge(player)
+					end
+				end
+			end)
+		end
+	end
+end
+
+local function setupPlayer(player)
+	if player:GetAttribute("Linha11Initialized") then
+		return
+	end
+	player:SetAttribute("Linha11Initialized", true)
+	player:SetAttribute("Linha11Started", false)
+	player:SetAttribute("Linha11Hidden", false)
+	player:SetAttribute("Linha11IntroPending", false)
+	loadPassOwnership(player)
+	player.CharacterAdded:Connect(function(character)
+		character:WaitForChild("HumanoidRootPart", 8)
+		task.wait(0.15)
+		if player:GetAttribute("Linha11Started") then
+			teleportToStart(player)
+			if player:GetAttribute("Linha11IntroPending") then
+				local humanoid = character:FindFirstChildOfClass("Humanoid")
+				if humanoid then
+					humanoid.WalkSpeed = 0
+					humanoid.JumpPower = 0
+				end
+			end
+		end
+		applyBadge(player)
+	end)
+	if player.Character then
+		applyBadge(player)
+	end
+end
+
+Players.PlayerAdded:Connect(setupPlayer)
+for _, player in ipairs(Players:GetPlayers()) do
+	setupPlayer(player)
+end
+
+MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passId, wasPurchased)
+	if not wasPurchased then
+		return
+	end
+	for key, pass in pairs(MonetizationConfig.Passes) do
+		if pass.id == passId then
+			local ok, owns = pcall(function()
+				return MarketplaceService:UserOwnsGamePassAsync(player.UserId, passId)
+			end)
+			if ok and owns then
+				setPlayerPass(player, key, true)
+				if key == "AuroraBadge" then
+					applyBadge(player)
+				end
+				send(player, "Message", { text = pass.name .. " liberado. Obrigado por apoiar o projeto; a compra é apenas cosmética.", kind = "success" })
+			end
+		end
+	end
+end)
+
+local function openShop(player)
+	local items = {}
+	for key, pass in pairs(MonetizationConfig.Passes) do
+		table.insert(items, {
+			key = key,
+			name = pass.name,
+			description = pass.description,
+			enabled = pass.id and pass.id > 0,
+			owned = key == "AmberLight" and player:GetAttribute("Linha11AmberLight") or key == "AuroraBadge" and player:GetAttribute("Linha11AuroraBadge") or false,
+		})
+	end
+	send(player, "Shop", { items = items })
+end
+
+remote.OnServerEvent:Connect(function(player, action, value)
+	if action == "Ready" then
+		if player:GetAttribute("Linha11Started") then
+			player:SetAttribute("Linha11IntroPending", false)
+			local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+			if humanoid and not player:GetAttribute("Linha11Hidden") then
+				humanoid.WalkSpeed = 16
+				humanoid.JumpPower = 42
+			end
+		end
+		return
+	end
+
+	local now = os.clock()
+	if now - (remoteCooldowns[player] or 0) < 0.12 then
+		return
+	end
+	remoteCooldowns[player] = now
+
+	if action == "Start" then
+		startPlayer(player)
+		return
+	end
+
+
+	if action == "OpenShop" then
+		openShop(player)
+		return
+	end
+
+	if action == "Purchase" then
+		local pass = MonetizationConfig.Passes[value]
+		if not pass then
+			return
+		end
+		if not pass.id or pass.id < 1 then
+			tell(player, "Os cosméticos serão ativados depois que a experiência for publicada e os passes forem criados no Creator Hub.", "info")
+			return
+		end
+		if now - (purchaseCooldowns[player] or 0) < 4 then
+			return
+		end
+		purchaseCooldowns[player] = now
+		local ok, err = pcall(function()
+			MarketplaceService:PromptGamePassPurchase(player, pass.id)
+		end)
+		if not ok then
+			warn("Falha ao abrir compra de passe:", err)
+			tell(player, "Não foi possível abrir a compra agora. Tente novamente mais tarde.", "error")
+		end
+		return
+	end
+
+	if action == "Sprint" then
+		if not player:GetAttribute("Linha11Started") or player:GetAttribute("Linha11Hidden") then
+			return
+		end
+		local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.WalkSpeed = value == true and 22 or 16
+		end
+		return
+	end
+
+	if action == "Code" then
+		if not player:GetAttribute("Linha11Started") or mission.archiveOpen then
+			return
+		end
+		local keypadPosition = MapBuilder.GetPositionForAction("Keypad")
+		if not keypadPosition or not playerNear(player, keypadPosition, 13) then
+			return
+		end
+		if not mission.power then
+			tell(player, "O teclado está sem energia. Instale o fusível no quadro do corredor.", "objective")
+			return
+		end
+		if not (mission.clues.Clue03 and mission.clues.Clue1 and mission.clues.Clue7) then
+			tell(player, "A senha está incompleta. Procure os três registros nos apartamentos 301, 302 e 305.", "objective")
+			return
+		end
+		if typeof(value) ~= "string" or #value > 4 then
+			return
+		end
+		if value == Story.Code then
+			mission.archiveOpen = true
+			MapBuilder.OpenDoor("303", true)
+			tellAll("O arquivo 303 destranca. Uma chamada toca uma vez, do outro lado da porta.", "scare")
+			publishState()
+		else
+			tell(player, "Senha incorreta. Os fragmentos apontam para 03 • 1 • 7.", "error")
+		end
+		return
+	end
+
+	if action == "Ending" then
+		if not player:GetAttribute("Linha11Started") or mission.ending then
+			return
+		end
+		local terminal = MapBuilder.GetPositionForAction("EndingConsole")
+		if not terminal or not playerNear(player, terminal, 13) then
+			return
+		end
+		if not (mission.relay.A and mission.relay.B) then
+			return
+		end
+		if value ~= "Transmit" and value ~= "Cut" then
+			return
+		end
+		mission.ending = value
+		local ending = Story.Endings[value]
+		broadcast("Ending", ending)
+		publishState()
+	end
+end)
+
+local function showDocument(player, clueKey)
+	local clue = Story.Clues[clueKey]
+	if clue then
+		send(player, "Document", { title = clue.title, text = clue.text })
+	end
+end
+
+local function handlePrompt(player, prompt)
+	if not player:GetAttribute("Linha11Started") then
+		tell(player, "Clique em JOGAR para entrar no turno.", "info")
+		return
+	end
+	if not prompt.Parent or not prompt.Parent:IsA("BasePart") or not playerNear(player, prompt.Parent.Position, math.max(prompt.MaxActivationDistance + 3, 12)) then
+		return
+	end
+	local id = prompt:GetAttribute("ActionId")
+	if typeof(id) ~= "string" then
+		return
+	end
+
+	if string.sub(id, 1, 5) == "Door_" then
+		local roomId = string.sub(id, 6)
+		if roomId == "303" and not mission.archiveOpen then
+			tell(player, "O arquivo está trancado. O teclado fica ao lado da porta.", "objective")
+			return
+		end
+		if roomId == "Repetidor" then
+			if not mission.crowbar then
+				tell(player, "A porta está emperrada. Encontre uma ferramenta no apartamento 304.", "objective")
+				return
+			end
+			if not mission.relayOpen then
+				mission.relayOpen = true
+				MapBuilder.OpenDoor("Repetidor", true)
+				ai:Ping(prompt.Parent.Position, 95)
+				tellAll("O metal rasga no corredor. Algo responde do outro lado do andar.", "scare")
+				publishState()
+			else
+				MapBuilder.OpenDoor("Repetidor", not MapBuilder.GetDoorState("Repetidor"))
+			end
+			return
+		end
+		MapBuilder.OpenDoor(roomId, not MapBuilder.GetDoorState(roomId))
+		return
+	end
+
+	if string.sub(id, 1, 5) == "Hide_" then
+		local character = player.Character
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		if not root or not humanoid then
+			return
+		end
+		local isHidden = player:GetAttribute("Linha11Hidden") == true
+		if isHidden then
+			player:SetAttribute("Linha11Hidden", false)
+			root.Anchored = false
+			humanoid.WalkSpeed = 16
+			humanoid.JumpPower = 42
+			setCharacterVisibility(character, false)
+			tell(player, "Você saiu do esconderijo.", "info")
+		else
+			player:SetAttribute("Linha11Hidden", true)
+			root.CFrame = CFrame.new(prompt.Parent.Position + Vector3.new(0, 0.8, 2.8))
+			root.Anchored = true
+			humanoid.WalkSpeed = 0
+			humanoid.JumpPower = 0
+			setCharacterVisibility(character, true)
+			tell(player, "Você está escondido. Use E no guarda-roupa para sair.", "success")
+		end
+		return
+	end
+
+	if id == "StorageKey" then
+		if mission.key then
+			tell(player, "A chave já está com a equipe.", "info")
+		else
+			mission.key = true
+			tellAll("Chave de manutenção encontrada no 305. A gaveta do 301 pode ser aberta.", "success")
+			publishState()
+		end
+	elseif id == "FuseDrawer" then
+		if not mission.key then
+			tell(player, "A gaveta está trancada. Procure a chave no apartamento 305.", "objective")
+		elseif mission.fuse then
+			tell(player, "A gaveta está vazia.", "info")
+		else
+			mission.fuse = true
+			tellAll("Fusível recuperado. O quadro geral fica no corredor.", "success")
+			publishState()
+		end
+	elseif id == "Clue03" or id == "Clue1" or id == "Clue7" then
+		if not mission.clues[id] then
+			mission.clues[id] = true
+			showDocument(player, id)
+			local names = { Clue03 = "03", Clue1 = "1", Clue7 = "7" }
+			tellAll("Fragmento da senha encontrado: " .. names[id] .. ".", "success")
+			publishState()
+		else
+			showDocument(player, id)
+		end
+	elseif id == "Breaker" then
+		if not mission.fuse then
+			tell(player, "O quadro está vazio. Busque um fusível na gaveta do 301.", "objective")
+		elseif not mission.power then
+			mission.power = true
+			MapBuilder.SetPower(true)
+			tellAll("A energia volta ao terceiro andar. As luzes revelam marcas de dedos na parede.", "scare")
+			publishState()
+		else
+			tell(player, "O quadro está ligado.", "info")
+		end
+	elseif id == "Keypad" then
+		if not mission.power then
+			tell(player, "O teclado está sem energia.", "objective")
+		elseif not (mission.clues.Clue03 and mission.clues.Clue1 and mission.clues.Clue7) then
+			tell(player, "A senha está incompleta. Procure os três registros.", "objective")
+		else
+			send(player, "OpenKeypad", { codeLength = 4 })
+		end
+	elseif id == "ArchiveTape" then
+		if not mission.archiveOpen then
+			tell(player, "A caixa está trancada atrás da porta 303.", "objective")
+		elseif not mission.tape then
+			mission.tape = true
+			showDocument(player, "Tape")
+			tellAll("A fita 11 foi recuperada. O registro menciona a linha telefônica do apartamento 304.", "success")
+			publishState()
+		else
+			showDocument(player, "Tape")
+		end
+	elseif id == "Phone" then
+		if not mission.tape then
+			tell(player, "O telefone toca, mas o arquivo ainda é prioridade.", "info")
+		elseif not mission.phone then
+			mission.phone = true
+			ai:Wake()
+			ai:Ping(prompt.Parent.Position, 110)
+			showDocument(player, "Phone")
+			tellAll("A chamada acorda o Ouvinte. Ele reage a corridas e sons fortes; escondam-se nos cômodos.", "scare")
+			publishState()
+		else
+			tell(player, "A linha ficou muda.", "info")
+		end
+	elseif id == "Crowbar" then
+		if not mission.phone then
+			tell(player, "A ferramenta está presa sob o armário. O telefone ainda está chamando.", "objective")
+		elseif not mission.crowbar then
+			mission.crowbar = true
+			tellAll("Pé de cabra encontrado. Pode abrir a porta emperrada da sala do repetidor.", "success")
+			publishState()
+		else
+			tell(player, "A equipe já tem o pé de cabra.", "info")
+		end
+	elseif id == "RelayA" or id == "RelayB" then
+		if not mission.relayOpen then
+			tell(player, "A sala do repetidor está fechada.", "objective")
+		elseif mission.ending then
+			tell(player, "A decisão já foi tomada.", "info")
+		else
+			local side = id == "RelayA" and "A" or "B"
+			local other = side == "A" and "B" or "A"
+			local now = os.clock()
+			local otherLever = mission.relay[other]
+			if otherLever and now - otherLever.time > 12 then
+				mission.relay.A = nil
+				mission.relay.B = nil
+				MapBuilder.SetLever("RelayA", false)
+				MapBuilder.SetLever("RelayB", false)
+				tellAll("O mecanismo voltou à posição inicial. Ativem as alavancas com poucos segundos de diferença.", "error")
+				publishState()
+				return
+			end
+			local activeCount = #startedPlayers()
+			if activeCount >= 2 and otherLever and otherLever.player == player then
+				tell(player, "A outra alavanca precisa ser ativada pelo parceiro.", "objective")
+				return
+			end
+			mission.relay[side] = { player = player, time = now }
+			MapBuilder.SetLever(id, true)
+			ai:Ping(prompt.Parent.Position, 80)
+			if mission.relay.A and mission.relay.B and now - math.min(mission.relay.A.time, mission.relay.B.time) <= 12 then
+				tellAll("As duas alavancas travaram. O repetidor está pronto; decidam o que fazer com a fita.", "success")
+			else
+				tellAll("Uma alavanca foi ativada. A outra precisa ser acionada em até 12 segundos.", "objective")
+			end
+			publishState()
+		end
+	elseif id == "EndingConsole" then
+		if mission.relay.A and mission.relay.B then
+			send(player, "OpenEnding", {
+				transmit = Story.Endings.Transmit.title,
+				cut = Story.Endings.Cut.title,
+			})
+		else
+			tell(player, "Ativem as duas alavancas primeiro.", "objective")
+		end
+	elseif id == "Photo304" then
+		showDocument(player, "Photo304")
+	elseif id == "LogPlantao" then
+		showDocument(player, "LogPlantao")
+	end
+end
+
+for _, prompt in ipairs(MapBuilder.GetPrompts()) do
+	prompt.Triggered:Connect(function(player)
+		handlePrompt(player, prompt)
+	end)
+end
+
+RunService.Heartbeat:Connect(function()
+	local now = os.clock()
+	for _, player in ipairs(startedPlayers()) do
+		if not player:GetAttribute("Linha11Hidden") then
+			local character = player.Character
+			local root = character and character:FindFirstChild("HumanoidRootPart")
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			if root and humanoid and humanoid.WalkSpeed >= 20 and root.AssemblyLinearVelocity.Magnitude > 13 and now - (noiseCooldowns[player] or 0) > 1.8 then
+				noiseCooldowns[player] = now
+				ai:Ping(root.Position, 75)
+			end
+		end
+	end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+	remoteCooldowns[player] = nil
+	noiseCooldowns[player] = nil
+	purchaseCooldowns[player] = nil
+	for _, side in ipairs({ "A", "B" }) do
+		if mission.relay[side] and mission.relay[side].player == player then
+			mission.relay[side] = nil
+		end
+	end
+end)
+
+updateStage()
+
+
+
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="7">
+        <Properties>
+          <string name="Name">ListenerAI</string>
+          <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
+
+local ListenerAI = {}
+ListenerAI.__index = ListenerAI
+
+local function makeBodyPart(model, name, size, cf, color, material, transparency, shape)
+	local part = Instance.new("Part")
+	part.Name = name
+	part.Size = size
+	part.CFrame = cf
+	part.Anchored = true
+	part.CanCollide = false
+	part.CanTouch = false
+	part.CanQuery = false
+	part.CastShadow = true
+	part.TopSurface = Enum.SurfaceType.Smooth
+	part.BottomSurface = Enum.SurfaceType.Smooth
+	part.Color = color
+	part.Material = material or Enum.Material.SmoothPlastic
+	part.Transparency = transparency or 0
+	if shape then
+		part.Shape = shape
+	end
+	part.Parent = model
+	return part
+end
+
+function ListenerAI.new(parent, playerProvider, onCatch)
+	local self = setmetatable({}, ListenerAI)
+	self.Parent = parent
+	self.PlayerProvider = playerProvider
+	self.OnCatch = onCatch
+	self.Awake = false
+	self.LastNoiseAt = 0
+	self.LastNoiseX = 0
+	self.Position = Vector3.new(-46, 0, 0)
+	self.PatrolDirection = 1
+	self.CatchCooldown = {}
+	self.Clock = 0
+
+	local model = Instance.new("Model")
+	model.Name = "Ouvinte"
+	model.Parent = parent
+	self.Model = model
+
+	local root = makeBodyPart(model, "Base", Vector3.new(0.2, 0.2, 0.2), CFrame.new(0, 0, 0), Color3.new(0, 0, 0), Enum.Material.SmoothPlastic, 1)
+	model.PrimaryPart = root
+	local charcoal = Color3.fromRGB(12, 13, 14)
+	local coat = Color3.fromRGB(22, 23, 22)
+	local dim = Color3.fromRGB(34, 31, 28)
+	local function limb(name, size, x, y, z, color, material, shape)
+		local part = makeBodyPart(model, name, size, CFrame.new(x, y, z), color or charcoal, material or Enum.Material.SmoothPlastic, 0, shape)
+		return part, CFrame.new(x, y, z)
+	end
+
+	local animated = {}
+	local function register(part, base, phase, amount)
+		table.insert(animated, { part = part, base = base, phase = phase, amount = amount })
+	end
+
+	limb("Torso", Vector3.new(1.65, 4.1, 1.05), 0, 7.0, 0, coat, Enum.Material.Fabric)
+	limb("Peito_afundado", Vector3.new(1.2, 1.7, 0.3), 0, 8.0, -0.63, charcoal, Enum.Material.Slate)
+	local neck, neckBase = limb("Pescoço_longo", Vector3.new(0.48, 2.5, 0.52), 0, 10.1, -0.02, charcoal, Enum.Material.SmoothPlastic)
+	register(neck, neckBase, 0.7, 0.04)
+	local head, headBase = limb("Cabeça_sem_rosto", Vector3.new(1.15, 1.65, 1.0), 0.04, 11.85, -0.12, dim, Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+	register(head, headBase * CFrame.Angles(0, 0, math.rad(-19)), 0.2, 0.07)
+	limb("Capuz_sombra", Vector3.new(1.5, 1.8, 1.2), 0.04, 12.0, 0.32, charcoal, Enum.Material.Fabric, Enum.PartType.Ball)
+	local veil, veilBase = limb("Véu_escuro", Vector3.new(0.92, 1.25, 0.08), 0.04, 11.75, -0.68, Color3.fromRGB(5, 6, 7), Enum.Material.Glass)
+	veil.Transparency = 0.14
+	register(veil, veilBase * CFrame.Angles(0, 0, math.rad(-15)), 0.5, 0.035)
+
+	for _, side in ipairs({ -1, 1 }) do
+		local shoulder, shoulderBase = limb("Ombro", Vector3.new(0.8, 1.1, 0.9), side * 0.9, 8.8, 0, coat, Enum.Material.Fabric, Enum.PartType.Ball)
+		register(shoulder, shoulderBase, side == -1 and 0 or math.pi, 0.12)
+		local arm, armBase = limb("Braço_comprido", Vector3.new(0.34, 5.8, 0.38), side * 1.15, 5.3, -0.02, charcoal)
+		register(arm, armBase, side == -1 and 0 or math.pi, 0.22)
+		limb("Mão", Vector3.new(0.47, 0.75, 0.35), side * 1.17, 2.15, -0.11, dim, Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+		local leg, legBase = limb("Perna_fina", Vector3.new(0.48, 4.7, 0.57), side * 0.42, 2.45, 0.04, coat, Enum.Material.Fabric)
+		register(leg, legBase, side == -1 and math.pi or 0, 0.18)
+		limb("Pé", Vector3.new(0.5, 0.42, 0.95), side * 0.42, 0.22, -0.14, charcoal)
+	end
+	for i = 1, 5 do
+		local strip, stripBase = limb("Tira_de_tecido", Vector3.new(0.24, 4.5 + (i % 2), 0.16), (i - 3) * 0.34, 5.6, 0.62, i % 2 == 0 and dim or coat, Enum.Material.Fabric)
+		register(strip, stripBase, i * 0.8, 0.055)
+	end
+	for _, side in ipairs({ -1, 1 }) do
+		local shard = Instance.new("WedgePart")
+		shard.Name = "Ponta_do_manto"
+		shard.Size = Vector3.new(0.55, 3.2, 0.4)
+		shard.CFrame = CFrame.new(side * 0.72, 3.4, 0.55) * CFrame.Angles(0, 0, math.rad(side * -8))
+		shard.Anchored = true
+		shard.CanCollide = false
+		shard.CanTouch = false
+		shard.CanQuery = false
+		shard.CastShadow = true
+		shard.Color = charcoal
+		shard.Material = Enum.Material.Fabric
+		shard.Parent = model
+		register(shard, CFrame.new(side * 0.72, 3.4, 0.55) * CFrame.Angles(0, 0, math.rad(side * -8)), side, 0.08)
+	end
+
+	self.AnimatedParts = animated
+	self.Model:PivotTo(CFrame.new(self.Position))
+	self.Connection = RunService.Heartbeat:Connect(function(dt)
+		self:Step(dt)
+	end)
+	return self
+end
+
+function ListenerAI:Wake()
+	if self.Awake then
+		return
+	end
+	self.Awake = true
+	self.LastNoiseAt = os.clock()
+	self.LastNoiseX = self.Position.X
+	self.Model:SetAttribute("Awake", true)
+end
+
+function ListenerAI:Ping(position, strength)
+	if not self.Awake or typeof(position) ~= "Vector3" then
+		return
+	end
+	if math.abs(position.Z) > 28 or position.X < -57 or position.X > 57 then
+		return
+	end
+	local distance = math.abs(position.X - self.Position.X)
+	if distance <= (strength or 75) then
+		self.LastNoiseAt = os.clock()
+		self.LastNoiseX = position.X
+	end
+end
+
+function ListenerAI:Step(dt)
+	if not self.Awake or not self.Model.Parent then
+		return
+	end
+	self.Clock += dt
+	local now = os.clock()
+	local targetX
+	local isHunting = now - self.LastNoiseAt < 10
+	if isHunting then
+		targetX = self.LastNoiseX
+	else
+		targetX = self.Position.X + self.PatrolDirection * dt * 3.0
+		if targetX > 48 then
+			self.PatrolDirection = -1
+		elseif targetX < -48 then
+			self.PatrolDirection = 1
+		end
+	end
+
+	local speed = isHunting and 7.4 or 2.7
+	local delta = targetX - self.Position.X
+	local step = math.clamp(delta, -speed * dt, speed * dt)
+	local nextX = math.clamp(self.Position.X + step, -51, 51)
+	local facing = nextX >= self.Position.X and 1 or -1
+	self.Position = Vector3.new(nextX, 0, 0)
+	local bodyCFrame = CFrame.lookAt(self.Position + Vector3.new(0, 0.05, 0), self.Position + Vector3.new(facing, 0.05, 0))
+	self.Model:PivotTo(bodyCFrame)
+	local gait = isHunting and 1.0 or 0.25
+	for _, record in ipairs(self.AnimatedParts) do
+		local swing = math.sin(self.Clock * (isHunting and 7.2 or 2.7) + record.phase) * record.amount * gait
+		record.part.CFrame = bodyCFrame * record.base * CFrame.Angles(swing, 0, 0)
+	end
+
+	local players = self.PlayerProvider()
+	for _, player in ipairs(players) do
+		if player:GetAttribute("Linha11Started") and not player:GetAttribute("Linha11Hidden") then
+			local character = player.Character
+			local root = character and character:FindFirstChild("HumanoidRootPart")
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			if root and humanoid and humanoid.Health > 0 and math.abs(root.Position.Z) < 4.5 and math.abs(root.Position.X - self.Position.X) < 4.7 then
+				if now - (self.CatchCooldown[player] or 0) > 18 then
+					self.CatchCooldown[player] = now
+					self.OnCatch(player)
+				end
+			end
+		end
+	end
+end
+
+function ListenerAI:Destroy()
+	if self.Connection then
+		self.Connection:Disconnect()
+		self.Connection = nil
+	end
+	if self.Model then
+		self.Model:Destroy()
+	end
+end
+
+return ListenerAI
+
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="8">
+        <Properties>
+          <string name="Name">MapBuilder</string>
+          <string name="Source"><![CDATA[local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
+
+local MapBuilder = {}
+
+local COLORS = {
+	wall = Color3.fromRGB(104, 94, 81),
+	wallDark = Color3.fromRGB(65, 61, 55),
+	floor = Color3.fromRGB(48, 42, 37),
+	wood = Color3.fromRGB(72, 49, 35),
+	woodLight = Color3.fromRGB(102, 73, 52),
+	metal = Color3.fromRGB(53, 58, 59),
+	rust = Color3.fromRGB(84, 50, 36),
+	paper = Color3.fromRGB(185, 171, 142),
+	fabric = Color3.fromRGB(68, 63, 58),
+	light = Color3.fromRGB(255, 184, 101),
+	black = Color3.fromRGB(16, 17, 17),
+}
+
+local world
+local prompts = {}
+local doors = {}
+local lights = {}
+local roomPositions = {}
+
+local function makePart(parent, name, size, cf, color, material, transparency, canCollide, shape)
+	local item = Instance.new("Part")
+	item.Name = name
+	item.Size = size
+	item.CFrame = cf
+	item.Anchored = true
+	item.CanCollide = canCollide ~= false
+	item.CanTouch = false
+	item.CanQuery = true
+	item.CastShadow = true
+	item.TopSurface = Enum.SurfaceType.Smooth
+	item.BottomSurface = Enum.SurfaceType.Smooth
+	item.Color = color or COLORS.wall
+	item.Material = material or Enum.Material.Concrete
+	item.Transparency = transparency or 0
+	if shape then
+		item.Shape = shape
+	end
+	item.Parent = parent
+	return item
+end
+
+local function addPrompt(host, actionId, actionText, objectText, hold, distance)
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "Interact_" .. actionId
+	prompt.ActionText = actionText
+	prompt.ObjectText = objectText
+	prompt.KeyboardKeyCode = Enum.KeyCode.E
+	prompt.GamepadKeyCode = Enum.KeyCode.ButtonX
+	prompt.HoldDuration = hold or 0.25
+	prompt.MaxActivationDistance = distance or 9
+	prompt.RequiresLineOfSight = false
+	prompt.Style = Enum.ProximityPromptStyle.Default
+	prompt:SetAttribute("ActionId", actionId)
+	prompt.Parent = host
+	table.insert(prompts, prompt)
+	return prompt
+end
+
+local function addText(parent, text, position, size, face, color, fontSize)
+	local board = makePart(parent, "Placa", size, CFrame.new(position), color or COLORS.wood, Enum.Material.Wood)
+	local surface = Instance.new("SurfaceGui")
+	surface.Name = "TextSurface"
+	surface.Face = face or Enum.NormalId.Front
+	surface.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	surface.PixelsPerStud = 45
+	surface.AlwaysOnTop = false
+	surface.Parent = board
+	local label = Instance.new("TextLabel")
+	label.Name = "Text"
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextColor3 = Color3.fromRGB(228, 215, 188)
+	label.TextStrokeTransparency = 0.75
+	label.Font = Enum.Font.Garamond
+	label.TextScaled = true
+	label.TextWrapped = true
+	label.Parent = surface
+	return board
+end
+
+local function makePromptAnchor(parent, name, position, actionId, actionText, objectText, hold, distance)
+	local anchor = makePart(parent, name, Vector3.new(1.1, 1.1, 1.1), CFrame.new(position), COLORS.black, Enum.Material.SmoothPlastic, 1, false)
+	anchor.CanQuery = false
+	addPrompt(anchor, actionId, actionText, objectText, hold, distance)
+	return anchor
+end
+
+local function addDoor(parent, roomId, x, side, actionId, objectText, initiallyOpen)
+	local z = side * 6.22
+	local cf = CFrame.new(x, 4.3, z)
+	local door = makePart(parent, "Porta_" .. roomId, Vector3.new(5.5, 8.6, 0.42), cf, COLORS.wood, Enum.Material.WoodPlanks)
+	local upper = makePart(parent, "Painel_da_porta", Vector3.new(4.85, 3.1, 0.12), cf * CFrame.new(0, 1.55, -0.28), COLORS.woodLight, Enum.Material.Wood)
+	local lower = makePart(parent, "Painel_inferior", Vector3.new(4.85, 2.0, 0.12), cf * CFrame.new(0, -2.5, -0.28), COLORS.woodLight, Enum.Material.Wood)
+	local knob = makePart(parent, "Macaneta", Vector3.new(0.18, 0.18, 0.3), cf * CFrame.new(2.05, -0.1, -0.32), Color3.fromRGB(147, 112, 67), Enum.Material.Metal, 0, false, Enum.PartType.Ball)
+	upper.CanCollide = false
+	lower.CanCollide = false
+	knob.CanCollide = false
+	local prompt = addPrompt(door, actionId, initiallyOpen and "Fechar" or "Abrir", objectText, 0.2, 9)
+	doors[roomId] = {
+		part = door,
+		panels = { upper, lower, knob },
+		panelClosedCFrames = { upper.CFrame, lower.CFrame, knob.CFrame },
+		prompt = prompt,
+		closedCFrame = cf,
+		isOpen = initiallyOpen or false,
+	}
+	if initiallyOpen then
+		door.Transparency = 1
+		door.CanCollide = false
+		for _, p in ipairs({ upper, lower, knob }) do
+			p.Transparency = 1
+		end
+	end
+	return door
+end
+
+local function addCeilingLight(parent, position, id)
+	local fixture = makePart(parent, "Luminaria_" .. id, Vector3.new(2.2, 0.22, 0.75), CFrame.new(position), Color3.fromRGB(44, 40, 35), Enum.Material.Metal)
+	local bulb = makePart(parent, "Difusor_" .. id, Vector3.new(1.8, 0.1, 0.48), CFrame.new(position - Vector3.new(0, 0.16, 0)), COLORS.black, Enum.Material.Glass)
+	local point = Instance.new("PointLight")
+	point.Name = "Luz_" .. id
+	point.Color = COLORS.light
+	point.Brightness = 0
+	point.Range = 22
+	point.Shadows = false
+	point.Parent = bulb
+	table.insert(lights, { light = point, bulb = bulb, fixture = fixture })
+end
+
+local function addWallLamp(parent, position, id)
+	local base = makePart(parent, "Arandela_" .. id, Vector3.new(0.7, 0.85, 0.35), CFrame.new(position), COLORS.wood, Enum.Material.Wood)
+	local glass = makePart(parent, "Vidro_" .. id, Vector3.new(0.42, 0.55, 0.24), CFrame.new(position + Vector3.new(0, 0, -0.2)), COLORS.black, Enum.Material.Glass)
+	local point = Instance.new("PointLight")
+	point.Name = "LuzParede_" .. id
+	point.Color = COLORS.light
+	point.Brightness = 0
+	point.Range = 12
+	point.Shadows = false
+	point.Parent = glass
+	table.insert(lights, { light = point, bulb = glass, fixture = base })
+end
+
+local function addShelf(parent, position, width, id)
+	local x, y, z = position.X, position.Y, position.Z
+	for _, dx in ipairs({ -width * 0.45, width * 0.45 }) do
+		makePart(parent, "Estante_lateral_" .. id, Vector3.new(0.35, 7, 0.55), CFrame.new(x + dx, y + 3.5, z), COLORS.metal, Enum.Material.CorrodedMetal)
+	end
+	for level = 0, 3 do
+		makePart(parent, "Prateleira_" .. id, Vector3.new(width, 0.35, 1.15), CFrame.new(x, y + 0.65 + level * 1.75, z), COLORS.wood, Enum.Material.WoodPlanks)
+	end
+	for i = 1, 7 do
+		local bookHeight = 1.05 + ((i * 7) % 4) * 0.2
+		local bookColor = ({ COLORS.paper, COLORS.rust, COLORS.fabric, COLORS.wallDark })[(i % 4) + 1]
+		makePart(parent, "Pasta_" .. id, Vector3.new(0.48, bookHeight, 0.82), CFrame.new(x - width * 0.38 + i * 0.85, y + 1.2, z), bookColor, Enum.Material.Fabric)
+	end
+end
+
+local function addTable(parent, position, width, depth, id, color)
+	local top = makePart(parent, "Mesa_" .. id, Vector3.new(width, 0.38, depth), CFrame.new(position + Vector3.new(0, 2.45, 0)), color or COLORS.wood, Enum.Material.WoodPlanks)
+	for _, dx in ipairs({ -width * 0.42, width * 0.42 }) do
+		for _, dz in ipairs({ -depth * 0.34, depth * 0.34 }) do
+			makePart(parent, "Perna_" .. id, Vector3.new(0.28, 2.4, 0.28), CFrame.new(position + Vector3.new(dx, 1.2, dz)), COLORS.woodDark or COLORS.wood, Enum.Material.Wood)
+		end
+	end
+	return top
+end
+
+local function addCabinet(parent, position, id, width)
+	width = width or 4.4
+	local body = makePart(parent, "Armario_" .. id, Vector3.new(width, 5.7, 1.8), CFrame.new(position + Vector3.new(0, 2.85, 0)), COLORS.wood, Enum.Material.WoodPlanks)
+	makePart(parent, "Tampo_armario_" .. id, Vector3.new(width + 0.25, 0.2, 2.0), CFrame.new(position + Vector3.new(0, 5.8, 0)), COLORS.woodLight, Enum.Material.Wood)
+	makePart(parent, "Divisoria_armario_" .. id, Vector3.new(0.14, 5.3, 1.7), CFrame.new(position + Vector3.new(0, 2.85, 0)), COLORS.woodLight, Enum.Material.Wood)
+	for _, dx in ipairs({ -width * 0.25, width * 0.25 }) do
+		makePart(parent, "Puxador_" .. id, Vector3.new(0.12, 0.48, 0.18), CFrame.new(position + Vector3.new(dx, 2.75, -0.96)), Color3.fromRGB(143, 110, 73), Enum.Material.Metal, 0, false)
+	end
+	return body
+end
+
+local function addKeyVisual(parent, position, id)
+	local gold = Color3.fromRGB(170, 132, 72)
+	makePart(parent, "Argola_chave_" .. id, Vector3.new(0.32, 0.16, 0.32), CFrame.new(position) * CFrame.Angles(0, 0, math.rad(90)), gold, Enum.Material.Metal, 0, false, Enum.PartType.Cylinder)
+	makePart(parent, "Haste_chave_" .. id, Vector3.new(0.9, 0.14, 0.16), CFrame.new(position + Vector3.new(0.53, 0, 0)), gold, Enum.Material.Metal, 0, false)
+	makePart(parent, "Dente_chave_" .. id, Vector3.new(0.13, 0.3, 0.15), CFrame.new(position + Vector3.new(0.82, -0.12, 0)), gold, Enum.Material.Metal, 0, false)
+end
+
+local function addFuseVisual(parent, position)
+	makePart(parent, "Fusivel_vermelho", Vector3.new(0.36, 1.05, 0.36), CFrame.new(position) * CFrame.Angles(0, 0, math.rad(90)), Color3.fromRGB(151, 44, 34), Enum.Material.Metal, 0, false, Enum.PartType.Cylinder)
+	makePart(parent, "Contato_fusivel", Vector3.new(0.48, 0.12, 0.43), CFrame.new(position + Vector3.new(0.55, 0, 0)), Color3.fromRGB(166, 139, 91), Enum.Material.Metal, 0, false)
+end
+
+local function addCrowbarVisual(parent, position)
+	local rust = Color3.fromRGB(97, 57, 39)
+	makePart(parent, "Pe_de_cabra_haste", Vector3.new(2.2, 0.22, 0.22), CFrame.new(position), rust, Enum.Material.CorrodedMetal, 0, false)
+	makePart(parent, "Pe_de_cabra_ponta", Vector3.new(0.22, 0.85, 0.22), CFrame.new(position + Vector3.new(1.0, 0.37, 0)), rust, Enum.Material.CorrodedMetal, 0, false)
+	makePart(parent, "Pe_de_cabra_gancho", Vector3.new(0.68, 0.18, 0.18), CFrame.new(position + Vector3.new(1.3, 0.75, 0)), rust, Enum.Material.CorrodedMetal, 0, false)
+end
+
+local function addTapeVisual(parent, position)
+	local reelColor = Color3.fromRGB(42, 39, 34)
+	for _, offset in ipairs({ -0.62, 0.62 }) do
+		local reel = makePart(parent, "Carretel_da_fita", Vector3.new(0.18, 1.18, 1.18), CFrame.new(position + Vector3.new(offset, 0, 0)) * CFrame.Angles(0, 0, math.rad(90)), reelColor, Enum.Material.Metal, 0, false, Enum.PartType.Cylinder)
+		makePart(parent, "Cubo_do_carretel", Vector3.new(0.38, 0.2, 0.38), reel.CFrame, Color3.fromRGB(132, 105, 72), Enum.Material.Metal, 0, false, Enum.PartType.Cylinder)
+	end
+	makePart(parent, "Fita_entre_carretel", Vector3.new(0.8, 0.08, 0.22), CFrame.new(position + Vector3.new(0, -0.08, -0.3)), COLORS.black, Enum.Material.SmoothPlastic, 0, false)
+	makePart(parent, "Etiqueta_fita_11", Vector3.new(0.85, 0.06, 0.5), CFrame.new(position + Vector3.new(0, 0.14, 0.58)), COLORS.paper, Enum.Material.Cardboard, 0, false)
+end
+
+local function addLever(parent, actionId, position)
+	local base = makePart(parent, "Base_" .. actionId, Vector3.new(1.5, 1.7, 0.55), CFrame.new(position + Vector3.new(0, 0.9, 0)), COLORS.metal, Enum.Material.Metal)
+	makePart(parent, "Placa_" .. actionId, Vector3.new(1.15, 0.2, 0.1), base.CFrame * CFrame.new(0, 0.42, -0.33), COLORS.rust, Enum.Material.Metal, 0, false)
+	local handle = makePart(parent, "Haste_" .. actionId, Vector3.new(0.22, 1.65, 0.24), base.CFrame * CFrame.new(0, 1.35, -0.08) * CFrame.Angles(0, 0, math.rad(25)), Color3.fromRGB(122, 84, 52), Enum.Material.Metal, 0, false)
+	local grip = makePart(parent, "Puxador_" .. actionId, Vector3.new(0.42, 0.38, 0.42), handle.CFrame * CFrame.new(0, 0.82, 0), COLORS.black, Enum.Material.Rubber, 0, false, Enum.PartType.Ball)
+	addPrompt(base, actionId, "Puxar", actionId == "RelayA" and "Alavanca A" or "Alavanca B", 0.8, 8)
+	levers[actionId] = {
+		handle = handle,
+		grip = grip,
+		baseCFrame = base.CFrame,
+		initial = handle.CFrame,
+	}
+end
+
+local function addHideCloset(parent, roomId, position)
+	local body = makePart(parent, "Guarda_roupa_" .. roomId, Vector3.new(4.3, 8.7, 2.2), CFrame.new(position + Vector3.new(0, 4.35, 0)), COLORS.wood, Enum.Material.WoodPlanks)
+	for _, dx in ipairs({ -1.05, 1.05 }) do
+		makePart(parent, "Porta_guarda_roupa_" .. roomId, Vector3.new(2.0, 8.3, 0.12), CFrame.new(position + Vector3.new(dx, 4.35, -1.16)), COLORS.woodLight, Enum.Material.Wood)
+		makePart(parent, "Puxador_guarda_roupa_" .. roomId, Vector3.new(0.1, 0.55, 0.12), CFrame.new(position + Vector3.new(dx + (dx < 0 and 0.7 or -0.7), 4.3, -1.28)), Color3.fromRGB(143, 110, 73), Enum.Material.Metal, 0, false)
+	end
+	makePromptAnchor(parent, "Esconderijo_" .. roomId, position + Vector3.new(0, 3.4, -2.1), "Hide_" .. roomId, "Esconder-se", "Guarda-roupa", 0.35, 8)
+	return body
+end
+
+local function addRoomShell(parent, roomId, centerX, side, title, doorInitiallyOpen)
+	local room = Instance.new("Model")
+	room.Name = "Apartamento_" .. roomId
+	room.Parent = parent
+	local centerZ = side * 15.5
+	roomPositions[roomId] = Vector3.new(centerX, 1, centerZ)
+	makePart(room, "Piso_" .. roomId, Vector3.new(20, 0.45, 19), CFrame.new(centerX, 0.02, centerZ), COLORS.floor, Enum.Material.WoodPlanks)
+	makePart(room, "Teto_" .. roomId, Vector3.new(20, 0.5, 19), CFrame.new(centerX, 11.9, centerZ), COLORS.wallDark, Enum.Material.Concrete)
+	makePart(room, "Parede_esquerda_" .. roomId, Vector3.new(0.55, 12, 19), CFrame.new(centerX - 10, 6, centerZ), COLORS.wall, Enum.Material.Plaster)
+	makePart(room, "Parede_direita_" .. roomId, Vector3.new(0.55, 12, 19), CFrame.new(centerX + 10, 6, centerZ), COLORS.wall, Enum.Material.Plaster)
+	makePart(room, "Parede_fundo_" .. roomId, Vector3.new(20, 12, 0.55), CFrame.new(centerX, 6, side * 25), COLORS.wall, Enum.Material.Plaster)
+	makePart(room, "Parede_frontal_esq_" .. roomId, Vector3.new(7.2, 12, 0.55), CFrame.new(centerX - 6.4, 6, side * 6.35), COLORS.wall, Enum.Material.Plaster)
+	makePart(room, "Parede_frontal_dir_" .. roomId, Vector3.new(7.2, 12, 0.55), CFrame.new(centerX + 6.4, 6, side * 6.35), COLORS.wall, Enum.Material.Plaster)
+	local door = addDoor(room, roomId, centerX, side, "Door_" .. roomId, title, doorInitiallyOpen)
+	local signZ = side * 5.55
+	addText(room, title, Vector3.new(centerX, 9.35, signZ), Vector3.new(4.5, 1.2, 0.18), side < 0 and Enum.NormalId.Back or Enum.NormalId.Front, COLORS.wood)
+	addCeilingLight(room, Vector3.new(centerX, 11.45, centerZ), "Apt_" .. roomId)
+	addHideCloset(room, roomId, Vector3.new(centerX + 7, 0.3, centerZ + side * -4))
+	return room, door, centerZ
+end
+
+local function addNote(parent, id, title, body, position, actionId)
+	local paper = makePart(parent, "Documento_" .. id, Vector3.new(2.8, 0.12, 2.0), CFrame.new(position), COLORS.paper, Enum.Material.Cardboard)
+	local surface = Instance.new("SurfaceGui")
+	surface.Name = "DocumentoLegivel"
+	surface.Face = Enum.NormalId.Top
+	surface.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	surface.PixelsPerStud = 80
+	surface.Parent = paper
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundColor3 = Color3.fromRGB(194, 180, 150)
+	label.BackgroundTransparency = 0.05
+	label.TextColor3 = Color3.fromRGB(34, 28, 22)
+	label.Font = Enum.Font.Garamond
+	label.TextScaled = true
+	label.TextWrapped = true
+	label.Text = title .. "\n" .. body
+	label.Parent = surface
+	makePromptAnchor(parent, "Ler_" .. id, position + Vector3.new(0, 1, 0), actionId, "Ler", title, 0.25, 8)
+	return paper
+end
+
+local function roomFurniture(parent, roomId, centerX, side, centerZ)
+	local front = side * 1
+	local function pos(dx, dz)
+		return Vector3.new(centerX + dx, 0.25, centerZ + dz * front)
+	end
+	if roomId == "301" then
+		addShelf(parent, pos(-6.2, -4.5), 7.2, "301")
+		addCabinet(parent, pos(5.5, -5), "301")
+		addTable(parent, pos(-1, 3.2), 5.2, 3.1, "301")
+		addNote(parent, "Clue7", "ANOTAÇÃO • 304", "7 — A linha continuou tocando.", pos(-1, 3.2) + Vector3.new(0, 2.8, 0), "Clue7")
+		local drawerPosition = pos(5.5, -5) + Vector3.new(0, 2.2, -1.15)
+		makePart(parent, "Frente_gaveta_fusivel", Vector3.new(3.5, 1.0, 0.22), CFrame.new(drawerPosition), COLORS.woodLight, Enum.Material.WoodPlanks)
+		makePart(parent, "Fechadura_gaveta", Vector3.new(0.22, 0.3, 0.1), CFrame.new(drawerPosition + Vector3.new(0, 0.05, -0.18)), Color3.fromRGB(144, 112, 71), Enum.Material.Metal, 0, false)
+		addFuseVisual(parent, drawerPosition + Vector3.new(0, 1.05, -0.7))
+		makePromptAnchor(parent, "Gaveta_trancada", drawerPosition + Vector3.new(0, 1.1, -1.1), "FuseDrawer", "Abrir gaveta", "Gaveta trancada", 1.1, 8)
+	elseif roomId == "302" then
+		addCabinet(parent, pos(-6.5, -5), "302-A", 5)
+		addTable(parent, pos(1.5, 2.8), 5.3, 3.4, "302")
+		addShelf(parent, pos(6.1, 3.4), 4.6, "302")
+		addNote(parent, "Clue03", "REGISTRO • 03", "03 — O ECO transmitiu às 03:17.", pos(1.5, 2.8) + Vector3.new(0, 2.8, 0), "Clue03")
+	elseif roomId == "305" then
+		addCabinet(parent, pos(-6.5, -4.8), "305", 5.2)
+		addShelf(parent, pos(6.1, -4), 5.4, "305")
+		addTable(parent, pos(-1.4, 3.2), 5.4, 3.1, "305")
+		addNote(parent, "Clue1", "RECIBO • 1", "1 — Uma fita saiu do arquivo.", pos(-1.4, 3.2) + Vector3.new(0, 2.8, 0), "Clue1")
+		local keyPosition = pos(-0.5, 3.2) + Vector3.new(0, 2.75, 0)
+		addKeyVisual(parent, keyPosition, "Manutencao")
+		makePromptAnchor(parent, "Chave_manutenção", keyPosition + Vector3.new(0, 0.6, 0), "StorageKey", "Pegar", "Chave do armário", 0.35, 8)
+		local washer = makePart(parent, "Lavadora_305", Vector3.new(3.1, 4.6, 3.0), CFrame.new(pos(-6.2, 4.1) + Vector3.new(0, 2.3, 0)), Color3.fromRGB(86, 91, 91), Enum.Material.Metal)
+		makePart(parent, "Visor_lavadora", Vector3.new(1.65, 1.65, 0.12), washer.CFrame * CFrame.new(0, 0.2, -1.58), COLORS.black, Enum.Material.Glass, 0.08, false)
+	elseif roomId == "303" then
+		addShelf(parent, pos(-6.2, -4.2), 7.2, "ArquivoA")
+		addShelf(parent, pos(6.2, -4.2), 7.2, "ArquivoB")
+		addTable(parent, pos(0, 3.6), 6.8, 3.6, "Arquivo")
+		addTapeVisual(parent, pos(0, 3.6) + Vector3.new(0, 2.73, 0))
+		addNote(parent, "ArquivoVazio", "CAIXA 11", "A etiqueta foi arrancada. A fita está no fundo.", pos(0, 3.6) + Vector3.new(0, 2.8, 0), "ArchiveTape")
+		makePromptAnchor(parent, "Painel_codigo", Vector3.new(36, 4, side * 6.8), "Keypad", "Digitar senha", "Teclado do arquivo", 0.25, 8)
+	elseif roomId == "304" then
+		local sofa = makePart(parent, "Sofá_304", Vector3.new(7.4, 2.2, 2.7), CFrame.new(pos(-5.2, -3.5) + Vector3.new(0, 1.3, 0)), COLORS.fabric, Enum.Material.Fabric)
+		makePart(parent, "Encosto_sofa", Vector3.new(7.4, 2.7, 0.65), sofa.CFrame * CFrame.new(0, 1.55, 0.95), Color3.fromRGB(58, 52, 47), Enum.Material.Fabric)
+		addTable(parent, pos(4.2, -3.2), 3.4, 2.5, "Telefone")
+		makePart(parent, "Telefone_antigo", Vector3.new(1.4, 0.55, 0.9), CFrame.new(pos(4.2, -3.2) + Vector3.new(0, 2.95, 0)), COLORS.black, Enum.Material.SmoothPlastic)
+		makePromptAnchor(parent, "Telefone", pos(4.2, -3.2) + Vector3.new(0, 3.5, 0), "Phone", "Atender", "Telefone sem linha", 0.8, 8)
+		makePart(parent, "Aparador_televisao", Vector3.new(5.8, 1.5, 2.4), CFrame.new(centerX + 7.2, 1.1, centerZ + 1.3), COLORS.wood, Enum.Material.WoodPlanks)
+		local tvCFrame = CFrame.new(centerX + 8.5, 5.0, centerZ + 1.3) * CFrame.Angles(0, math.rad(90), 0)
+		makePart(parent, "Televisao_CRT", Vector3.new(4.6, 3.5, 0.9), tvCFrame, COLORS.black, Enum.Material.SmoothPlastic)
+		local tvScreen = makePart(parent, "Tela_CRT", Vector3.new(3.8, 2.75, 0.08), tvCFrame * CFrame.new(0, 0, -0.5), Color3.fromRGB(37, 45, 49), Enum.Material.Glass, 0.08, false)
+		local tvGui = Instance.new("SurfaceGui")
+		tvGui.Name = "Imagem_do_tubo"
+		tvGui.Face = Enum.NormalId.Front
+		tvGui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		tvGui.PixelsPerStud = 55
+		tvGui.Parent = tvScreen
+		local tvText = Instance.new("TextLabel")
+		tvText.Size = UDim2.fromScale(1, 1)
+		tvText.BackgroundColor3 = Color3.fromRGB(24, 32, 35)
+		tvText.BackgroundTransparency = 0
+		tvText.Text = "03:17\\nSEM SINAL"
+		tvText.TextColor3 = Color3.fromRGB(161, 177, 180)
+		tvText.Font = Enum.Font.Code
+		tvText.TextScaled = true
+		tvText.TextWrapped = true
+		tvText.Parent = tvGui
+		local tvGlow = Instance.new("PointLight")
+		tvGlow.Color = Color3.fromRGB(125, 163, 176)
+		tvGlow.Brightness = 0.45
+		tvGlow.Range = 8
+		tvGlow.Shadows = false
+		tvGlow.Parent = tvScreen
+		addCabinet(parent, pos(5.8, 4), "304", 3.4)
+		local crowbarPosition = pos(2.5, -1.5) + Vector3.new(0, 0.11, 0)
+		addCrowbarVisual(parent, crowbarPosition)
+		makePromptAnchor(parent, "Pe_de_cabra", crowbarPosition + Vector3.new(0, 0.8, 0), "Crowbar", "Pegar", "Pé de cabra", 0.4, 8)
+		addNote(parent, "Foto304", "FOTOGRAFIA", "Uma turma diante do prédio. Onze rostos foram riscados.", pos(-5.2, -3.5) + Vector3.new(0, 2.8, 0), "Photo304")
+	else
+		addTable(parent, pos(-2.5, 2.5), 6, 3, "Zeladoria")
+		addShelf(parent, pos(6, -4), 6, "Zeladoria")
+		addCabinet(parent, pos(-6.7, -4), "Zeladoria", 4)
+		addNote(parent, "LogPlantao", "LIVRO DO PLANTÃO", "A ordem veio da prefeitura. O circuito 11 não aparece na planta.", pos(-2.5, 2.5) + Vector3.new(0, 2.8, 0), "LogPlantao")
+	end
+end
+
+local function addRoomWallDetails(parent, centerX, side, roomId, centerZ)
+	local frontSurfaceZ = side * 6.05
+	addWallLamp(parent, Vector3.new(centerX - 7.6, 8.3, frontSurfaceZ), "Corredor_" .. roomId)
+	local trimY = 0.9
+	makePart(parent, "Rodape_esquerdo_" .. roomId, Vector3.new(7.2, 0.3, 0.18), CFrame.new(centerX - 6.4, trimY, side * 6.0), COLORS.wood, Enum.Material.Wood)
+	makePart(parent, "Rodape_direito_" .. roomId, Vector3.new(7.2, 0.3, 0.18), CFrame.new(centerX + 6.4, trimY, side * 6.0), COLORS.wood, Enum.Material.Wood)
+	makePart(parent, "Moldura_superior_" .. roomId, Vector3.new(19.1, 0.25, 0.2), CFrame.new(centerX, 11.2, side * 6.0), COLORS.wallDark, Enum.Material.Wood)
+end
+
+local function buildWorld()
+	local previous = workspace:FindFirstChild("Linha11World")
+	if previous then
+		previous:Destroy()
+	end
+	world = Instance.new("Model")
+	world.Name = "Linha11World"
+	world.Parent = workspace
+
+	prompts = {}
+	doors = {}
+	lights = {}
+	roomPositions = {}
+
+	Lighting.ClockTime = 0.15
+	Lighting.Brightness = 0.55
+	Lighting.Ambient = Color3.fromRGB(21, 23, 26)
+	Lighting.OutdoorAmbient = Color3.fromRGB(10, 12, 16)
+	Lighting.FogColor = Color3.fromRGB(24, 26, 29)
+	Lighting.FogStart = 24
+	Lighting.FogEnd = 135
+	Lighting.EnvironmentDiffuseScale = 0.25
+	Lighting.EnvironmentSpecularScale = 0.2
+	local atmosphere = Lighting:FindFirstChild("Linha11Atmosphere") or Instance.new("Atmosphere")
+	atmosphere.Name = "Linha11Atmosphere"
+	atmosphere.Color = Color3.fromRGB(126, 133, 145)
+	atmosphere.Decay = Color3.fromRGB(47, 48, 53)
+	atmosphere.Density = 0.28
+	atmosphere.Glare = 0
+	atmosphere.Haze = 1.2
+	atmosphere.Parent = Lighting
+	local colorGrade = Lighting:FindFirstChild("Linha11ColorGrade") or Instance.new("ColorCorrectionEffect")
+	colorGrade.Name = "Linha11ColorGrade"
+	colorGrade.Brightness = -0.04
+	colorGrade.Contrast = 0.12
+	colorGrade.Saturation = -0.18
+	colorGrade.TintColor = Color3.fromRGB(210, 202, 187)
+	colorGrade.Parent = Lighting
+
+	makePart(world, "Laje_do_andar", Vector3.new(120, 0.6, 52), CFrame.new(0, -0.72, 0), COLORS.floor, Enum.Material.Concrete)
+	makePart(world, "Piso_do_corredor", Vector3.new(120, 0.6, 12), CFrame.new(0, -0.35, 0), COLORS.floor, Enum.Material.WoodPlanks)
+	makePart(world, "Teto_do_corredor", Vector3.new(120, 0.6, 12), CFrame.new(0, 12.2, 0), COLORS.wallDark, Enum.Material.Concrete)
+	makePart(world, "Parede_externa_norte", Vector3.new(120, 16, 0.8), CFrame.new(0, 7.5, -26.5), COLORS.wallDark, Enum.Material.Concrete)
+	makePart(world, "Parede_externa_sul", Vector3.new(120, 16, 0.8), CFrame.new(0, 7.5, 26.5), COLORS.wallDark, Enum.Material.Concrete)
+	makePart(world, "Limite_oeste", Vector3.new(0.8, 16, 54), CFrame.new(-60.5, 7.5, 0), COLORS.wallDark, Enum.Material.Concrete)
+	makePart(world, "Limite_leste", Vector3.new(0.8, 16, 54), CFrame.new(60.5, 7.5, 0), COLORS.wallDark, Enum.Material.Concrete)
+	local doorsNorth = { -36, -12, 12, 36 }
+	local doorsSouth = { -36, 12, 48 }
+	for _, side in ipairs({ -1, 1 }) do
+		local centers = side < 0 and doorsNorth or doorsSouth
+		local cursor = -60
+		for _, x in ipairs(centers) do
+			local leftEdge = x - 3
+			if leftEdge > cursor then
+				makePart(world, "Parede_corredor", Vector3.new(leftEdge - cursor, 12, 0.55), CFrame.new((leftEdge + cursor) / 2, 6, side * 6), COLORS.wall, Enum.Material.Plaster)
+			end
+			cursor = x + 3
+		end
+		if cursor < 60 then
+			makePart(world, "Parede_corredor", Vector3.new(60 - cursor, 12, 0.55), CFrame.new((60 + cursor) / 2, 6, side * 6), COLORS.wall, Enum.Material.Plaster)
+		end
+	end
+
+	for index, x in ipairs({ -47, -31, -15, 1, 17, 33, 49 }) do
+		addCeilingLight(world, Vector3.new(x, 11.8, 0), "Hall_" .. index)
+	end
+	for i, x in ipairs({ -50, -18, 18, 50 }) do
+		local indicator = makePart(world, "Sinalização_saida_" .. i, Vector3.new(2.8, 0.9, 0.18), CFrame.new(x, 10.1, -5.55), Color3.fromRGB(58, 44, 35), Enum.Material.Metal)
+		addText(world, "DISTRITO 11  •  ANDAR 3", indicator.Position + Vector3.new(0, 0, -0.11), Vector3.new(2.75, 0.84, 0.08), Enum.NormalId.Front, Color3.fromRGB(63, 50, 40))
+	end
+
+	local roomData = {
+		{ id = "301", x = -36, side = -1, title = "301 • MANUTENÇÃO", open = true },
+		{ id = "302", x = -12, side = -1, title = "302 • QUADROS", open = true },
+		{ id = "305", x = 12, side = -1, title = "305 • LAVANDERIA", open = true },
+		{ id = "303", x = 36, side = -1, title = "303 • ARQUIVO", open = false },
+		{ id = "Zeladoria", x = -36, side = 1, title = "ZELADORIA", open = true },
+		{ id = "304", x = 12, side = 1, title = "304 • RESIDÊNCIA", open = true },
+		{ id = "Repetidor", x = 48, side = 1, title = "SALA DO REPETIDOR", open = false },
+	}
+	for _, data in ipairs(roomData) do
+		if data.id ~= "Repetidor" then
+			local room, _, centerZ = addRoomShell(world, data.id, data.x, data.side, data.title, data.open)
+			roomFurniture(room, data.id, data.x, data.side, centerZ)
+			addRoomWallDetails(world, data.x, data.side, data.id, centerZ)
+		else
+			local room, _, centerZ = addRoomShell(world, data.id, data.x, data.side, data.title, data.open)
+			addCabinet(room, Vector3.new(data.x - 6, 0.3, centerZ - 4), "Repetidor", 5)
+			addShelf(room, Vector3.new(data.x + 6, 0.3, centerZ - 4), 5, "Repetidor")
+			makePart(room, "Repetidor_ECO", Vector3.new(5.5, 5.5, 3), CFrame.new(data.x, 3.1, centerZ), COLORS.metal, Enum.Material.CorrodedMetal)
+			addText(room, "ECO / CIRCUITO 11", Vector3.new(data.x, 6.2, centerZ - 1.65), Vector3.new(4.5, 1.1, 0.12), Enum.NormalId.Front, COLORS.black)
+			addLever(room, "RelayA", Vector3.new(data.x - 3.5, 0.3, centerZ + 1))
+			addLever(room, "RelayB", Vector3.new(data.x + 3.5, 0.3, centerZ + 1))
+			makePromptAnchor(room, "Terminal", Vector3.new(data.x, 3, centerZ + 5), "EndingConsole", "Usar terminal", "Repetidor ECO", 0.5, 8)
+			addRoomWallDetails(world, data.x, data.side, data.id, centerZ)
+		end
+	end
+
+	local maintenance = makePart(world, "Quadro_geral", Vector3.new(2.4, 3.8, 0.5), CFrame.new(0, 3.4, -5.35), COLORS.metal, Enum.Material.CorrodedMetal)
+	makePart(world, "Visor_quadro", Vector3.new(1.5, 0.75, 0.12), maintenance.CFrame * CFrame.new(0, 0.5, -0.32), COLORS.black, Enum.Material.Glass)
+	makePromptAnchor(world, "Disjuntor", Vector3.new(0, 3.4, -4.5), "Breaker", "Instalar fusível", "Quadro do andar", 0.9, 8)
+
+	local spawn = Instance.new("SpawnLocation")
+	spawn.Name = "InicioDoTurno"
+	spawn.Size = Vector3.new(5, 0.6, 5)
+	spawn.CFrame = CFrame.new(-53, 0.1, 0)
+	spawn.Anchored = true
+	spawn.Transparency = 1
+	spawn.CanCollide = false
+	spawn.Neutral = true
+	spawn.Duration = 0
+	spawn.Parent = world
+
+	makePart(world, "Porta_de_entrada", Vector3.new(0.5, 10, 12), CFrame.new(-59, 5, 0), COLORS.wood, Enum.Material.Wood)
+	addText(world, "DISTRITO 11 • ANDAR 3", Vector3.new(-57.7, 8.2, 0), Vector3.new(0.12, 3.2, 3.8), Enum.NormalId.Right, COLORS.wood)
+
+	return world, spawn
+end
+
+function MapBuilder.Build()
+	return buildWorld()
+end
+
+function MapBuilder.SetPower(enabled)
+	for _, record in ipairs(lights) do
+		record.light.Brightness = enabled and 1.5 or 0
+		record.light.Range = enabled and 22 or 0
+		record.bulb.Color = enabled and COLORS.light or COLORS.black
+		record.bulb.Material = enabled and Enum.Material.Neon or Enum.Material.Glass
+	end
+	if world then
+		world:SetAttribute("PowerOn", enabled)
+	end
+end
+
+function MapBuilder.OpenDoor(roomId, open)
+	local record = doors[roomId]
+	if not record then
+		return false
+	end
+	record.isOpen = open
+	record.prompt.ActionText = open and "Fechar" or "Abrir"
+	if open then
+		record.part.CanCollide = false
+	else
+		record.part.CanCollide = true
+	end
+	local target = record.closedCFrame * CFrame.Angles(0, math.rad(open and 82 or 0), 0)
+	TweenService:Create(record.part, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CFrame = target }):Play()
+	for index, p in ipairs(record.panels) do
+		local panelTarget = record.panelClosedCFrames[index] * CFrame.Angles(0, math.rad(open and 82 or 0), 0)
+		TweenService:Create(p, TweenInfo.new(0.35), { CFrame = panelTarget, Transparency = open and 1 or 0 }):Play()
+	end
+	return true
+end
+
+function MapBuilder.SetLever(actionId, enabled)
+	local record = levers[actionId]
+	if not record then
+		return false
+	end
+	local angle = enabled and math.rad(-30) or math.rad(25)
+	local target = record.baseCFrame * CFrame.new(0, 1.35, -0.08) * CFrame.Angles(0, 0, angle)
+	TweenService:Create(record.handle, TweenInfo.new(0.24, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CFrame = target }):Play()
+	TweenService:Create(record.grip, TweenInfo.new(0.24, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CFrame = target * CFrame.new(0, 0.82, 0) }):Play()
+	return true
+end
+
+function MapBuilder.GetPrompts()
+	return prompts
+end
+
+function MapBuilder.GetDoorState(roomId)
+	return doors[roomId] and doors[roomId].isOpen or false
+end
+
+function MapBuilder.GetWorld()
+	return world
+end
+
+function MapBuilder.GetRoomPosition(roomId)
+	return roomPositions[roomId]
+end
+
+function MapBuilder.GetPositionForAction(actionId)
+	for _, prompt in ipairs(prompts) do
+		if prompt:GetAttribute("ActionId") == actionId and prompt.Parent and prompt.Parent:IsA("BasePart") then
+			return prompt.Parent.Position
+		end
+	end
+	return nil
+end
+
+return MapBuilder
+
+
+
+
+
+
+
+
+]]></string>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="StarterPlayer" referent="9">
+    <Properties>
+      <string name="Name">StarterPlayer</string>
+    </Properties>
+    <Item class="StarterPlayerScripts" referent="10">
+      <Properties>
+        <string name="Name">StarterPlayerScripts</string>
+      </Properties>
+      <Item class="LocalScript" referent="11">
+        <Properties>
+          <string name="Name">Client</string>
+          <string name="Source"><![CDATA[local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ContextActionService = game:GetService("ContextActionService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local remote = ReplicatedStorage:WaitForChild("Linha11Remote")
+
+local COLORS = {
+	panel = Color3.fromRGB(17, 17, 18),
+	panel2 = Color3.fromRGB(30, 29, 27),
+	line = Color3.fromRGB(102, 77, 57),
+	text = Color3.fromRGB(225, 215, 195),
+	muted = Color3.fromRGB(160, 153, 140),
+	red = Color3.fromRGB(139, 37, 34),
+	gold = Color3.fromRGB(193, 151, 91),
+}
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "Linha11Interface"
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 20
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = playerGui
+
+local function corner(instance, radius)
+	local item = Instance.new("UICorner")
+	item.CornerRadius = UDim.new(0, radius or 5)
+	item.Parent = instance
+	return item
+end
+
+local function stroke(instance, color, transparency, thickness)
+	local item = Instance.new("UIStroke")
+	item.Color = color or COLORS.line
+	item.Transparency = transparency or 0
+	item.Thickness = thickness or 1
+	item.Parent = instance
+	return item
+end
+
+local function label(parent, name, position, size, text, font, textSize, color, align)
+	local item = Instance.new("TextLabel")
+	item.Name = name
+	item.Position = position
+	item.Size = size
+	item.BackgroundTransparency = 1
+	item.Text = text or ""
+	item.TextColor3 = color or COLORS.text
+	item.Font = font or Enum.Font.Garamond
+	item.TextSize = textSize or 20
+	item.TextWrapped = true
+	item.TextXAlignment = align or Enum.TextXAlignment.Left
+	item.TextYAlignment = Enum.TextYAlignment.Center
+	item.Parent = parent
+	return item
+end
+
+local function button(parent, name, position, size, text, primary)
+	local item = Instance.new("TextButton")
+	item.Name = name
+	item.Position = position
+	item.Size = size
+	item.BackgroundColor3 = primary and COLORS.red or COLORS.panel2
+	item.BorderSizePixel = 0
+	item.AutoButtonColor = true
+	item.Text = text
+	item.TextColor3 = COLORS.text
+	item.Font = Enum.Font.GothamMedium
+	item.TextSize = 16
+	item.TextWrapped = true
+	item.Parent = parent
+	corner(item, 5)
+	stroke(item, primary and Color3.fromRGB(174, 68, 58) or COLORS.line, 0.22, 1)
+	return item
+end
+
+local function panel(name, size, position)
+	local item = Instance.new("Frame")
+	item.Name = name
+	item.Size = size
+	item.Position = position
+	item.BackgroundColor3 = COLORS.panel
+	item.BackgroundTransparency = 0.05
+	item.BorderSizePixel = 0
+	item.Visible = false
+	item.Parent = gui
+	corner(item, 7)
+	stroke(item, COLORS.line, 0.15, 1)
+	return item
+end
+
+local overlay = Instance.new("Frame")
+overlay.Name = "FundoMenu"
+overlay.Size = UDim2.fromScale(1, 1)
+overlay.BackgroundColor3 = Color3.fromRGB(8, 8, 9)
+overlay.BackgroundTransparency = 0.1
+overlay.BorderSizePixel = 0
+overlay.Parent = gui
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(7, 7, 8)),
+	ColorSequenceKeypoint.new(0.58, Color3.fromRGB(19, 18, 17)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 6, 7)),
+})
+gradient.Rotation = 18
+gradient.Parent = overlay
+
+local menu = Instance.new("Frame")
+menu.Name = "MenuPrincipal"
+menu.Size = UDim2.fromScale(1, 1)
+menu.BackgroundTransparency = 1
+menu.Parent = overlay
+
+local title = label(menu, "Titulo", UDim2.new(0.07, 0, 0.14, 0), UDim2.new(0.7, 0, 0.14, 0), "LINHA 11", Enum.Font.Garamond, 62, COLORS.text)
+title.TextXAlignment = Enum.TextXAlignment.Left
+local subtitle = label(menu, "Subtitulo", UDim2.new(0.075, 0, 0.27, 0), UDim2.new(0.65, 0, 0.06, 0), "A  Ú L T I M A   C H A M A D A", Enum.Font.Garamond, 19, COLORS.gold)
+local teaser = label(menu, "Contexto", UDim2.new(0.075, 0, 0.37, 0), UDim2.new(0.39, 0, 0.16, 0), "Distrito 11 • 02:41\nO prédio será demolido ao amanhecer.\nA central ainda recebe chamadas do circuito 11.\nEntre com um amigo pelo Roblox para jogar em cooperação.", Enum.Font.Garamond, 19, COLORS.muted)
+teaser.TextYAlignment = Enum.TextYAlignment.Top
+
+local startButton = button(menu, "Comecar", UDim2.new(0.075, 0, 0.58, 0), UDim2.new(0.28, 0, 0.075, 0), "INICIAR INVESTIGAÇÃO", true)
+local shopMenuButton = button(menu, "Cosmeticos", UDim2.new(0.075, 0, 0.67, 0), UDim2.new(0.28, 0, 0.065, 0), "COSMÉTICOS OPCIONAIS", false)
+local version = label(menu, "Versao", UDim2.new(0.075, 0, 0.86, 0), UDim2.new(0.34, 0, 0.035, 0), "PROTÓTIPO ROBLOX  •  0.1.0", Enum.Font.Gotham, 12, COLORS.muted)
+
+local controls = Instance.new("Frame")
+controls.Name = "Controles"
+controls.AnchorPoint = Vector2.new(1, 0.5)
+controls.Position = UDim2.new(0.92, 0, 0.66, 0)
+controls.Size = UDim2.new(0.26, 0, 0.28, 0)
+controls.BackgroundColor3 = COLORS.panel
+controls.BackgroundTransparency = 0.23
+controls.BorderSizePixel = 0
+controls.Parent = menu
+corner(controls, 6)
+stroke(controls, COLORS.line, 0.45, 1)
+label(controls, "ControlTitle", UDim2.new(0.08, 0, 0.07, 0), UDim2.new(0.84, 0, 0.18, 0), "CONTROLES", Enum.Font.GothamMedium, 14, COLORS.gold)
+label(controls, "ControlText", UDim2.new(0.08, 0, 0.28, 0), UDim2.new(0.84, 0, 0.66, 0), "WASD  mover\nMouse  olhar\nE  interagir / esconder\nF  lanterna\nShift  correr (faz barulho)\nNo celular: controles Roblox + prompts", Enum.Font.Gotham, 14, COLORS.muted)
+
+local intro = panel("Intro", UDim2.new(0.66, 0, 0.45, 0), UDim2.new(0.17, 0, 0.275, 0))
+intro.BackgroundTransparency = 0.02
+local introHeader = label(intro, "Cabecalho", UDim2.new(0.07, 0, 0.08, 0), UDim2.new(0.86, 0, 0.12, 0), "ORDEM DE SERVIÇO  •  02:41", Enum.Font.GothamMedium, 14, COLORS.gold)
+local introBody = label(intro, "Texto", UDim2.new(0.08, 0, 0.25, 0), UDim2.new(0.84, 0, 0.48, 0), "", Enum.Font.Garamond, 25, COLORS.text)
+introBody.TextYAlignment = Enum.TextYAlignment.Center
+introBody.TextXAlignment = Enum.TextXAlignment.Center
+local introCount = label(intro, "Contador", UDim2.new(0.08, 0, 0.73, 0), UDim2.new(0.84, 0, 0.07, 0), "", Enum.Font.Gotham, 12, COLORS.muted, Enum.TextXAlignment.Center)
+local introNext = button(intro, "Continuar", UDim2.new(0.08, 0, 0.83, 0), UDim2.new(0.37, 0, 0.11, 0), "CONTINUAR", true)
+local introSkip = button(intro, "Pular", UDim2.new(0.55, 0, 0.83, 0), UDim2.new(0.37, 0, 0.11, 0), "PULAR INTRO", false)
+
+local hud = Instance.new("Frame")
+hud.Name = "HUD"
+hud.Size = UDim2.new(0.45, 0, 0.14, 0)
+hud.Position = UDim2.new(0.035, 0, 0.045, 0)
+hud.BackgroundColor3 = COLORS.panel
+hud.BackgroundTransparency = 0.18
+hud.BorderSizePixel = 0
+hud.Visible = false
+hud.Parent = gui
+corner(hud, 5)
+stroke(hud, COLORS.line, 0.48, 1)
+local hudTitle = label(hud, "HudTitulo", UDim2.new(0.045, 0, 0.1, 0), UDim2.new(0.8, 0, 0.25, 0), "DISTRITO 11  /  ANDAR 3", Enum.Font.GothamMedium, 13, COLORS.gold)
+local objectiveLabel = label(hud, "Objetivo", UDim2.new(0.045, 0, 0.38, 0), UDim2.new(0.9, 0, 0.5, 0), "Entre no terceiro andar.", Enum.Font.Garamond, 19, COLORS.text)
+
+local shopHudButton = button(gui, "LojaHud", UDim2.new(0.86, 0, 0.045, 0), UDim2.new(0.105, 0, 0.055, 0), "APOIAR", false)
+shopHudButton.Visible = false
+local toast = Instance.new("TextLabel")
+toast.Name = "Aviso"
+toast.AnchorPoint = Vector2.new(0.5, 0)
+toast.Position = UDim2.new(0.5, 0, 0.08, 0)
+toast.Size = UDim2.new(0.62, 0, 0.07, 0)
+toast.BackgroundColor3 = COLORS.panel
+toast.BackgroundTransparency = 0.08
+toast.BorderSizePixel = 0
+toast.TextColor3 = COLORS.text
+toast.Font = Enum.Font.Garamond
+toast.TextSize = 21
+toast.TextWrapped = true
+toast.Visible = false
+toast.Parent = gui
+corner(toast, 5)
+stroke(toast, COLORS.line, 0.35, 1)
+
+local documentPanel = panel("Documento", UDim2.new(0.62, 0, 0.43, 0), UDim2.new(0.19, 0, 0.285, 0))
+local docTitle = label(documentPanel, "Titulo", UDim2.new(0.07, 0, 0.08, 0), UDim2.new(0.86, 0, 0.15, 0), "", Enum.Font.Garamond, 25, COLORS.gold)
+local docText = label(documentPanel, "Corpo", UDim2.new(0.08, 0, 0.28, 0), UDim2.new(0.84, 0, 0.47, 0), "", Enum.Font.Garamond, 22, COLORS.text)
+docText.TextYAlignment = Enum.TextYAlignment.Top
+local docClose = button(documentPanel, "Fechar", UDim2.new(0.31, 0, 0.82, 0), UDim2.new(0.38, 0, 0.12, 0), "FECHAR", false)
+
+local keypadPanel = panel("Teclado", UDim2.new(0.37, 0, 0.69, 0), UDim2.new(0.315, 0, 0.155, 0))
+label(keypadPanel, "Titulo", UDim2.new(0.08, 0, 0.035, 0), UDim2.new(0.84, 0, 0.09, 0), "ARQUIVO 303", Enum.Font.Garamond, 24, COLORS.gold, Enum.TextXAlignment.Center)
+local codeDisplay = label(keypadPanel, "Codigo", UDim2.new(0.1, 0, 0.13, 0), UDim2.new(0.8, 0, 0.1, 0), "— — — —", Enum.Font.GothamMedium, 25, COLORS.text, Enum.TextXAlignment.Center)
+local keypadGrid = Instance.new("Frame")
+keypadGrid.Name = "Numeros"
+keypadGrid.Position = UDim2.new(0.12, 0, 0.27, 0)
+keypadGrid.Size = UDim2.new(0.76, 0, 0.56, 0)
+keypadGrid.BackgroundTransparency = 1
+keypadGrid.Parent = keypadPanel
+local grid = Instance.new("UIGridLayout")
+grid.CellPadding = UDim2.new(0.035, 0, 0.035, 0)
+grid.CellSize = UDim2.new(0.31, 0, 0.21, 0)
+grid.FillDirectionMaxCells = 3
+grid.SortOrder = Enum.SortOrder.LayoutOrder
+grid.Parent = keypadGrid
+
+local codeBuffer = ""
+local function formatCode(value)
+	if value == "" then
+		return "— — — —"
+	end
+	local spaced = string.gsub(value, ".", "%0 ")
+	return string.sub(spaced, 1, #spaced - 1)
+end
+local flashlightOn = true
+local modalActive = false
+local playing = false
+local menuActive = true
+local introLines = {}
+local introIndex = 0
+local readySent = false
+local finalShown = false
+local toastToken = 0
+local menuCameraCFrame = CFrame.lookAt(Vector3.new(18.6, 6.5, 21.0), Vector3.new(12, 3.7, 7.5))
+local menuLightPart
+
+local function showMenuCamera()
+	local camera = workspace.CurrentCamera
+	if not camera then
+		return
+	end
+	camera.CameraType = Enum.CameraType.Scriptable
+	camera.CFrame = menuCameraCFrame
+	if not menuLightPart then
+		menuLightPart = Instance.new("Part")
+		menuLightPart.Name = "Linha11MenuLuzLocal"
+		menuLightPart.Size = Vector3.new(0.1, 0.1, 0.1)
+		menuLightPart.Transparency = 1
+		menuLightPart.Anchored = true
+		menuLightPart.CanCollide = false
+		menuLightPart.CanTouch = false
+		menuLightPart.CanQuery = false
+		local light = Instance.new("PointLight")
+		light.Color = Color3.fromRGB(255, 205, 151)
+		light.Brightness = 1.1
+		light.Range = 48
+		light.Shadows = false
+		light.Parent = menuLightPart
+	end
+	menuLightPart.CFrame = menuCameraCFrame
+	menuLightPart.Parent = camera
+end
+
+local function restoreGameplayCamera()
+	local camera = workspace.CurrentCamera
+	if not camera then
+		return
+	end
+	if menuLightPart then
+		menuLightPart.Parent = nil
+	end
+	camera.CameraType = Enum.CameraType.Custom
+	local character = player.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		camera.CameraSubject = humanoid
+	end
+end
+
+local function setCapture(enabled)
+	modalActive = not enabled
+	if enabled then
+		player.CameraMode = Enum.CameraMode.LockFirstPerson
+		UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
+		UserInputService.MouseIconEnabled = false
+	else
+		player.CameraMode = Enum.CameraMode.Classic
+		UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+		UserInputService.MouseIconEnabled = true
+	end
+end
+
+local function closeOverlays()
+	documentPanel.Visible = false
+	keypadPanel.Visible = false
+	local active = gui:FindFirstChild("LojaRoblox")
+	if active then
+		active.Visible = false
+	end
+	local ending = gui:FindFirstChild("Finais")
+	if ending then
+		ending.Visible = false
+	end
+	if playing and intro.Visible == false then
+		setCapture(true)
+	end
+end
+
+local function showToast(text, kind)
+	toastToken += 1
+	local token = toastToken
+	toast.Text = text
+	toast.TextColor3 = kind == "error" and Color3.fromRGB(238, 142, 131) or kind == "success" and Color3.fromRGB(210, 194, 156) or COLORS.text
+	toast.Visible = true
+	toast.BackgroundTransparency = 0.08
+	task.delay(4.3, function()
+		if token == toastToken then
+			local fade = TweenService:Create(toast, TweenInfo.new(0.35), { BackgroundTransparency = 1, TextTransparency = 1 })
+			fade:Play()
+			fade.Completed:Wait()
+			if token == toastToken then
+				toast.Visible = false
+				toast.TextTransparency = 0
+			end
+		end
+	end)
+end
+
+local function showDocument(data)
+	closeOverlays()
+	docTitle.Text = data.title or "REGISTRO"
+	docText.Text = data.text or ""
+	documentPanel.Visible = true
+	setCapture(false)
+end
+
+local function ensureFlashlight()
+	local camera = workspace.CurrentCamera
+	if not camera then
+		return nil
+	end
+	local holder = camera:FindFirstChild("Linha11Flashlight")
+	if not holder then
+		holder = Instance.new("Part")
+		holder.Name = "Linha11Flashlight"
+		holder.Size = Vector3.new(0.1, 0.1, 0.1)
+		holder.Transparency = 1
+		holder.Anchored = true
+		holder.CanCollide = false
+		holder.CanTouch = false
+		holder.CanQuery = false
+		holder.Parent = camera
+		local attachment = Instance.new("Attachment")
+		attachment.Parent = holder
+		local light = Instance.new("SpotLight")
+		light.Name = "Facho"
+		light.Angle = 57
+		light.Range = 36
+		light.Brightness = 2.7
+		light.Shadows = false
+		light.Parent = attachment
+	end
+	local attachment = holder:FindFirstChildWhichIsA("Attachment")
+	local light = attachment and attachment:FindFirstChild("Facho")
+	if light then
+		light.Enabled = flashlightOn
+		light.Color = player:GetAttribute("Linha11AmberLight") == true and Color3.fromRGB(255, 196, 128) or Color3.fromRGB(229, 235, 240)
+	end
+	return light
+end
+
+local function completeIntro()
+	if readySent then
+		return
+	end
+	readySent = true
+	intro.Visible = false
+	playing = true
+	menuActive = false
+	restoreGameplayCamera()
+	flashlightOn = true
+	ensureFlashlight()
+	hud.Visible = true
+	shopHudButton.Visible = true
+	setCapture(true)
+	remote:FireServer("Ready")
+	showToast("Lanterna ligada  •  F para apagar  •  Jogue com um amigo pelo Roblox para cooperar.", "info")
+end
+
+local function advanceIntro()
+	introIndex += 1
+	if introIndex > #introLines then
+		completeIntro()
+		return
+	end
+	introBody.Text = introLines[introIndex]
+	introCount.Text = string.format("REGISTRO %02d / %02d", introIndex, #introLines)
+end
+
+introNext.Activated:Connect(advanceIntro)
+introSkip.Activated:Connect(completeIntro)
+docClose.Activated:Connect(function()
+	documentPanel.Visible = false
+	if finalShown then
+		finalShown = false
+		playing = false
+		hud.Visible = false
+		shopHudButton.Visible = false
+		overlay.Visible = true
+		menu.Visible = true
+		menuActive = true
+		docClose.Text = "FECHAR"
+		player.CameraMode = Enum.CameraMode.Classic
+		UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+		UserInputService.MouseIconEnabled = true
+		showMenuCamera()
+	elseif playing then
+		setCapture(true)
+	end
+end)
+
+local function openKeypad()
+	closeOverlays()
+	codeBuffer = ""
+	codeDisplay.Text = "— — — —"
+	keypadPanel.Visible = true
+	setCapture(false)
+end
+
+for number = 1, 9 do
+	local digit = tostring(number)
+	local key = button(keypadGrid, "Tecla" .. digit, UDim2.fromScale(0, 0), UDim2.fromScale(0, 0), digit, false)
+	key.LayoutOrder = number
+	key.TextSize = 22
+	key.Activated:Connect(function()
+		if #codeBuffer < 4 then
+			codeBuffer ..= digit
+			codeDisplay.Text = formatCode(codeBuffer)
+		end
+	end)
+end
+local clearKey = button(keypadGrid, "Limpar", UDim2.fromScale(0, 0), UDim2.fromScale(0, 0), "LIMPAR", false)
+clearKey.LayoutOrder = 10
+clearKey.TextSize = 13
+clearKey.Activated:Connect(function()
+	codeBuffer = ""
+	codeDisplay.Text = "— — — —"
+end)
+local zeroKey = button(keypadGrid, "Tecla0", UDim2.fromScale(0, 0), UDim2.fromScale(0, 0), "0", false)
+zeroKey.LayoutOrder = 11
+zeroKey.TextSize = 22
+zeroKey.Activated:Connect(function()
+	if #codeBuffer < 4 then
+		codeBuffer ..= "0"
+		codeDisplay.Text = formatCode(codeBuffer)
+	end
+end)
+local enterKey = button(keypadGrid, "Confirmar", UDim2.fromScale(0, 0), UDim2.fromScale(0, 0), "OK", true)
+enterKey.LayoutOrder = 12
+enterKey.TextSize = 15
+enterKey.Activated:Connect(function()
+	if #codeBuffer == 4 then
+		remote:FireServer("Code", codeBuffer)
+		keypadPanel.Visible = false
+		setCapture(true)
+	end
+end)
+
+local function createShop(data)
+	local old = gui:FindFirstChild("LojaRoblox")
+	if old then
+		old:Destroy()
+	end
+	local shop = panel("LojaRoblox", UDim2.new(0.66, 0, 0.62, 0), UDim2.new(0.17, 0, 0.19, 0))
+	shop.Visible = true
+	shop.Name = "LojaRoblox"
+	label(shop, "Titulo", UDim2.new(0.055, 0, 0.045, 0), UDim2.new(0.75, 0, 0.12, 0), "APOIE O PROJETO", Enum.Font.Garamond, 30, COLORS.gold)
+	label(shop, "Aviso", UDim2.new(0.06, 0, 0.17, 0), UDim2.new(0.88, 0, 0.12, 0), "A história, os itens de missão e os dois finais são gratuitos. Estes passes são apenas cosméticos.", Enum.Font.Gotham, 15, COLORS.muted)
+	local close = button(shop, "Fechar", UDim2.new(0.83, 0, 0.045, 0), UDim2.new(0.12, 0, 0.09, 0), "FECHAR", false)
+	close.Activated:Connect(function()
+		shop.Visible = false
+		if playing then
+			setCapture(true)
+		else
+			overlay.Visible = true
+			setCapture(false)
+		end
+	end)
+	for index, item in ipairs(data.items or {}) do
+		local tile = Instance.new("Frame")
+		tile.Name = item.key
+		tile.Position = UDim2.new(0.06, 0, 0.33 + (index - 1) * 0.29, 0)
+		tile.Size = UDim2.new(0.88, 0, 0.24, 0)
+		tile.BackgroundColor3 = COLORS.panel2
+		tile.BackgroundTransparency = 0.1
+		tile.BorderSizePixel = 0
+		tile.Parent = shop
+		corner(tile, 5)
+		stroke(tile, COLORS.line, 0.4, 1)
+		label(tile, "Nome", UDim2.new(0.045, 0, 0.08, 0), UDim2.new(0.62, 0, 0.28, 0), item.name, Enum.Font.GothamMedium, 17, COLORS.text)
+		label(tile, "Descricao", UDim2.new(0.045, 0, 0.42, 0), UDim2.new(0.61, 0, 0.48, 0), item.description, Enum.Font.Gotham, 13, COLORS.muted)
+		local actionText = item.owned and "ADQUIRIDO" or item.enabled and "VER COMPRA" or "EM PREPARAÇÃO"
+		local buy = button(tile, "Comprar", UDim2.new(0.7, 0, 0.26, 0), UDim2.new(0.25, 0, 0.48, 0), actionText, item.enabled and not item.owned)
+		buy.TextSize = 13
+		buy.Activated:Connect(function()
+			if item.owned then
+				showToast("Você já tem este cosmético.", "info")
+			elseif item.enabled then
+				remote:FireServer("Purchase", item.key)
+			else
+				showToast("A compra será ativada quando o jogo estiver publicado no Roblox.", "info")
+			end
+		end)
+	end
+	label(shop, "Nota", UDim2.new(0.06, 0, 0.91, 0), UDim2.new(0.88, 0, 0.06, 0), "Sem bônus de velocidade, luz, dano ou acesso à história.", Enum.Font.Gotham, 12, COLORS.muted)
+	setCapture(false)
+end
+
+local function openEnding(data)
+	closeOverlays()
+	local ending = gui:FindFirstChild("Finais")
+	if ending then
+		ending:Destroy()
+	end
+	ending = panel("Finais", UDim2.new(0.64, 0, 0.58, 0), UDim2.new(0.18, 0, 0.21, 0))
+	ending.Visible = true
+	label(ending, "Titulo", UDim2.new(0.07, 0, 0.07, 0), UDim2.new(0.86, 0, 0.13, 0), "A ÚLTIMA CHAMADA", Enum.Font.Garamond, 30, COLORS.gold, Enum.TextXAlignment.Center)
+	label(ending, "Texto", UDim2.new(0.08, 0, 0.25, 0), UDim2.new(0.84, 0, 0.24, 0), "A gravação está pronta. O que vocês fazem com ela?", Enum.Font.Garamond, 21, COLORS.text, Enum.TextXAlignment.Center)
+	local transmit = button(ending, "Transmitir", UDim2.new(0.08, 0, 0.57, 0), UDim2.new(0.39, 0, 0.2, 0), "TRANSMITIR\n" .. (data.transmit or "A verdade"), true)
+	local cut = button(ending, "Cortar", UDim2.new(0.53, 0, 0.57, 0), UDim2.new(0.39, 0, 0.2, 0), "CORTAR A LINHA\n" .. (data.cut or "O silêncio"), false)
+	transmit.TextSize = 15
+	cut.TextSize = 15
+	transmit.Activated:Connect(function()
+		remote:FireServer("Ending", "Transmit")
+		ending.Visible = false
+		setCapture(true)
+	end)
+	cut.Activated:Connect(function()
+		remote:FireServer("Ending", "Cut")
+		ending.Visible = false
+		setCapture(true)
+	end)
+	setCapture(false)
+end
+
+local latestState = nil
+local function updateState(state)
+	latestState = state
+	if state.objective then
+		objectiveLabel.Text = string.format("OBJETIVO %02d  •  %s", state.stage or 0, state.objective)
+	end
+end
+
+remote.OnClientEvent:Connect(function(eventName, data)
+	if eventName == "StartGame" then
+		menuActive = false
+		restoreGameplayCamera()
+		overlay.Visible = false
+		menu.Visible = false
+		playing = false
+		readySent = false
+		hud.Visible = false
+		shopHudButton.Visible = false
+		introLines = data.prologue or {}
+		introIndex = 0
+		intro.Visible = true
+		advanceIntro()
+	elseif eventName == "MissionState" then
+		updateState(data)
+	elseif eventName == "Message" then
+		showToast(data.text or "", data.kind)
+	elseif eventName == "Document" then
+		showDocument(data)
+	elseif eventName == "OpenKeypad" then
+		openKeypad()
+	elseif eventName == "Shop" then
+		createShop(data)
+	elseif eventName == "OpenEnding" then
+		openEnding(data)
+	elseif eventName == "Ending" then
+		closeOverlays()
+		finalShown = true
+		documentPanel.Visible = true
+		docTitle.Text = data.title or "FIM"
+		docText.Text = data.text or ""
+		docClose.Text = "ENCERRAR TURNO"
+		setCapture(false)
+	elseif eventName == "Caught" then
+		showToast(data.text or "O Ouvinte encontrou você.", "error")
+	end
+end)
+
+local shopFunction = function()
+	if not playing then
+		overlay.Visible = false
+	end
+	remote:FireServer("OpenShop")
+end
+shopMenuButton.Activated:Connect(shopFunction)
+shopHudButton.Activated:Connect(shopFunction)
+
+startButton.Activated:Connect(function()
+	remote:FireServer("Start")
+end)
+
+local function toggleFlashlight(_, inputState)
+	if inputState ~= Enum.UserInputState.Begin or not playing or modalActive then
+		return Enum.ContextActionResult.Pass
+	end
+	flashlightOn = not flashlightOn
+	local light = ensureFlashlight()
+	if light then
+		light.Enabled = flashlightOn
+	end
+	showToast(flashlightOn and "Lanterna ligada  •  F para apagar" or "Lanterna apagada", "info")
+	return Enum.ContextActionResult.Sink
+end
+
+ContextActionService:BindAction("Linha11Flashlight", toggleFlashlight, true, Enum.KeyCode.F, Enum.KeyCode.ButtonY)
+ContextActionService:SetTitle("Linha11Flashlight", "Lanterna")
+ContextActionService:SetPosition("Linha11Flashlight", UDim2.new(0.8, 0, 0.55, 0))
+
+local function sprintAction(_, inputState)
+	if not playing or modalActive then
+		return Enum.ContextActionResult.Pass
+	end
+	if inputState == Enum.UserInputState.Begin then
+		remote:FireServer("Sprint", true)
+	elseif inputState == Enum.UserInputState.End or inputState == Enum.UserInputState.Cancel then
+		remote:FireServer("Sprint", false)
+	end
+	return Enum.ContextActionResult.Sink
+end
+
+ContextActionService:BindAction("Linha11Sprint", sprintAction, true, Enum.KeyCode.LeftShift, Enum.KeyCode.ButtonL3)
+ContextActionService:SetTitle("Linha11Sprint", "Correr")
+ContextActionService:SetPosition("Linha11Sprint", UDim2.new(0.68, 0, 0.68, 0))
+
+RunService:BindToRenderStep("Linha11CameraLight", Enum.RenderPriority.Camera.Value + 1, function()
+	local camera = workspace.CurrentCamera
+	if not camera then
+		return
+	end
+	local holder = camera:FindFirstChild("Linha11Flashlight")
+	if playing and not holder then
+		ensureFlashlight()
+		holder = camera:FindFirstChild("Linha11Flashlight")
+	end
+	if holder then
+		holder.CFrame = camera.CFrame
+		local attachment = holder:FindFirstChildWhichIsA("Attachment")
+		local light = attachment and attachment:FindFirstChild("Facho")
+		if light then
+			light.Enabled = flashlightOn
+			light.Color = player:GetAttribute("Linha11AmberLight") == true and Color3.fromRGB(255, 196, 128) or Color3.fromRGB(229, 235, 240)
+		end
+	end
+end)
+
+task.defer(function()
+	task.wait(0.8)
+	if menuActive then
+		showMenuCamera()
+	end
+end)
+
+local characterAudioConnection
+
+local function softenDefaultFootsteps(character)
+	if characterAudioConnection then
+		characterAudioConnection:Disconnect()
+		characterAudioConnection = nil
+	end
+	local function silenceFootstep(item)
+		if item:IsA("Sound") and (item.Name == "Running" or item.Name == "Walking" or item.Name == "Jumping" or item.Name == "Landing") then
+			item.Volume = 0
+			item:Stop()
+		end
+	end
+	for _, item in ipairs(character:GetDescendants()) do
+		silenceFootstep(item)
+	end
+	characterAudioConnection = character.DescendantAdded:Connect(silenceFootstep)
+end
+
+if player.Character then
+	softenDefaultFootsteps(player.Character)
+end
+
+player.CharacterAdded:Connect(function(character)
+	task.wait(0.4)
+	softenDefaultFootsteps(character)
+	if playing then
+		setCapture(not modalActive)
+	end
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed or not keypadPanel.Visible then
+		return
+	end
+	local key = input.KeyCode
+	local digits = {
+		[Enum.KeyCode.Zero] = "0",
+		[Enum.KeyCode.One] = "1",
+		[Enum.KeyCode.Two] = "2",
+		[Enum.KeyCode.Three] = "3",
+		[Enum.KeyCode.Four] = "4",
+		[Enum.KeyCode.Five] = "5",
+		[Enum.KeyCode.Six] = "6",
+		[Enum.KeyCode.Seven] = "7",
+		[Enum.KeyCode.Eight] = "8",
+		[Enum.KeyCode.Nine] = "9",
+	}
+	if digits[key] and #codeBuffer < 4 then
+		codeBuffer ..= digits[key]
+		codeDisplay.Text = formatCode(codeBuffer)
+	elseif key == Enum.KeyCode.Backspace then
+		codeBuffer = string.sub(codeBuffer, 1, math.max(0, #codeBuffer - 1))
+		codeDisplay.Text = #codeBuffer > 0 and formatCode(codeBuffer) or "— — — —"
+	elseif key == Enum.KeyCode.Return and #codeBuffer == 4 then
+		remote:FireServer("Code", codeBuffer)
+		keypadPanel.Visible = false
+		setCapture(true)
+	end
+end)
+
+
+
+
+
+
+
+
+
+]]></string>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

@@ -1,12 +1,20 @@
 name: Web experimental
 
-# Push em development: testa, compila e publica em /dev/.
+# LEGADO Godot: só roda quando arquivos Godot/Web mudam; não é a build Roblox.
 # Push em ci-ensaio/**: testa e compila, mas NUNCA publica (usado para ensaios).
 on:
   push:
     branches:
       - development
       - 'ci-ensaio/**'
+    paths:
+      - 'game/**'
+      - 'assets/**'
+      - 'web/**'
+      - 'tests/**'
+      - 'tools/**'
+      - 'project.godot'
+      - '.github/actions/build-web/**'
 
 permissions:
   contents: read

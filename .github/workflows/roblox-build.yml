@@ -1,0 +1,67 @@
+name: Roblox place
+
+on:
+  push:
+    branches:
+      - development
+    paths:
+      - "roblox/**"
+      - ".github/workflows/roblox-build.yml"
+  pull_request:
+    branches:
+      - development
+    paths:
+      - "roblox/**"
+      - ".github/workflows/roblox-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-place:
+    name: Validate Luau and build Studio place
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Luau 0.746
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL https://github.com/luau-lang/luau/releases/download/0.746/luau-ubuntu.zip -o /tmp/luau.zip
+          echo "30f11c9cde8be2dc0e3066d210705532aac3726a2db89a6c5078080b6faa6cf8  /tmp/luau.zip" | sha256sum -c -
+          mkdir -p /tmp/luau
+          unzip -q /tmp/luau.zip -d /tmp/luau
+          chmod +x /tmp/luau/luau-compile
+
+      - name: Check Luau syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            /tmp/luau/luau-compile "$file" >/dev/null
+            echo "Luau OK: $file"
+          done < <(find roblox/src -type f -name '*.lua' -print0)
+
+      - name: Install Rojo 7.7.1
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL https://github.com/rojo-rbx/rojo/releases/download/v7.7.1/rojo-7.7.1-linux-x86_64.zip -o /tmp/rojo.zip
+          echo "00feb4fa0829a1dd72b49df2639da519a352bfe13cadcd83969e2ba2bb5693c4  /tmp/rojo.zip" | sha256sum -c -
+          mkdir -p /tmp/rojo
+          unzip -q /tmp/rojo.zip -d /tmp/rojo
+          chmod +x /tmp/rojo/rojo
+
+      - name: Build Roblox Studio place
+        run: /tmp/rojo/rojo build roblox/default.project.json --output roblox/LINHA11_Roblox.rbxlx
+
+      - name: Upload place file
+        uses: actions/upload-artifact@v4
+        with:
+          name: LINHA11-Roblox-Place
+          path: roblox/LINHA11_Roblox.rbxlx
+          if-no-files-found: error
+          retention-days: 30

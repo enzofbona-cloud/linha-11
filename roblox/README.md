@@ -1,0 +1,58 @@
+# Roblox: LINHA 11 — A Última Chamada
+
+Esta é a reconstrução ativa do jogo como experiência cooperativa do Roblox. A versão Godot permanece no histórico e nos arquivos antigos do repositório; ela não é a experiência atual.
+
+## Abrir e jogar no Roblox Studio
+
+1. Instale o Roblox Studio e abra roblox/LINHA11_Roblox.rbxlx.
+2. No Studio, pressione Play para iniciar um jogador.
+3. Para testar cooperação, abra a guia Test, escolha 2 Players e pressione Start.
+4. No Creator Hub, ajuste o limite do servidor para dois jogadores antes de publicar.
+5. Convide um amigo pela interface de convite do Roblox quando a experiência estiver publicada.
+
+O mapa é construído pelo servidor quando a sessão começa. O arquivo .rbxlx contém os scripts e a configuração da experiência; ele não é um site para abrir no navegador. GitHub Pages não executa experiências Roblox.
+
+## Controles
+
+- WASD e mouse: mover e olhar.
+- E: usar portas, ler documentos, esconder-se e interagir.
+- F: lanterna (já começa ligada).
+- Shift: correr; correr faz o Ouvinte ouvir e perseguir.
+- Celular e controle: movimento padrão do Roblox, botões de ação na tela e prompts compatíveis.
+
+O menu inicial mantém o cursor livre. Ao começar a introdução, a câmera entra em primeira pessoa e o cursor é capturado. Modais de documentos, senha, finais e loja liberam o cursor temporariamente.
+
+## Missão e regras da história
+
+A missão cooperativa está em docs/historia-e-missao.md. O percurso inclui a chave no 305, o fusível na gaveta trancada do 301, três fragmentos da senha nos 301/302/305, o arquivo 303, a fita, o telefone no 304, o Ouvinte e a sala do repetidor. O código é 0317. A história termina em uma escolha entre transmitir a gravação ou cortar a linha.
+
+O estado das pistas, portas, energia, criatura e puzzles é controlado pelo servidor. O segundo jogador precisa acionar a outra alavanca do repetidor; numa sessão solo, a janela de 12 segundos permite testar as duas alavancas com um único jogador. Esconder-se em um guarda-roupa impede o Ouvinte de capturar o jogador.
+
+## Monetização
+
+Há uma loja de passes cosméticos, sem loot boxes nem vantagens de combate:
+
+- Lanterna âmbar: muda somente a cor da luz; não aumenta alcance ou brilho.
+- Distintivo Aurora: título visual sobre o personagem.
+
+A campanha, as ferramentas de missão e os dois finais não são pagos. Os IDs dos passes em src/shared/MonetizationConfig.lua estão como 0; compras ficam desativadas até a experiência ser publicada e os passes serem criados no Creator Hub. Depois, substitua os zeros pelos IDs reais. O Roblox mostra o preço oficial no próprio prompt de compra. Não há checkout externo. A documentação atual do Roblox informa que o criador recebe 70% do Robux gasto em compras dentro da experiência; a conversão em dinheiro passa pelo DevEx, com requisitos próprios, incluindo idade mínima de 13 anos e 30.000 Robux ganhos.
+
+O Roblox permite acesso pago único em Robux, mas isso bloquearia a entrada de quem não pagar e reduz a descoberta do jogo. Para este projeto, a escolha é manter a entrada gratuita e usar apenas cosméticos opcionais. A hospedagem dos servidores e o multiplayer não exigem uma mensalidade separada. Para liberar uma experiência pública a usuários de todas as idades, o Roblox atualmente exige verificação de idade, 2FA e assinatura Roblox Plus/Premium ativa por dois meses consecutivos ou uma taxa única reembolsável de 1.000 Robux; a experiência também passa por avaliação. Para acesso público restrito a usuários com verificação de idade a partir de 16 anos, há requisitos diferentes e não se aplica essa taxa de alcance para todas as idades. As regras podem mudar. Para menores de 16 anos, a classificação e o alcance dependem da análise do Roblox. Responsáveis podem configurar limites de gastos.
+
+## Validar e gerar o lugar
+
+Requisitos locais: Rojo 7.7.1 e Luau 0.746. O script procura os binários em build/rojo/rojo.exe e build/luau/luau-compile.exe:
+
+    .\roblox\tools\build-place.ps1
+
+O script compila cada arquivo Luau e gera roblox/LINHA11_Roblox.rbxlx. O workflow Roblox place repete essas verificações a cada push de roblox/** em development e deixa o .rbxlx disponível como artefato do GitHub Actions.
+
+## Limites desta entrega
+
+- Esta pasta contém a primeira reconstrução jogável da missão, não os seis capítulos originais.
+- O mapa usa materiais e peças nativas do Roblox para manter o lugar leve; arte de alta qualidade, malhas personalizadas, animações articuladas, voz e efeitos sonoros com IDs publicados ainda precisam de uma etapa de assets no Studio.
+- O Ouvinte desta versão é um modelo procedural de silhueta 3D. Ele não usa ainda o arquivo GLB enviado: o modelo precisa ser convertido/importado pelo Studio e vinculado a uma experiência Roblox.
+- Não há salvamento entre servidores. O progresso compartilhado existe durante a sessão.
+- Este projeto ainda precisa ser aberto e jogado no Roblox Studio. Compilar um .rbxlx não comprova execução no motor nem publicação na conta Roblox.
+
+
