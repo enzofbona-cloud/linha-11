@@ -90,10 +90,13 @@ furtividade.*
 ### 2. Apartamento 304
 O apartamento é maior por dentro do que por fora e muda quando ninguém está
 olhando. Fotografias mostram uma família; em todas, o rosto do menino está
-riscado. Um gravador de fita reproduz uma briga que ainda não aconteceu entre
-os dois protagonistas. Puzzle de sequência sonora com três telefones.
+riscado. Um gravador de fita reproduz uma discussão futura entre os protagonistas:
+Davi diz “Eu não voltei aqui.” Íris responde “Você nunca saiu.”
+Puzzle de sequência sonora com três telefones: grave → agudo → médio. Ao resolver, a porta dá para uma rua que não existe no mapa.
 *Mecânicas: cooperação (um segura a porta, o outro atravessa), gravações,
 sequência sonora, primeiro esconderijo.*
+
+As falas “Eu não voltei aqui.” e “Você nunca saiu.” devem ser repetidas palavra por palavra pelos protagonistas mais adiante.
 
 ### 3. Sem Sinal
 O prédio os solta na rua errada. Os rádios só recebem. A central da Linha 11

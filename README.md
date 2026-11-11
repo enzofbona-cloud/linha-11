@@ -3,11 +3,7 @@
 Jogo cooperativo de terror em primeira pessoa para dois jogadores, em desenvolvimento.
 Versão comercial planejada para PC/Steam; versão Web usada para testes rápidos.
 
-**Estado atual: Fase 3 (protótipo), em andamento.** Está jogável a primeira parte do Capítulo 1:
-menu, movimentação em primeira pessoa, lanterna, portas, inventário, documentos, puzzle do
-fusível, fechadura com senha, o Ouvinte (inimigo que reage a som), furtividade e áudio gerado
-por código. Ainda não há multiplayer, combate, crafting, saúde, salvamento nem configurações
-gráficas. A história completa está em `docs/historia.md`.
+**Estado atual: protótipo jogável dos Capítulos 1 e 2, em andamento.** O Capítulo 1 inclui exploração, lanterna, documentos, fusível, senha, furtividade e o Ouvinte. A continuação no Apartamento 304 usa arte original para o papel de parede e a fotografia, gravação legendada de uma discussão futura e puzzle de três telefones. Ainda não há cooperação online, combate, crafting, saúde, salvamento ou configurações gráficas. A história está em `docs/historia.md`.
 
 ## Endereço de testes
 
@@ -74,8 +70,8 @@ repositório privado. Nenhuma credencial fica no código.
 | Arquivo | Tamanho |
 |---|---|
 | `index.wasm` (motor) | 37,7 MB |
-| `index.pck` (conteúdo do jogo, com texturas 1K) | 26,0 MB |
-| Total | 64,0 MB |
+| `index.pck` (conteúdo do jogo, com texturas e artes do Capítulo 2) | 31,0 MB |
+| Total | 69,0 MB |
 
 Limites do GitHub Pages: 100 MB por arquivo e 1 GB por site. O script
 `tools/verify-web-build.mjs` barra builds que passem disso.
@@ -84,11 +80,12 @@ Limites do GitHub Pages: 100 MB por arquivo e 1 GB por site. O script
 
 ```
 assets/textures/     texturas PBR (CC0, ver LICENCAS.md)
+assets/characters/   Ouvinte e arte original do Apartamento 304
 game/core/           autoloads (BuildInfo, GameInput)
 game/player/         jogador em primeira pessoa
 game/interact/       portas, itens, telefone
 game/world/          peças para montar cenários
-game/scenes/         cenas (boot, protótipo)
+game/scenes/         cenas (boot, protótipo, capítulo 2)
 game/ui/             menus e HUD
 tests/               testes GUT
 tools/               scripts de build, verificação e teste

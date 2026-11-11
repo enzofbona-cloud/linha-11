@@ -263,7 +263,8 @@ func _on_call_finished() -> void:
 	if _sting != null:
 		_sting.play()
 	_modal.show_ending("O PRIMEIRO CHAMADO",
-		"A voz no telefone sabia o seu nome.\n\nA transcrição no 303 descrevia esta noite, com 17 anos de antecedência.\n\nFim da primeira parte do Capítulo 1. Obrigado por testar.")
+		"A voz no telefone sabia o seu nome.\n\nA transcrição no 303 descrevia esta noite, com 17 anos de antecedência.\n\nFim da primeira parte do Capítulo 1. A voz no telefone conhece a gravação do futuro.",
+		"res://game/scenes/chapter2/apartment_304.tscn")
 
 
 # --- construção do cenário ---

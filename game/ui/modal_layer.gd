@@ -21,6 +21,8 @@ var _fade: ColorRect
 var _ending: Control
 var _ending_title: Label
 var _ending_body: Label
+var _ending_continue: Button
+var _ending_next_scene := ""
 var _beep: AudioStreamPlayer
 
 
@@ -128,6 +130,10 @@ func _build_ending() -> void:
 	var hint := UiKit.label("[Esc] para voltar ao menu", 14, UiKit.MUTED)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(hint)
+	_ending_continue = UiKit.button("Continuar")
+	_ending_continue.visible = false
+	_ending_continue.pressed.connect(_on_ending_continue)
+	box.add_child(_ending_continue)
 
 
 # --- documento ---
@@ -228,7 +234,15 @@ func blackout(midpoint: Callable, text := "") -> void:
 	tween.tween_property(_fade, "color:a", 0.0, 0.9)
 
 
-func show_ending(title: String, body: String) -> void:
+func show_ending(title: String, body: String, next_scene := "") -> void:
 	_ending_title.text = title
 	_ending_body.text = body
+	_ending_next_scene = next_scene
+	_ending_continue.visible = not next_scene.is_empty()
 	_ending.visible = true
+
+
+func _on_ending_continue() -> void:
+	if _ending_next_scene.is_empty():
+		return
+	get_tree().change_scene_to_file(_ending_next_scene)

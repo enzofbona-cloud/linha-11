@@ -102,6 +102,23 @@ static func click() -> AudioStreamWAV:
 		return _wav(s))
 
 
+
+## Notas puras para o puzzle do apartamento 304: grave, médio e agudo.
+static func sequence_note(index: int) -> AudioStreamWAV:
+	return _cached("sequence_%d" % index, func():
+		var frequencies := [196.0, 261.6, 329.6]
+		var frequency: float = frequencies[clampi(index, 0, 2)]
+		var samples := PackedFloat32Array()
+		samples.resize(int(RATE * 0.72))
+		for i in samples.size():
+			var t := float(i) / RATE
+			var attack := minf(t / 0.025, 1.0)
+			var release := clampf((0.72 - t) / 0.18, 0.0, 1.0)
+			var fundamental := sin(TAU * frequency * t)
+			var overtone := sin(TAU * frequency * 2.01 * t) * 0.16
+			samples[i] = (fundamental + overtone) * attack * release * 0.28
+		return _wav(samples))
+
 ## Ranger de porta.
 static func creak() -> AudioStreamWAV:
 	return _cached("creak", func():
