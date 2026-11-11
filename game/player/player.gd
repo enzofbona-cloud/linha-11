@@ -113,7 +113,7 @@ func _init() -> void:
 	flashlight.name = "Flashlight"
 	flashlight.position = Vector3(0.18, -0.12, 0.0)
 	flashlight.light_color = Color(1.0, 0.95, 0.85)
-	flashlight.light_energy = 6.0
+	flashlight.light_energy = 4.0
 	flashlight.spot_range = 16.0
 	flashlight.spot_angle = 34.0
 	flashlight.spot_attenuation = 1.1

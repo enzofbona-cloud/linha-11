@@ -91,7 +91,7 @@ func test_capitulo_2_tem_luz_suficiente_para_jogar():
 		if child is OmniLight3D:
 			luzes += 1
 	assert_gte(luzes, 8, "abajures ao longo do apartamento")
-	assert_almost_eq(scene.player.flashlight.light_energy, 6.0, 0.01, "lanterna com a força padrão")
+	assert_almost_eq(scene.player.flashlight.light_energy, 4.0, 0.01, "lanterna ajustada para não estourar as texturas")
 	get_tree().paused = false
 
 

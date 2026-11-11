@@ -20,3 +20,11 @@ assets/models/props/*.glb -filter -diff -merge -text
 assets/textures/floor_aged/*.jpg -filter -diff -merge -text
 assets/textures/wall_aged/*.jpg -filter -diff -merge -text
 assets/textures/creature_hide/*.jpg -filter -diff -merge -text
+# Original frame art is small and stays in ordinary Git (no LFS quota).
+assets/textures/frames/*.png -filter -diff -merge -text
+assets/textures/frames/*.svg -filter -diff -merge -text
+assets/models/characters/*.glb -filter -diff -merge -text
+assets/models/characters/*.jpg -filter -diff -merge -text
+assets/models/characters/*.png -filter -diff -merge -text
+# Small menu artwork stays in ordinary Git too.
+assets/ui/*.png -filter -diff -merge -text

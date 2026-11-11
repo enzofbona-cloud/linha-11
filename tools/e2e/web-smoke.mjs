@@ -84,9 +84,8 @@ try {
   await sleep(2500);
   await page.screenshot({ path: join(shotsDir, '01-menu.png') });
 
-  // Menu: o botão "Nova campanha" já tem foco; Enter inicia.
-  await page.mouse.click(900, 600);
-  await page.keyboard.press('Enter');
+  // Inicia pelo botão real do menu, dentro da janela de teste.
+  await page.mouse.click(250, 275);
   const inGame = await waitFor(async () => (await state())?.scene === 'Prototype', 30000);
   check('Nova campanha abre o Capítulo 1', !!inGame);
   await sleep(1200);

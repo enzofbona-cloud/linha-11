@@ -205,10 +205,12 @@ func test_capitulo_comeca_sem_energia_e_com_ouvinte_dormindo():
 	add_child_autofree(cena)
 	await wait_physics_frames(5)
 	assert_false(cena.power_on)
-	assert_true(cena.player.flashlight.visible, "lanterna deve iniciar ligada para o corredor ser visivel" )
+	assert_true(cena.player.flashlight.visible, "lanterna deve iniciar ligada para o corredor ser visivel")
 	assert_eq(cena.listener.state, Listener.State.DORMANT)
 	assert_true(cena.get_node("Door303").sealed)
-
+	assert_true(cena.get_node("DoorZeladoria").sealed)
+	assert_true(cena.get_node("Door305").sealed)
+	assert_eq(cena.get_node("Keypad303").code, "----", "a senha só existe depois de reunir as pistas")
 
 func test_fusivel_liga_a_energia_e_o_telefone():
 	var cena = load("res://game/scenes/prototype/prototype.tscn").instantiate()
@@ -218,46 +220,69 @@ func test_fusivel_liga_a_energia_e_o_telefone():
 	cena.get_node("FuseBox").interact(cena.player)
 	assert_true(cena.power_on)
 	assert_true(cena.get_node("Keypad303").has_power)
+	assert_false(cena.get_node("DoorZeladoria").sealed)
+	assert_true(cena.get_node("Fragment1").visible, "a pista do 302 aparece quando volta a energia")
+	assert_true(cena.get_node("Phone").is_ringing, "telefone começa a tocar com a energia")
 
-
-func test_pegar_a_chave_acorda_o_ouvinte_e_apaga_a_luz():
+func test_pegar_a_chave_apaga_a_luz_e_espera_o_jogador_sair_do_303():
 	var cena = load("res://game/scenes/prototype/prototype.tscn").instantiate()
 	add_child_autofree(cena)
 	await wait_physics_frames(5)
 	cena.player.add_item("fusivel", "Fusível")
 	cena.get_node("FuseBox").interact(cena.player)
+	cena.player.global_position = Vector3(4.1, 0.05, -18.4)
 	cena.get_node("Key304").interact(cena.player)
 	assert_false(cena.power_on)
-	assert_ne(cena.listener.state, Listener.State.DORMANT)
-
+	assert_eq(cena.listener.state, Listener.State.DORMANT, "dentro do 303 o Ouvinte não aparece")
+	cena.player.global_position = Vector3(0.6, 0.05, -18.4)
+	await wait_physics_frames(5)
+	assert_ne(cena.listener.state, Listener.State.DORMANT, "ele só vem quando o jogador sai para o corredor")
 
 func test_ser_pego_devolve_ao_ponto_seguro():
 	var cena = load("res://game/scenes/prototype/prototype.tscn").instantiate()
 	add_child_autofree(cena)
 	await wait_physics_frames(5)
-	cena.player.add_item("fusivel", "Fusível")
-	cena.get_node("FuseBox").interact(cena.player)
+	cena.player.global_position = Vector3(4.1, 0.05, -18.4)
 	cena.get_node("Key304").interact(cena.player)
-	cena.player.global_position = Vector3(0, 0.05, -6)
+	cena.player.global_position = Vector3(0.6, 0.05, -18.4)
+	await wait_physics_frames(2)
 	cena.on_caught()
 	await wait_seconds(0.6)
 	assert_gt(cena.player.global_position.x, 1.5, "deve voltar para dentro do 303")
 	assert_true(cena.player.has_item("chave_304"), "não perde a chave")
-
 
 func test_capitulo_inteiro_do_inicio_ao_fim():
 	var cena = load("res://game/scenes/prototype/prototype.tscn").instantiate()
 	add_child_autofree(cena)
 	await wait_physics_frames(5)
 	var p: Player = cena.player
-	# 302: fusível
-	cena.get_node("Fuse").interact(p)
+
+	cena.get_node("KeyDrawer301").interact(p)
+	assert_true(p.has_item("chave_gaveta"))
+	cena.get_node("Fragment03").interact(p)
+	assert_true(cena._code_fragments["03"])
+	cena.get_node("Diary").interact(p)
+
+	cena.get_node("FuseDrawer302").interact(p)
 	assert_true(p.has_item("fusivel"))
-	# quadro de força
 	cena.get_node("FuseBox").interact(p)
 	assert_true(cena.power_on)
-	assert_true(cena.get_node("Phone").is_ringing, "telefone começa a tocar com a energia")
-	# senha do 303
+	assert_true(cena.get_node("Phone").is_ringing)
+	assert_false(cena.get_node("DoorZeladoria").sealed)
+	assert_true(cena.get_node("Fragment1").visible)
+	cena.get_node("Fragment1").interact(p)
+	assert_true(cena._code_fragments["1"])
+
+	cena.get_node("CrowbarLocker").interact(p)
+	assert_true(p.has_item("pe_de_cabra"))
+	cena.get_node("Barricade305").interact(p)
+	assert_false(cena.get_node("Door305").sealed)
+	assert_false(p.has_item("pe_de_cabra"))
+	cena.get_node("Fragment7").interact(p)
+	assert_true(cena._code_fragments["7"])
+	assert_true(cena.code_complete)
+	assert_eq(cena.get_node("Keypad303").code, "0317")
+
 	var teclado: Keypad = cena.get_node("Keypad303")
 	assert_false(teclado.try_code("1109"))
 	assert_true(teclado.try_code("0317"))
@@ -265,28 +290,27 @@ func test_capitulo_inteiro_do_inicio_ao_fim():
 	porta303.animate = false
 	porta303.interact(p)
 	assert_true(porta303.is_open)
-	# chave: a luz cai e o Ouvinte acorda
+	cena.get_node("Transcript").interact(p)
+	p.global_position = Vector3(4.1, 0.05, -18.4)
 	cena.get_node("Key304").interact(p)
 	assert_false(cena.power_on)
+	assert_eq(cena.listener.state, Listener.State.DORMANT)
+
+	p.global_position = Vector3(0.6, 0.05, -18.4)
+	await wait_physics_frames(5)
 	assert_ne(cena.listener.state, Listener.State.DORMANT)
-	# porta do 304 abre com a chave
 	var porta304: Door = cena.get_node("Door304")
 	porta304.animate = false
 	porta304.interact(p)
 	assert_true(porta304.is_open)
-	# dentro do 304 o Ouvinte para
-	p.global_position = Vector3(0, 0.05, -18.5)
+	p.global_position = Vector3(0, 0.05, -30.8)
 	await wait_physics_frames(5)
 	assert_eq(cena.listener.state, Listener.State.DORMANT)
-	# telefone
 	var telefone: Phone = cena.get_node("Phone")
 	telefone.line_interval = 0.05
 	telefone.interact(p)
 	await wait_seconds(0.6)
 	assert_true(cena.chapter_ended)
-
-
-# --- animação do Ouvinte ---
 
 func test_ouvinte_anima_a_passada_conforme_anda():
 	var l := _listener()
@@ -317,12 +341,33 @@ func test_ouvinte_nao_da_salto_na_animacao_ao_acordar():
 	assert_lt(l.animation_state().walk, 0.2, "não acelera como se tivesse teletransportado")
 
 
-func test_ouvinte_mantem_a_aparencia_original_em_malha_articulada():
+func test_ouvinte_usa_modelo_3d_texturizado_e_cobre_o_rosto():
 	var l := _listener()
-	var sprite := l.find_child("CreatureSprite", true, false) as MeshInstance3D
-	assert_not_null(sprite, "usa a imagem original da criatura")
-	assert_gt((sprite.mesh as QuadMesh).subdivide_depth, 10, "malha subdividida para articular")
-	assert_true(sprite.mesh.surface_get_material(0) is ShaderMaterial)
+	var model := l.find_child("TripoBody3D", true, false) as Node3D
+	assert_not_null(model, "usa o GLB exportado do Tripo")
+	assert_almost_eq(model.scale.y, Listener.MODEL_SCALE, 0.001, "o modelo tem presença de corpo alto")
+	assert_null(l.find_child("CreatureSprite", true, false), "não usa mais um recorte 2D")
+
+	var blur := model.find_child("FaceBlur", true, false) as MeshInstance3D
+	assert_not_null(blur, "um borrão pequeno cobre só a face")
+	assert_true(blur.mesh is QuadMesh, "o borrão é uma placa pequena na face")
+	assert_lt((blur.mesh as QuadMesh).size.x, 0.14, "o borrão ocupa só a região facial")
+	assert_true(blur.material_override is ShaderMaterial)
+	assert_lt((blur.mesh as QuadMesh).size.y, 0.12, "efeito pequeno, sem capuz")
+
+	var meshes: Array[Node] = model.find_children("*", "MeshInstance3D", true, false)
+	if model is MeshInstance3D:
+		meshes.push_front(model)
+	var has_pbr_texture := false
+	for candidate in meshes:
+		var mesh_instance := candidate as MeshInstance3D
+		if mesh_instance.mesh == null:
+			continue
+		for surface in mesh_instance.mesh.get_surface_count():
+			var material := mesh_instance.get_active_material(surface)
+			if material is StandardMaterial3D and (material as StandardMaterial3D).albedo_texture != null:
+				has_pbr_texture = true
+	assert_true(has_pbr_texture, "preserva as texturas PBR do GLB")
 
 
 func test_ouvinte_joga_o_peso_e_avanca_aos_trancos():
@@ -358,19 +403,18 @@ func test_ouvinte_so_aparece_quando_o_jogador_sai_pela_porta_do_quarto():
 	var cena = load("res://game/scenes/prototype/prototype.tscn").instantiate()
 	add_child_autofree(cena)
 	await wait_physics_frames(5)
-	cena.player.global_position = Vector3(3.6, 0.05, -10.5) # dentro do 303
+	cena.player.global_position = Vector3(4.1, 0.05, -18.4)
 	cena.get_node("Key304").interact(cena.player)
 	await wait_physics_frames(5)
 	assert_false(cena.power_on, "a luz cai na hora")
 	assert_eq(cena.listener.state, Listener.State.DORMANT, "dentro do quarto ele ainda não veio")
 	assert_false(cena.listener.visible)
-	cena.player.global_position = Vector3(0.6, 0.05, -10.5) # atravessou a porta
+	cena.player.global_position = Vector3(0.6, 0.05, -18.4)
 	await wait_physics_frames(5)
 	assert_ne(cena.listener.state, Listener.State.DORMANT, "saiu para o corredor: ele vem")
 	assert_true(cena.listener.visible)
 	assert_gt(absf(cena.listener.position.z - cena.player.global_position.z), 6.0, "nasce longe e vem andando")
 	assert_true(cena.listener.is_growling(), "vem rosnando")
-
 
 func test_ouvinte_vem_andando_na_direcao_do_jogador_e_faz_som_de_passo():
 	var l := _listener()
@@ -405,3 +449,16 @@ func test_no_navegador_agachar_nao_usa_ctrl():
 	assert_gt(devagar.size(), 0, "andar devagar continua tendo uma tecla")
 	assert_has(GameInput.keys_for("crouch", false), KEY_CTRL, "no PC o Ctrl continua valendo")
 	assert_false(GameInput.help_text(true).contains("Ctrl"))
+
+
+func test_todos_os_comodos_do_andar_tem_mobiliario_e_identificacao() -> void:
+	var cena = load("res://game/scenes/prototype/prototype.tscn").instantiate()
+	add_child_autofree(cena)
+	await wait_physics_frames(3)
+	for room_group in [
+		"room_props_301", "room_props_302", "room_props_zeladoria",
+		"room_props_305", "room_props_303", "room_props_304",
+	]:
+		assert_gt(get_tree().get_nodes_in_group(room_group).size(), 2, "%s deve ter mais de dois elementos" % room_group)
+	for room_name in ["301", "302", "303", "304", "305", "ZELADORIA"]:
+		assert_not_null(cena.find_child("RoomNumber%s" % room_name, true, false))

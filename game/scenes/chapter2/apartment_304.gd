@@ -224,7 +224,6 @@ func _furnish_hall() -> void:
 	# o trecho dos quartos: coisas largadas no caminho
 	_solid("HallBench", FURN + "bench_wood_80s.glb", Vector3(0.78, 0, -13.6), PI / 2.0, Vector3(1.34, 0.5, 0.38))
 	_prop("HallBenchClothes", PROP + "clothes_pile.glb", Vector3(0.78, 0.5, -13.4), 0.4)
-	_prop("HallToy", PROP + "toy_truck.glb", Vector3(-0.55, 0.0, -3.1), 0.9)
 	# depois dos quartos, o corredor continua: caixas, malas e papéis no chão
 	_solid("HallCrateA", FURN + "crate_wood_80s.glb", Vector3(-0.7, 0, -16.2), 0.15, Vector3(0.53, 0.41, 0.44))
 	_solid("HallCrateB", FURN + "crate_wood_80s.glb", Vector3(-0.68, 0.41, -16.25), -0.3, Vector3(0.53, 0.41, 0.44))
@@ -352,14 +351,11 @@ func _furnish_boys_bedroom() -> void:
 	_chair("BoyDeskChair", 4.4, -2.95, 0.3)
 	_prop("BoyDeskBook", PROP + "open_book.glb", Vector3(4.4, 0.73, -2.2), 0.1)
 	_prop("BoyDeskPapers", PROP + "paper_stack.glb", Vector3(4.9, 0.72, -2.15), 0.5)
-	_prop("BoyDeskTruck", PROP + "toy_truck.glb", Vector3(4.0, 0.72, -2.1), 0.7)
 	_solid("BoyBookcase", FURN + "bookcase_short_80s.glb", Vector3(2.0, 0, -2.05), 0.0, Vector3(0.55, 1.35, 0.4))
 	_prop("BoyBookcaseBooks", PROP + "books_stack.glb", Vector3(2.0, 1.35, -2.05), 0.3)
 	_prop("BoyBookcaseClock", PROP + "alarm_clock_analog.glb", Vector3(2.15, 1.35, -2.0))
 	_cabinet("BoyToyChest", 5.5, -3.9, -PI / 2.0)
 	_prop("BoyChestShoebox", PROP + "shoebox_pair.glb", Vector3(5.5, 0.9, -3.9), 1.4)
-	_prop("BoyTruckA", PROP + "toy_truck.glb", Vector3(3.2, 0.04, -4.1), 2.1)
-	_prop("BoyTruckB", PROP + "toy_truck.glb", Vector3(3.8, 0.04, -4.9), 0.4)
 	_prop("BoyFloorBook", PROP + "open_book.glb", Vector3(2.9, 0.06, -4.9), 1.0)
 	_prop("BoySlippers", PROP + "slippers_pair.glb", Vector3(3.5, 0.0, -5.9), 1.6)
 	_prop("BoyCalendar", PROP + "wall_calendar_august.glb", Vector3(5.77, 1.65, -2.6), -PI / 2.0)
@@ -415,7 +411,6 @@ func _furnish_storage() -> void:
 	_solid("StorageBench", FURN + "bench_wood_80s.glb", Vector3(2.6, 0, -11.98), 0.0, Vector3(1.34, 0.5, 0.38))
 	_prop("StorageBenchBooks", PROP + "books_stack.glb", Vector3(2.9, 0.5, -11.98), 0.4)
 	_solid("StorageFan", FURN + "standing_fan_80s.glb", Vector3(5.4, 0, -8.0), -2.0, Vector3(0.5, 1.57, 0.45))
-	_prop("StorageToy", PROP + "toy_truck.glb", Vector3(3.6, 0.04, -10.4), 2.6)
 	_prop("StoragePhoto", PROP + "photo_frame.glb", Vector3(3.4, 0.2, -12.14), 0.0)
 
 

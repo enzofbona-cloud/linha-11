@@ -139,6 +139,19 @@ func test_menu_tem_botao_de_nova_campanha():
 	var b = menu.find_child("NewGameButton", true, false)
 	assert_not_null(b)
 	assert_false(b.disabled)
+	assert_eq(b.text, "›  Novo Jogo")
+	assert_not_null(menu.find_child("MenuBackground", true, false))
+	assert_false(menu.find_child("ChapterSelectButton", true, false).disabled)
+	assert_false(menu.find_child("SettingsButton", true, false).disabled)
+	assert_true(menu.find_child("ContinueButton", true, false).disabled)
+	assert_false(menu.find_child("Chapter2Button", true, false).disabled)
+	assert_not_null(menu.find_child("MasterVolumeSlider", true, false))
+	menu.call("_show_chapters")
+	assert_true(menu.find_child("ChapterSelectPanel", true, false).visible)
+	menu.call("_show_settings")
+	assert_true(menu.find_child("SettingsPanel", true, false).visible)
+	menu.call("_close_panels")
+	assert_true(b.has_focus())
 
 
 func test_cena_principal_e_o_menu():
@@ -214,7 +227,7 @@ func test_porta_fechada_bloqueia_e_aberta_deixa_passar():
 	var p: Player = cena.player
 	var door: Door = cena.get_node("Door302")
 	door.animate = false
-	p.global_position = Vector3(0, 0.05, -5.5)
+	p.global_position = Vector3(0, 0.05, -10.5)
 	await wait_physics_frames(5)
 	Input.action_press("move_left")
 	await wait_physics_frames(90)

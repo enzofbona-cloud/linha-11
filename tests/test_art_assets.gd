@@ -72,3 +72,25 @@ func test_tint_de_material_preserva_textura_importada_e_nao_altera_a_origem() ->
 	assert_gte(adjusted.roughness, 0.9)
 	assert_eq(original.albedo_color, original_color, "o material partilhado importado fica intacto")
 	visual.free()
+
+
+func test_photo_frames_and_calendars_use_original_printed_art() -> void:
+	var photo := LevelKit.model_visual("res://assets/models/props/photo_frame.glb")
+	var photo_image := photo.get_node_or_null("PhotographImage") as MeshInstance3D
+	assert_not_null(photo_image, "molduras precisam mostrar uma fotografia, não silhuetas")
+	if photo_image != null:
+		var photo_material := photo_image.material_override as StandardMaterial3D
+		assert_not_null(photo_material)
+		assert_not_null(photo_material.albedo_texture)
+		assert_true(photo_material.albedo_texture.resource_path.ends_with("district11_street_1989.png"))
+	photo.free()
+
+	var calendar := LevelKit.model_visual("res://assets/models/props/wall_calendar_august.glb")
+	var calendar_page := calendar.get_node_or_null("August1989Page") as MeshInstance3D
+	assert_not_null(calendar_page, "calendários precisam mostrar a folha impressa de agosto de 1989")
+	if calendar_page != null:
+		var calendar_material := calendar_page.material_override as StandardMaterial3D
+		assert_not_null(calendar_material)
+		assert_not_null(calendar_material.albedo_texture)
+		assert_true(calendar_material.albedo_texture.resource_path.ends_with("calendar_august_1989.png"))
+	calendar.free()

@@ -15,7 +15,34 @@ static func model_visual(path: String) -> Node3D:
 	var visual := packed.instantiate() as Node3D
 	if not path.begins_with("res://assets/models/polyhaven/"):
 		apply_model_materials(visual)
+	if path.ends_with("photo_frame.glb"):
+		visual.add_child(_frame_image("PhotographImage",
+			"res://assets/textures/frames/district11_street_1989.png",
+			Vector2(0.285, 0.285), Vector3(0, 0, 0.027)))
+	elif path.ends_with("wall_calendar_august.glb"):
+		visual.add_child(_frame_image("August1989Page",
+			"res://assets/textures/frames/calendar_august_1989.png",
+			Vector2(0.33, 0.41), Vector3(0, -0.06, 0.028)))
 	return visual
+
+
+static func _frame_image(node_name: String, texture_path: String,
+		size: Vector2, local_position: Vector3) -> MeshInstance3D:
+	var image := MeshInstance3D.new()
+	image.name = node_name
+	var quad := QuadMesh.new()
+	quad.size = size
+	image.mesh = quad
+	image.position = local_position
+	image.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var material := StandardMaterial3D.new()
+	material.albedo_texture = load(texture_path) as Texture2D
+	if node_name == "August1989Page":
+		material.albedo_color = Color(0.72, 0.69, 0.62, 1.0)
+	material.roughness = 0.96
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	image.material_override = material
+	return image
 
 
 static func tint_model_surfaces(root: Node, tint: Color, min_roughness := 0.0) -> void:
