@@ -5,6 +5,13 @@ Versão comercial planejada para PC/Steam; versão Web usada para testes rápido
 
 **Estado atual: protótipo jogável dos Capítulos 1 e 2, em andamento.** O Capítulo 1 inclui exploração, lanterna, documentos, fusível, senha, furtividade e o Ouvinte. A continuação no Apartamento 304 usa arte original para o papel de parede e a fotografia, gravação legendada de uma discussão futura e puzzle de três telefones. Ainda não há cooperação online, combate, crafting, saúde, salvamento ou configurações gráficas. A história está em `docs/historia.md`.
 
+## Ambientes implementados
+
+- Capítulo 1: corredor, Apartamentos 302 e 303 e acesso ao 304, com móveis, objetos pessoais e mapas PBR envelhecidos. O 302 tem cabeceira visível e luz de teto quente ligada à energia.
+- Capítulo 2: salas de estar, jantar e quarto do Apartamento 304, com móveis de madeira e tecido, objetos de época, tapetes e iluminação quente de baixo custo.
+- O Ouvinte usa um rig procedural 3D com animação de passada ligada ao deslocamento. Ainda é um modelo de protótipo; a arte final do inimigo precisa de um rig e uma malha de produção.
+- Os outros quatro capítulos da campanha ainda não têm cenários jogáveis construídos.
+
 ## Endereço de testes
 
 - Página de testes: https://enzofbona-cloud.github.io/linha-11-web/
@@ -65,13 +72,13 @@ publica. Se qualquer passo falhar, a versão que já está no ar não é alterad
 A publicação usa uma chave de deploy guardada no segredo `WEB_DEPLOY_KEY` do
 repositório privado. Nenhuma credencial fica no código.
 
-## Tamanho do build Web (medido em 2026-11-10)
+## Tamanho do build Web (medido em 2026-11-11)
 
 | Arquivo | Tamanho |
 |---|---|
 | `index.wasm` (motor) | 37,7 MB |
-| `index.pck` (conteúdo do jogo, com texturas e artes do Capítulo 2) | 31,0 MB |
-| Total | 69,0 MB |
+| `index.pck` (conteúdo do jogo, móveis e mapas PBR CC0) | 68,8 MB |
+| Total | 106,8 MB |
 
 Limites do GitHub Pages: 100 MB por arquivo e 1 GB por site. O script
 `tools/verify-web-build.mjs` barra builds que passem disso.
@@ -80,6 +87,7 @@ Limites do GitHub Pages: 100 MB por arquivo e 1 GB por site. O script
 
 ```
 assets/textures/     texturas PBR (CC0, ver LICENCAS.md)
+assets/models/       móveis Poly Haven CC0 e objetos originais do jogo
 assets/characters/   Ouvinte e arte original do Apartamento 304
 game/core/           autoloads (BuildInfo, GameInput)
 game/player/         jogador em primeira pessoa

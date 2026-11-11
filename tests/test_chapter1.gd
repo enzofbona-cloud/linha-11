@@ -308,12 +308,26 @@ func test_ouvinte_parado_quase_nao_marcha():
 	assert_lt(l.animation_state().walk, 0.2)
 
 
-func test_ouvinte_tem_malha_subdividida_para_articular():
+func test_ouvinte_nao_da_salto_na_animacao_ao_acordar():
 	var l := _listener()
-	var sprite := l.find_child("CreatureSprite", true, false) as MeshInstance3D
-	assert_not_null(sprite)
-	assert_gt((sprite.mesh as QuadMesh).subdivide_depth, 10)
-	assert_true(sprite.mesh.surface_get_material(0) is ShaderMaterial)
+	var before: float = l.animation_state().gait_phase
+	l.tick(1.0 / 60.0, Vector3(5, 0, -30))
+	var phase_delta: float = l.animation_state().gait_phase - before
+	assert_lt(phase_delta, 0.1, "a primeira passada mede o deslocamento desde o spawn")
+	assert_lt(l.animation_state().walk, 0.2, "não acelera como se tivesse teletransportado")
+
+
+func test_ouvinte_tem_modelo_3d_articulado_sem_billboard():
+	var l := _listener()
+	assert_null(l.find_child("CreatureSprite", true, false))
+	assert_not_null(l.find_child("LeftArm", true, false))
+	assert_not_null(l.find_child("RightArm", true, false))
+	assert_not_null(l.find_child("LeftLeg", true, false))
+	assert_not_null(l.find_child("RightLeg", true, false))
+	var meshes := l.find_children("*", "MeshInstance3D", true, false)
+	assert_gte(meshes.size(), 20)
+	for candidate in meshes:
+		assert_false((candidate as MeshInstance3D).mesh is QuadMesh, "o Ouvinte deve ter volume, não ser uma imagem plana")
 
 
 # --- sons gravados ---

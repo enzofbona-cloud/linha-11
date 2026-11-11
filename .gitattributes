@@ -10,3 +10,13 @@
 *.wav filter=lfs diff=lfs merge=lfs -text
 *.ogg filter=lfs diff=lfs merge=lfs -text
 *.mp3 filter=lfs diff=lfs merge=lfs -text
+
+# New small game assets use ordinary Git to avoid LFS quotas.
+assets/models/polyhaven/**/*.gltf -filter diff text
+assets/models/polyhaven/**/*.bin -filter -diff -merge -text
+assets/models/polyhaven/**/*.jpg -filter -diff -merge -text
+assets/models/furniture/*.glb -filter -diff -merge -text
+assets/models/props/*.glb -filter -diff -merge -text
+assets/textures/floor_aged/*.jpg -filter -diff -merge -text
+assets/textures/wall_aged/*.jpg -filter -diff -merge -text
+assets/textures/creature_hide/*.jpg -filter -diff -merge -text

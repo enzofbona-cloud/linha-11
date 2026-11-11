@@ -1,8 +1,97 @@
 class_name LevelKit
-## Peças básicas para montar cenários por código: materiais e caixas com colisão.
-## É provisório (blocagem): os modelos e texturas finais entram nas fases de arte.
+## Utilitários de cenário e materiais PBR usados pelos capítulos 1 e 2.
 
 static var _grime: NoiseTexture2D
+static var _model_materials: Dictionary = {}
+
+
+## Instancia o modelo. Assets Poly Haven mantêm os materiais e UVs PBR originais;
+## as malhas procedurais do projeto recebem os materiais PBR locais.
+static func model_visual(path: String) -> Node3D:
+	var packed := load(path) as PackedScene
+	if packed == null:
+		push_error("Não foi possível carregar o modelo: %s" % path)
+		return Node3D.new()
+	var visual := packed.instantiate() as Node3D
+	if not path.begins_with("res://assets/models/polyhaven/"):
+		apply_model_materials(visual)
+	return visual
+
+
+static func tint_model_surfaces(root: Node, tint: Color, min_roughness := 0.0) -> void:
+	for candidate in root.find_children("*", "MeshInstance3D", true, false):
+		var mesh := candidate as MeshInstance3D
+		for surface in mesh.mesh.get_surface_count():
+			var original := mesh.get_active_material(surface) as StandardMaterial3D
+			if original == null:
+				continue
+			var adjusted := original.duplicate() as StandardMaterial3D
+			adjusted.albedo_color *= tint
+			adjusted.roughness = maxf(adjusted.roughness, min_roughness)
+			mesh.set_surface_override_material(surface, adjusted)
+
+
+## Aplica texturas PBR locais somente aos modelos procedurais sem mapas próprios.
+static func apply_model_materials(root: Node) -> void:
+	for candidate in root.find_children("*", "MeshInstance3D", true, false):
+		var mesh := candidate as MeshInstance3D
+		var profile := mesh.name.get_slice("__", 0).to_lower()
+		mesh.material_override = _model_material(profile)
+
+
+## Crea un mueble con una única colisión de caja, conservando el tamaño indicado.
+static func model(parent: Node, node_name: String, path: String, center: Vector3,
+		rotation_y: float, collision_size: Vector3) -> StaticBody3D:
+	var body := StaticBody3D.new()
+	body.name = node_name
+	body.position = center
+	body.rotation.y = rotation_y
+	var visual := model_visual(path)
+	visual.name = "Visual"
+	body.add_child(visual)
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = collision_size
+	shape.shape = box
+	body.add_child(shape)
+	parent.add_child(body)
+	return body
+
+
+static func _model_material(profile: String) -> StandardMaterial3D:
+	if _model_materials.has(profile):
+		return _model_materials[profile]
+	var material: StandardMaterial3D
+	match profile:
+		"wood":
+			material = textured("wood", 0.72, Color(0.78, 0.65, 0.48))
+			material.roughness = 0.82
+		"fabric", "cloth":
+			material = textured("fabric", 0.82, Color(0.72, 0.66, 0.55))
+			material.roughness = 0.94
+		"metal", "chrome", "rust":
+			var tint := Color(0.62, 0.59, 0.52) if profile == "metal" else Color(0.46, 0.39, 0.28)
+			material = textured("metal", 0.9, tint)
+			material.metallic = 0.58 if profile != "rust" else 0.42
+			material.roughness = 0.72
+		"paper", "plaster", "porcelain":
+			var tint := Color(0.78, 0.72, 0.61) if profile == "paper" else Color(0.83, 0.8, 0.72)
+			material = textured("wall", 0.45, tint)
+			material.roughness = 0.96 if profile == "paper" else 0.68
+		"glass":
+			material = StandardMaterial3D.new()
+			material.albedo_color = Color(0.36, 0.46, 0.44, 0.38)
+			material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			material.metallic = 0.18
+			material.roughness = 0.16
+		"rubber", "dark":
+			material = textured("door", 0.6, Color(0.24, 0.21, 0.18))
+			material.roughness = 0.88
+		_:
+			material = textured("wood", 0.72, Color(0.78, 0.65, 0.48))
+	material.resource_name = "Model_%s" % profile
+	_model_materials[profile] = material
+	return material
 
 
 ## Textura de ruído compartilhada, usada para tirar a aparência de cor chapada.
@@ -36,6 +125,10 @@ static func textured(tex_name: String, uv_scale := 0.5, tint := Color.WHITE) -> 
 	mat.normal_scale = 0.7
 	mat.roughness_texture = load(dir + "roughness.jpg")
 	mat.roughness = 1.0
+	var ao_path := dir + "ao.jpg"
+	if ResourceLoader.exists(ao_path):
+		mat.ao_enabled = true
+		mat.ao_texture = load(ao_path)
 	mat.uv1_triplanar = true
 	mat.uv1_world_triplanar = true
 	mat.uv1_scale = Vector3.ONE * uv_scale

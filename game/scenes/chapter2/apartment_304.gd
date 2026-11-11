@@ -22,7 +22,7 @@ var session: PlaySession
 func _ready() -> void:
 	_photo_texture = load("res://assets/characters/family_304.png")
 	_wall_mat = _wallpaper_material()
-	_floor_mat = LevelKit.textured("floor", 0.48, Color(0.56, 0.49, 0.4))
+	_floor_mat = LevelKit.textured("floor_aged", 0.4, Color(0.56, 0.49, 0.4))
 	_wood_mat = LevelKit.textured("wood", 0.8, Color(0.42, 0.32, 0.23))
 	_trim_mat = LevelKit.textured("door", 0.8, Color(0.28, 0.23, 0.18))
 	_build_environment()
@@ -41,15 +41,15 @@ func _build_environment() -> void:
 	env.background_mode = Environment.BG_COLOR
 	env.background_color = Color(0.006, 0.005, 0.004)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.34, 0.26, 0.19)
-	env.ambient_light_energy = 0.5
+	env.ambient_light_color = Color(0.36, 0.29, 0.23)
+	env.ambient_light_energy = 0.58
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
 	env.tonemap_exposure = 1.0
 	env.fog_enabled = true
 	env.fog_light_color = Color(0.045, 0.033, 0.025)
-	env.fog_density = 0.016
+	env.fog_density = 0.013
 	env.adjustment_enabled = true
-	env.adjustment_contrast = 1.12
+	env.adjustment_contrast = 1.08
 	env.adjustment_saturation = 0.78
 	var world := WorldEnvironment.new()
 	world.environment = env
@@ -61,13 +61,15 @@ func _wallpaper_material() -> StandardMaterial3D:
 	mat.albedo_texture = load("res://assets/characters/wallpaper_304.png")
 	mat.albedo_color = Color(0.46, 0.39, 0.32)
 	mat.normal_enabled = true
-	mat.normal_texture = load("res://assets/textures/wall/normal.jpg")
-	mat.normal_scale = 0.2
-	mat.roughness_texture = load("res://assets/textures/wall/roughness.jpg")
+	mat.normal_texture = load("res://assets/textures/wall_aged/normal.jpg")
+	mat.normal_scale = 0.24
+	mat.roughness_texture = load("res://assets/textures/wall_aged/roughness.jpg")
 	mat.roughness = 0.96
+	mat.ao_enabled = true
+	mat.ao_texture = load("res://assets/textures/wall_aged/ao.jpg")
 	mat.uv1_triplanar = true
 	mat.uv1_world_triplanar = true
-	mat.uv1_scale = Vector3(0.62, 0.62, 0.62)
+	mat.uv1_scale = Vector3(0.38, 0.38, 0.38)
 	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	return mat
 
@@ -113,24 +115,153 @@ func _build_furniture() -> void:
 	_table("SideboardTape", Vector3(5.7, 0, -9.9), Vector2(1.5, 0.55), 0.82)
 	_table("PhoneTableHigh", Vector3(5.2, 0, -15.0), Vector2(1.1, 0.7), 0.7)
 	_table("PhoneTableMid", Vector3(-5.6, 0, -23.0), Vector2(1.0, 0.7), 0.76)
-	var fabric := LevelKit.textured("fabric", 1.4, Color(0.43, 0.35, 0.27))
-	_box("SofaBase", Vector3(-5.9, 0.31, -7.0), Vector3(2.1, 0.62, 0.82), fabric)
-	_box("SofaBack", Vector3(-5.9, 0.74, -7.38), Vector3(2.1, 0.85, 0.2), fabric)
-	_box("SofaSeatLeft", Vector3(-6.38, 0.66, -6.88), Vector3(0.84, 0.16, 0.55), LevelKit.textured("fabric", 1.8, Color(0.52, 0.43, 0.34)))
-	_box("SofaSeatRight", Vector3(-5.42, 0.66, -6.88), Vector3(0.84, 0.16, 0.55), LevelKit.textured("fabric", 1.8, Color(0.52, 0.43, 0.34)))
-	_box("SofaArmLeft", Vector3(-7.02, 0.55, -7.0), Vector3(0.22, 0.42, 0.82), fabric)
-	_box("SofaArmRight", Vector3(-4.78, 0.55, -7.0), Vector3(0.22, 0.42, 0.82), fabric)
-	_box("Wardrobe304", Vector3(7.55, 1.15, -21.2), Vector3(1.7, 2.3, 0.58), _wood_mat)
-	_box("DiningCabinet", Vector3(-7.7, 0.75, -13.7), Vector3(0.55, 1.5, 2.0), _wood_mat)
+	var sofa_parts := [
+		_box("SofaBase", Vector3(-5.9, 0.31, -7.0), Vector3(2.1, 0.62, 0.82), LevelKit.textured("fabric", 1.4, Color(0.43, 0.35, 0.27))),
+		_box("SofaBack", Vector3(-5.9, 0.74, -7.38), Vector3(2.1, 0.85, 0.2), LevelKit.textured("fabric", 1.4, Color(0.43, 0.35, 0.27))),
+		_box("SofaSeatLeft", Vector3(-6.38, 0.66, -6.88), Vector3(0.84, 0.16, 0.55), LevelKit.textured("fabric", 1.8, Color(0.52, 0.43, 0.34))),
+		_box("SofaSeatRight", Vector3(-5.42, 0.66, -6.88), Vector3(0.84, 0.16, 0.55), LevelKit.textured("fabric", 1.8, Color(0.52, 0.43, 0.34))),
+		_box("SofaArmLeft", Vector3(-7.02, 0.55, -7.0), Vector3(0.22, 0.42, 0.82), LevelKit.textured("fabric", 1.4, Color(0.43, 0.35, 0.27))),
+		_box("SofaArmRight", Vector3(-4.78, 0.55, -7.0), Vector3(0.22, 0.42, 0.82), LevelKit.textured("fabric", 1.4, Color(0.43, 0.35, 0.27))),
+	]
+	for sofa_part in sofa_parts:
+		_clear_mesh_visual(sofa_part)
+	_scene_prop("Sofa304Detailed", "res://assets/models/polyhaven/sofa_02/sofa_02_1k.gltf",
+		Vector3(-5.9, 0.0, -7.0), 0.0, Vector3(1.16, 1.18, 1.0))
+	var wardrobe := _box("Wardrobe304", Vector3(7.55, 1.15, -21.2), Vector3(1.7, 2.3, 0.58), _wood_mat)
+	_replace_body_visual(wardrobe,
+		"res://assets/models/polyhaven/GothicCabinet_01/GothicCabinet_01_1k.gltf",
+		0.0, Vector3(0.99, 0.97, 0.53), Vector3(0, -1.15, 0))
+	var dining_cabinet := _box("DiningCabinet", Vector3(-7.7, 0.75, -13.7), Vector3(0.55, 1.5, 2.0), _wood_mat)
+	_replace_body_visual(dining_cabinet,
+		"res://assets/models/polyhaven/painted_wooden_cabinet/painted_wooden_cabinet_1k.gltf",
+		PI / 2.0, Vector3(1.67, 1.27, 0.89), Vector3(0, -0.75, 0))
+
+	# Sala, jantar e corredor de acesso: pequenas coisas ocupam as superfícies e as paredes.
+	_scene_prop("ChairLiving304", "res://assets/models/polyhaven/ArmChair_01/ArmChair_01_1k.gltf",
+		Vector3(-7.65, 0.0, -5.8), -0.2, Vector3(0.9, 0.95, 0.9))
+	_scene_prop("LivingFan304", "res://assets/models/furniture/standing_fan_80s.glb", Vector3(7.55, 0.0, -6.5), PI)
+	_scene_prop("BooksClueTable", "res://assets/models/props/books_stack.glb", Vector3(-0.39, 0.56, -2.8), -0.08)
+	_scene_prop("CupClueTable", "res://assets/models/props/glass_tumbler.glb", Vector3(0.37, 0.56, -2.8))
+	_scene_prop("LampGraveTable", "res://assets/models/props/table_lamp_80s.glb", Vector3(-5.68, 0.72, -5.5))
+	_scene_prop("SlippersLiving304", "res://assets/models/props/slippers_pair.glb", Vector3(-7.48, 0.0, -7.9), 0.14)
+	_scene_prop("LivingPhoto", "res://assets/models/props/photo_frame.glb", Vector3(-8.77, 1.75, -3.3), PI / 2.0)
+	_scene_prop("FamilyCalendar304", "res://assets/models/props/wall_calendar_august.glb", Vector3(8.77, 1.7, -7.2), -PI / 2.0)
+
+	# Segundo cômodo: uma mesa de jantar, estante metálica e materiais espalhados.
+	_table("DiningTable304", Vector3(-5.0, 0.0, -13.2), Vector2(1.5, 0.85), 0.75)
+	_scene_prop("DiningChairA304", "res://assets/models/polyhaven/painted_wooden_chair_02/painted_wooden_chair_02_1k.gltf",
+		Vector3(-6.1, 0.0, -13.2), PI / 2.0, Vector3(0.8, 0.66, 0.7))
+	_scene_prop("DiningChairB304", "res://assets/models/polyhaven/painted_wooden_chair_02/painted_wooden_chair_02_1k.gltf",
+		Vector3(-3.9, 0.0, -13.2), -PI / 2.0, Vector3(0.8, 0.66, 0.7))
+	_scene_prop("Shelf304", "res://assets/models/polyhaven/Shelf_01/Shelf_01_1k.gltf", Vector3(7.75, 0.0, -13.1), PI / 2.0)
+	_scene_prop("ShelfBooks304", "res://assets/models/props/books_stack.glb", Vector3(7.75, 1.38, -13.1), 0.08)
+	_scene_prop("ShelfCrate304", "res://assets/models/furniture/crate_wood_80s.glb", Vector3(7.75, 0.0, -12.65), 0.1)
+	_scene_prop("PaperSideboard304", "res://assets/models/props/paper_stack.glb", Vector3(6.17, 0.88, -10.0), -0.06)
+	_scene_prop("PhotoDining304", "res://assets/models/props/photo_frame.glb", Vector3(-8.77, 1.7, -14.2), PI / 2.0)
+
+	# Terceiro cômodo: quarto familiar com cama, criado-mudo e objetos pessoais.
+	var bedroom_bed := LevelKit.model(self, "BedroomBed304",
+		"res://assets/models/polyhaven/vintage_day_bed/vintage_day_bed_1k.gltf",
+		Vector3(4.8, 0.25, -24.0), 0.0, Vector3(1.9, 0.5, 1.0))
+	bedroom_bed.get_node("Visual").scale = Vector3(0.96, 1.0, 1.15)
+	bedroom_bed.get_node("Visual").position.y = -0.25
+	LevelKit.tint_model_surfaces(bedroom_bed.get_node("Visual"), Color(0.46, 0.41, 0.34), 0.96)
+	_register_room_prop(bedroom_bed, bedroom_bed.position)
+	var bedroom_headboard := LevelKit.model(self, "BedroomHeadboard304", "res://assets/models/furniture/headboard_80s.glb", Vector3(3.85, 0.55, -24.0), PI / 2.0, Vector3(1.0, 1.1, 0.08))
+	_register_room_prop(bedroom_headboard, bedroom_headboard.position)
+	var bedroom_nightstand := LevelKit.model(self, "BedroomNightstand304",
+		"res://assets/models/polyhaven/painted_wooden_nightstand/painted_wooden_nightstand_1k.gltf",
+		Vector3(3.65, 0.28, -23.1), 0.0, Vector3(0.45, 0.56, 0.45))
+	bedroom_nightstand.get_node("Visual").scale = Vector3(0.9, 0.91, 0.88)
+	bedroom_nightstand.get_node("Visual").position.y = -0.28
+	_register_room_prop(bedroom_nightstand, bedroom_nightstand.position)
+	var bedroom_dresser := LevelKit.model(self, "BedroomDresser304",
+		"res://assets/models/polyhaven/painted_wooden_cabinet/painted_wooden_cabinet_1k.gltf",
+		Vector3(7.1, 0.45, -26.9), 0.0, Vector3(0.95, 0.9, 0.5))
+	bedroom_dresser.get_node("Visual").scale = Vector3(0.8, 0.76, 0.81)
+	bedroom_dresser.get_node("Visual").position.y = -0.45
+	_register_room_prop(bedroom_dresser, bedroom_dresser.position)
+	_scene_prop("BedLamp304", "res://assets/models/props/table_lamp_80s.glb", Vector3(3.65, 0.56, -23.1))
+	_scene_prop("BedClock304", "res://assets/models/props/alarm_clock_analog.glb", Vector3(3.83, 0.56, -23.18))
+	_scene_prop("BedroomClothes304", "res://assets/models/props/clothes_pile.glb", Vector3(4.3, 0.5, -23.7), -0.12)
+	_scene_prop("BedroomSlippers304", "res://assets/models/props/slippers_pair.glb", Vector3(5.9, 0.0, -24.5), 0.2)
+	_scene_prop("BedroomBooks304", "res://assets/models/props/books_stack.glb", Vector3(6.82, 0.76, -26.9), -0.1)
+	_scene_prop("BedroomPapers304", "res://assets/models/props/paper_stack.glb", Vector3(7.36, 0.76, -26.9), 0.05)
+	_scene_prop("BedroomPhoto304", "res://assets/models/props/photo_frame.glb", Vector3(8.77, 1.7, -26.3), -PI / 2.0)
+	_scene_prop("BedroomCalendar304", "res://assets/models/props/wall_calendar_august.glb", Vector3(-8.77, 1.7, -27.0), PI / 2.0)
+	_rug("LivingRug304", Vector3(-5.0, 0.03, -6.7), Vector3(4.0, 0.06, 3.0))
+	_rug("DiningRug304", Vector3(-5.0, 0.03, -13.2), Vector3(3.8, 0.06, 2.8))
+	_rug("BedroomRug304", Vector3(5.0, 0.03, -24.0), Vector3(3.6, 0.06, 3.0))
 	for idx in 3:
 		_box("CeilingBeam", Vector3(0, 2.72, -6.0 - float(idx) * 7.5), Vector3(17.6, 0.12, 0.22), _trim_mat, false)
 
 
 func _table(prefix: String, center: Vector3, size: Vector2, height: float) -> void:
-	_box(prefix + "Top", center + Vector3(0, height, 0), Vector3(size.x, 0.06, size.y), _wood_mat)
+	var top := _box(prefix + "Top", center + Vector3(0, height, 0), Vector3(size.x, 0.06, size.y), _wood_mat)
+	_clear_mesh_visual(top)
 	for sx in [-1.0, 1.0]:
 		for sz in [-1.0, 1.0]:
-			_box(prefix + "Leg", center + Vector3(sx * (size.x / 2 - 0.06), height / 2, sz * (size.y / 2 - 0.06)), Vector3(0.06, height, 0.06), _wood_mat)
+			var leg := _box(prefix + "Leg", center + Vector3(sx * (size.x / 2 - 0.06), height / 2, sz * (size.y / 2 - 0.06)), Vector3(0.06, height, 0.06), _wood_mat)
+			_clear_mesh_visual(leg)
+	var is_sideboard := prefix == "SideboardTape"
+	var model_path := "res://assets/models/polyhaven/painted_wooden_cabinet/painted_wooden_cabinet_1k.gltf" if is_sideboard else "res://assets/models/polyhaven/WoodenTable_01/WoodenTable_01_1k.gltf"
+	var visual := LevelKit.model_visual(model_path)
+	visual.name = prefix + "DetailedVisual"
+	visual.position = center
+	if is_sideboard:
+		visual.scale = Vector3(size.x / 1.194674, height / 1.18187, size.y / 0.616636)
+	else:
+		visual.scale = Vector3(size.x / 1.799648, height / 0.548849, size.y / 0.657175)
+	_register_room_prop(visual, center)
+	add_child(visual)
+
+
+func _clear_mesh_visual(body: Node3D) -> void:
+	for child in body.get_children():
+		if child is MeshInstance3D:
+			body.remove_child(child)
+			child.free()
+
+
+func _register_room_prop(node: Node, pos: Vector3) -> void:
+	node.add_to_group("room_props_chapter2")
+	if pos.z > -8.5:
+		node.add_to_group("room_props_ch2_living")
+	elif pos.z > -17.0:
+		node.add_to_group("room_props_ch2_dining")
+	else:
+		node.add_to_group("room_props_ch2_bedroom")
+
+
+func _replace_body_visual(body: Node3D, path: String, rotation_y := 0.0,
+		scale := Vector3.ONE, visual_offset := Vector3.ZERO) -> void:
+	_clear_mesh_visual(body)
+	var visual := LevelKit.model_visual(path)
+	visual.name = "DetailedVisual"
+	visual.position = visual_offset
+	visual.rotation.y = rotation_y
+	visual.scale = scale
+	body.add_child(visual)
+	_register_room_prop(body, body.position)
+
+
+func _scene_prop(node_name: String, path: String, pos: Vector3,
+		rotation_y := 0.0, scale := Vector3.ONE) -> Node3D:
+	var prop := Node3D.new()
+	prop.name = node_name
+	prop.position = pos
+	prop.rotation.y = rotation_y
+	prop.scale = scale
+	prop.add_child(LevelKit.model_visual(path))
+	_register_room_prop(prop, pos)
+	add_child(prop)
+	return prop
+
+
+func _rug(node_name: String, center: Vector3, size: Vector3) -> void:
+	var rug := LevelKit.box(self, node_name, center, size,
+		LevelKit.textured("fabric", 1.25, Color(0.29, 0.23, 0.17)), false)
+	_register_room_prop(rug, center)
 
 
 func _build_evidence() -> void:
@@ -244,7 +375,7 @@ func _build_lamps() -> void:
 		Vector3(0, 2.2, -27.2),    # porta sem número
 	]
 	for pos in lamps:
-		LevelKit.lamp(self, pos, warm, 0.85, 7.5, false)
+		LevelKit.lamp(self, pos, warm, 0.95, 8.0, false)
 
 
 func _build_audio() -> void:
