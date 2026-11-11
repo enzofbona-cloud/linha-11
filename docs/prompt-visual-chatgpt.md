@@ -109,14 +109,99 @@ Adicione um teste em `tests/` que confirme que cada modelo novo carrega e que os
 - Depois do push, confirme que o Actions ficou verde com `gh run list -R enzofbona-cloud/linha-11 --limit 1`.
 - Não use `git push --force` e não reescreva o histórico.
 
-## Ordem sugerida
+## Densidade: ambientes cheios, como casas de verdade
 
-1. Capítulo 1, apartamento 302: cama, criado-mudo, guarda-roupa, abajur.
-2. Capítulo 1, apartamento 303: mesa, cadeira, estante de metal, caixas de papelão.
+Este é o ponto mais importante para o dono do projeto. Hoje cada cômodo tem três ou quatro objetos e parece um depósito vazio. Ele quer **cômodos repletos**, como se uma família tivesse morado ali e saído às pressas no meio da noite: muita mobília, objetos em cima de cada superfície, coisas caídas no chão, roupa largada, louça na pia, quadros tortos.
+
+Regra prática: **nenhuma parede vazia e nenhuma superfície vazia**. Cada cômodo deve ter no mínimo 25 objetos visíveis, somando móveis, objetos de superfície e bagunça de chão.
+
+Conte uma história com a bagunça. As pessoas foram embora de repente:
+- prato com comida na mesa e cadeira afastada;
+- cama desfeita, com o cobertor arrastado até o chão;
+- mala aberta e meio cheia, abandonada;
+- televisão ligada na tomada, controle caído;
+- brinquedo de criança no meio do caminho;
+- telefone fora do gancho, com o fio esticado;
+- 17 anos de abandono por cima: poeira, teias, reboco caído, papel de parede descolando, mancha de infiltração, vidro quebrado, folhas secas perto das janelas.
+
+### Lista por ambiente
+
+Estas listas são o mínimo. Acrescente o que fizer sentido.
+
+**Corredor do 3º andar (Capítulo 1)**
+- Luminárias de teto reais (calha com lâmpada fluorescente), uma delas pendurada por um fio.
+- Extintor na parede e caixa de mangueira de incêndio.
+- Placas com os números 302, 303 e 304 nas portas; olho mágico e campainha.
+- Banco de madeira, vaso com planta morta, capacho em cada porta.
+- Caixa de correio coletiva ou quadro de avisos com papéis antigos.
+- Carrinho de feira ou bicicleta infantil encostada.
+- Sacos de lixo, jornais velhos, um sapato perdido, cacos de reboco.
+- Fiação aparente e um interruptor ao lado de cada porta.
+- Rodapé, guarnições das portas e uma janela gradeada no fim do corredor, se couber.
+
+**Apartamento 302 — quarto (Capítulo 1)**
+- Cama de solteiro com colchão, lençol, travesseiro e cobertor caindo no chão.
+- Criado-mudo com gaveta entreaberta, abajur, despertador parado, copo e cartela de remédio.
+- Guarda-roupa de duas portas, uma aberta, com roupas em cabides e caixas em cima.
+- Cômoda com espelho, pente, perfume e porta-retratos.
+- Cadeira com roupa pendurada, chinelos ao lado da cama, tapete.
+- Cortina rasgada e janela; ventilador de pé ou de teto.
+- Estante pequena com livros e revistas, alguns caídos.
+- Mala aberta no chão, pilha de roupa, sapatos espalhados.
+- Crucifixo ou quadro na parede, calendário parado em agosto, tomada com fio.
+- **O diário (`Diary`) fica na cama e o fusível (`Fuse`) no criado-mudo: os dois precisam continuar fáceis de ver.**
+
+**Apartamento 303 — sala de trabalho/depósito (Capítulo 1)**
+- Mesa de escritório com gavetas, cadeira giratória tombada.
+- Máquina de escrever ou computador antigo, luminária de mesa, cinzeiro, caneca, telefone.
+- Estante de metal cheia: pastas, caixas de arquivo, rolos de fio, ferramentas, rádio.
+- Arquivo de aço com gaveta puxada e papéis espalhados pelo chão.
+- Caixas de papelão empilhadas e uma tombada, com o conteúdo derramado.
+- Quadro de cortiça com recortes e um mapa do bairro.
+- Sofá pequeno ou poltrona, mesinha com revistas, televisão de tubo.
+- Escada dobrável, balde, vassoura, lata de tinta.
+- **A chave (`Key304`) e a transcrição (`Transcript`) ficam em cima da mesa, visíveis.**
+
+**Apartamento 304 — sala do telefone (fim do Capítulo 1)**
+- Mesinha de telefone com o aparelho de disco (`Phone`), lista telefônica e bloco de notas.
+- Poltrona com manta, sofá, mesa de centro com xícara e jornal.
+- Armário ou estante com televisão, toca-discos, enfeites e porta-retratos.
+- Tapete, cortinas pesadas, luminária de pé, relógio de parede parado às 03h17.
+- Brinquedos de criança no chão (este era o apartamento de um menino).
+
+**Apartamento 304 por dentro (Capítulo 2)** — é um apartamento que se estende muito além do possível, dividido em três áreas por paredes. Mobílie cada área como um cômodo diferente:
+- **Sala de estar:** sofá de três lugares, duas poltronas, mesa de centro, estante com televisão e enfeites, aparador, tapete grande, quadros, cortinas, plantas mortas.
+- **Sala de jantar e cozinha:** mesa com seis cadeiras (uma tombada), pratos e talheres postos, cristaleira com louça, geladeira antiga com a porta entreaberta, fogão com panela, pia com louça, armários de parede, botijão de gás, lixeira.
+- **Quarto e corredor do fundo:** cama de casal desfeita, dois criados-mudos, guarda-roupa grande, penteadeira com espelho, berço ou cama de criança, baú de brinquedos, varal com roupa.
+- Em todas as áreas: molduras reais para as fotografias, relógios parados, papel de parede descolando, rachaduras, objetos repetidos de um jeito estranho (o mesmo porta-retratos aparecendo em três lugares), para reforçar que o lugar não é normal.
+- **Os três telefones do puzzle (`SequencePhone0`, `1` e `2`), o gravador (`FutureArgumentTape`) e o rascunho da pista precisam continuar em destaque, cada um com um abajur aceso por perto.**
+
+### Regras para a bagunça não quebrar o jogo
+
+- **O caminho do jogador fica livre.** Deixe pelo menos 0,9 m de passagem entre os móveis e na frente de todas as portas. Bagunça de chão no caminho (papéis, roupa, cacos) **não tem colisão**.
+- **O centro do corredor do Capítulo 1 fica totalmente livre**, do começo ao fim, em toda a largura de 1,2 m para cada lado do eixo. O monstro anda por ali em linha reta e não desvia de nada. Encoste a mobília do corredor nas paredes, com no máximo 0,45 m de profundidade.
+- Só móveis grandes têm colisão, e sempre em caixa simples. Objetos pequenos em cima de superfícies não têm colisão.
+- Nada pode ficar na frente dos itens de interação nem entre o jogador e eles.
+- As portas precisam abrir sem bater em móveis: deixe livre o arco de 1 m de cada porta.
+
+### Regras para a densidade não pesar
+
+- **Reaproveite modelos.** O mesmo livro, a mesma caixa e a mesma cadeira podem aparecer dezenas de vezes com rotação e escala diferentes. Carregue cada `.glb` uma vez e instancie.
+- Para objetos muito repetidos (livros, papéis, cacos, garrafas), use `MultiMeshInstance3D`.
+- Junte objetos pequenos em um atlas de textura compartilhado, para reduzir a quantidade de materiais.
+- Orçamento por cena: até **350.000 triângulos** visíveis e **250 materiais diferentes**. Meça e informe os números reais.
+- Sombras: só os móveis grandes projetam sombra. Desligue `cast_shadow` na bagunça pequena.
+- Meça o FPS antes e depois (o contador fica no canto superior esquerdo). Se cair abaixo de 60 no PC de desenvolvimento, reduza.
+
+## Ordem de trabalho
+
+1. Função `LevelKit.model(...)` e o primeiro cômodo completo, o **302**, como referência de qualidade. Publique e peça a opinião do dono do projeto antes de seguir.
+2. Apartamento 303.
 3. Objetos de interação: fusível, chave, quadro de força, teclado da fechadura, telefone do 304, papéis.
-4. Corredor: banco, luminárias de teto, extintor, placas com os números das portas.
-5. Capítulo 2: sofá, mesas, aparador, guarda-roupa, cristaleira, molduras das fotos, relógio de parede, os três telefones e o gravador.
-6. Detalhes de abandono: sujeira, papéis no chão, uma cadeira tombada, cortinas.
+4. Corredor.
+5. Sala do telefone do 304.
+6. Capítulo 2, uma área de cada vez.
+7. Passada final de abandono: poeira, teias, infiltração, reboco, papel de parede.
 
 Faça o commit e publique ao fim de cada item, para o dono do projeto ir vendo.
 
