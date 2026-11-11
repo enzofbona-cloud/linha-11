@@ -4,13 +4,21 @@ Esta é a reconstrução ativa do jogo como experiência cooperativa do Roblox. 
 
 O plano da campanha Roblox, com 12 capítulos e metas de duração, está em [docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md](../docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md). Por enquanto, somente o capítulo 1 é jogável; a duração total ainda não foi validada em sessões.
 
+## Teste privado no Roblox
+
+- Página do jogo: [Testar LINHA 11 no Roblox](https://www.roblox.com/games/122255059176252/LINHA-11-A-ltima-Chamada)
+- ID da experiência: `10776015621`; ID do lugar inicial: `122255059176252`.
+- Publicada em 2026-11-11 como privada. O Creator Hub/Studio confirmou: disponível somente para a conta dona e colaboradores. Nenhum convite foi enviado e o acesso público continua desligado.
+- A página de jogo abre para a conta dona. Para jogar, entre na conta Roblox e use o botão azul de iniciar; o Roblox Player precisa estar instalado. O teste em Play Solo no Studio foi confirmado; a abertura do Player pelo navegador ainda não foi verificada.
+- Para um segundo jogador testar cooperação, conceda acesso pelo Creator Hub mantendo a experiência privada. Não use a opção de lançamento público.
+
 ## Abrir e jogar no Roblox Studio
 
 1. Instale o Roblox Studio e abra roblox/LINHA11_Roblox.rbxlx.
 2. No Studio, pressione Play para iniciar um jogador.
 3. Para testar cooperação, abra a guia Test, escolha 2 Players e pressione Start.
 4. No Creator Hub, ajuste o limite do servidor para dois jogadores antes de publicar.
-5. Convide um amigo pela interface de convite do Roblox quando a experiência estiver publicada.
+5. Convide um colaborador pelo Creator Hub se for testar com outra conta; isso mantém o acesso privado.
 
 O mapa é construído pelo servidor quando a sessão começa. O arquivo .rbxlx contém os scripts e a configuração da experiência; ele não é um site para abrir no navegador. GitHub Pages não executa experiências Roblox.
 
@@ -53,8 +61,8 @@ O script compila cada arquivo Luau e gera roblox/LINHA11_Roblox.rbxlx. O workflo
 
 - Esta pasta contém a primeira reconstrução jogável da missão, não os seis capítulos originais.
 - O mapa usa materiais e peças nativas do Roblox para manter o lugar leve; arte de alta qualidade, malhas personalizadas, animações articuladas, voz e efeitos sonoros com IDs publicados ainda precisam de uma etapa de assets no Studio.
-- O Ouvinte desta versão é um modelo procedural de silhueta 3D. Ele não usa ainda o arquivo GLB enviado: o modelo precisa ser convertido/importado pelo Studio e vinculado a uma experiência Roblox.
+- O Ouvinte desta versão é um modelo procedural de silhueta 3D. Ele não usa ainda o arquivo GLB enviado: o modelo precisa ser convertido e importado pelo Studio.
 - Não há salvamento entre servidores. O progresso compartilhado existe durante a sessão.
-- Este projeto ainda precisa ser aberto e jogado no Roblox Studio. Compilar um .rbxlx não comprova execução no motor nem publicação na conta Roblox.
+- O .rbxlx foi aberto e testado em Play Solo no Roblox Studio. A sessão publicada pelo Roblox Player, dois clientes simultâneos e a conclusão completa da missão ainda não foram verificados.
 
 
