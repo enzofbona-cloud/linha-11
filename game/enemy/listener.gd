@@ -135,54 +135,34 @@ func _set_state(new_state: int) -> void:
 func _animate() -> void:
 	if _body == null:
 		return
-	var agitation := 3.0 if state == State.CHASE else 1.0
-	_body.rotation.z = sin(_time * 1.7 * agitation) * 0.05 * agitation
-	_body.rotation.x = sin(_time * 1.1 * agitation) * 0.04
-	_body.position.y = sin(_time * 2.3) * 0.03
+	var agitation := 1.0 if state != State.CHASE else 2.4
+	# Movimento quase imperceptível parado; na perseguição, inclina e oscila mais.
+	_body.rotation.z = sin(_time * 0.83 * agitation) * 0.025 * agitation
+	_body.rotation.x = 0.04 + sin(_time * 0.71 * agitation) * 0.018 * agitation
+	_body.position.y = sin(_time * 1.4) * 0.008
 
 
 func _build_body() -> void:
 	_body = Node3D.new()
+	_body.name = "Body"
 	add_child(_body)
-	var skin := StandardMaterial3D.new()
-	skin.albedo_color = Color(0.035, 0.035, 0.04)
-	skin.roughness = 0.45
 
-	var torso := MeshInstance3D.new()
-	var capsule := CapsuleMesh.new()
-	capsule.radius = 0.17
-	capsule.height = 1.25
-	capsule.material = skin
-	torso.mesh = capsule
-	torso.position.y = 1.45
-	_body.add_child(torso)
+	var material := StandardMaterial3D.new()
+	material.albedo_texture = load("res://assets/characters/listener_v2.png")
+	material.albedo_color = Color(0.72, 0.72, 0.72, 1.0)
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+	material.alpha_scissor_threshold = 0.08
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 
-	var head := MeshInstance3D.new()
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.15
-	sphere.height = 0.36
-	sphere.material = skin
-	head.mesh = sphere
-	head.position = Vector3(0, 2.28, 0.05)
-	_body.add_child(head)
-
-	for side in [-1.0, 1.0]:
-		# pernas longas
-		var leg := MeshInstance3D.new()
-		var leg_mesh := CapsuleMesh.new()
-		leg_mesh.radius = 0.06
-		leg_mesh.height = 1.0
-		leg_mesh.material = skin
-		leg.mesh = leg_mesh
-		leg.position = Vector3(side * 0.1, 0.5, 0)
-		_body.add_child(leg)
-		# braços que quase tocam o chão
-		var arm := MeshInstance3D.new()
-		var arm_mesh := CapsuleMesh.new()
-		arm_mesh.radius = 0.045
-		arm_mesh.height = 1.5
-		arm_mesh.material = skin
-		arm.mesh = arm_mesh
-		arm.position = Vector3(side * 0.27, 1.25, 0.04)
-		arm.rotation.z = side * 0.09
-		_body.add_child(arm)
+	var sprite := MeshInstance3D.new()
+	sprite.name = "CreatureSprite"
+	var quad := QuadMesh.new()
+	quad.size = Vector2(1.72, 2.58)
+	quad.material = material
+	sprite.mesh = quad
+	sprite.position.y = 1.29
+	sprite.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_body.add_child(sprite)
