@@ -48,6 +48,9 @@ var controls_enabled := true:
 		if _touch_controls != null:
 			_touch_controls.gameplay_enabled = value
 
+## Ligado pela PlaySession quando o mouse está preso (ou no modo sem captura).
+var look_enabled := false
+
 var _shape: CapsuleShape3D
 var _collider: CollisionShape3D
 var _ray: RayCast3D
@@ -170,7 +173,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not controls_enabled:
 		return
 	if event is InputEventMouseMotion:
-		if OS.has_feature("web") or Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		if look_enabled:
 			_look(-event.relative.x * MOUSE_SENSITIVITY, -event.relative.y * MOUSE_SENSITIVITY)
 	elif event.is_action_pressed("flashlight"):
 		toggle_flashlight()
@@ -304,6 +307,10 @@ func _update_prompt() -> void:
 	if text != _prompt:
 		_prompt = text
 		prompt_changed.emit(text)
+
+
+func current_prompt() -> String:
+	return _prompt
 
 
 func notify(text: String) -> void:

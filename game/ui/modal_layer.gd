@@ -153,7 +153,6 @@ func open_keypad(keypad: Keypad) -> void:
 	_keypad_hint.text = "Digite 4 números. [Esc] para sair."
 	_refresh_display()
 	_keypad_panel.visible = true
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_open()
 
 
@@ -183,6 +182,11 @@ func _refresh_display() -> void:
 	for i in 4:
 		shown.append(_entry[i] if i < _entry.length() else "_")
 	_keypad_display.text = " ".join(shown)
+
+
+## Verdadeiro quando o painel aberto precisa do cursor (teclado, tela final).
+func needs_cursor() -> bool:
+	return _keypad_panel.visible or _ending.visible
 
 
 func _open() -> void:

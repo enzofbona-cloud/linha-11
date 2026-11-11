@@ -29,8 +29,7 @@ var _pause: PauseMenu
 var _modal: ModalLayer
 var _phone: Phone
 var _keypad: Keypad
-var _was_captured := false
-var _controls_started := false
+var session: PlaySession
 var _flicker: OmniLight3D
 var _power_lights: Array[OmniLight3D] = []
 var _light_energy := {}
@@ -94,20 +93,18 @@ func _ready() -> void:
 	player.message.connect(_hud.show_message)
 	player.prompt_changed.connect(_hud.set_prompt)
 	player.inventory_changed.connect(_hud.set_inventory)
-	player.pause_requested.connect(_pause_game)
-	player.touch_mode_activated.connect(_on_touch_mode_activated)
 
 	_modal = ModalLayer.new()
 	add_child(_modal)
 	player.document_requested.connect(_modal.open_document)
 	player.keypad_requested.connect(_modal.open_keypad)
-	_modal.opened.connect(func(): player.controls_enabled = false)
-	_modal.closed.connect(_on_modal_closed)
 
 	_pause = PauseMenu.new()
 	add_child(_pause)
-	_pause.resumed.connect(_resume)
-	_pause.quit_to_menu.connect(_quit_to_menu)
+
+	session = PlaySession.new()
+	add_child(session)
+	session.bind(player, _hud, _modal, _pause)
 
 	_phone.answered.connect(_on_phone_answered)
 	_phone.call_finished.connect(_on_call_finished)
@@ -118,16 +115,11 @@ func _ready() -> void:
 	_sting = SoundKit.player_2d(self, SoundKit.sting(), -3.0)
 
 	set_power(false)
-	_hud.set_objective("Restabeleça a energia do andar.")
+	session.set_objective("Restabeleça a energia do andar.")
 	if player.has_touch_controls():
-		_hud.set_click_hint_text("Joystick: andar  •  deslize à direita: olhar")
-		_hud.set_click_hint(false)
-		_hud.show_message("Use o joystick para andar. A lanterna ja esta ligada; toque em LUZ para alternar.", 7.0)
+		_hud.show_message("Use o joystick para andar. A lanterna já está ligada; toque em LUZ para alternar.", 7.0)
 	else:
-		_hud.set_click_hint_text("WASD: andar  •  mouse: olhar  •  F: lanterna  •  E: interagir")
-		_hud.set_click_hint(true)
-		_hud.show_message("Distrito 11 - Edificio Aurora, 3o andar. Sem energia. Use F para alternar a lanterna.", 7.0)
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		_hud.show_message("Distrito 11 — Edifício Aurora, 3º andar. Sem energia. [F] alterna a lanterna.", 7.0)
 
 
 func _process(delta: float) -> void:
@@ -142,80 +134,7 @@ func _process(delta: float) -> void:
 	if not _in_304 and player.global_position.z < -16.5:
 		_in_304 = true
 		listener.sleep()
-		_hud.set_objective("Atenda o telefone.")
-
-	if get_tree().paused or _modal.is_open or chapter_ended:
-		return
-	if OS.has_feature("web"):
-		_hud.set_click_hint(not _controls_started and not player.has_touch_controls())
-		return
-	var captured := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
-	if captured:
-		_was_captured = true
-		_hud.set_click_hint(false)
-	elif _was_captured:
-		# O navegador solta o mouse sozinho quando o jogador aperta Esc.
-		_pause_game()
-	else:
-		_hud.set_click_hint(true)
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("pause"):
-		if chapter_ended:
-			_quit_to_menu()
-		elif get_tree().paused:
-			_resume()
-		else:
-			_pause_game()
-	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED \
-			and not get_tree().paused and not _modal.is_open and not chapter_ended:
-		if OS.has_feature("web"):
-			_controls_started = true
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			_hud.set_click_hint(false)
-		else:
-			_capture_mouse()
-
-
-func _capture_mouse() -> void:
-	if OS.has_feature("web"):
-		_controls_started = true
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		_hud.set_click_hint(false)
-		return
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
-func _on_touch_mode_activated() -> void:
-	_controls_started = true
-	_hud.set_click_hint_text("Joystick: andar  •  deslize à direita: olhar  •  LUZ: lanterna  •  USAR: interagir")
-	_hud.set_click_hint(false)
-	_hud.show_message("Controles de toque ativados. O botao LUZ alterna a lanterna.", 6.0)
-
-
-func _on_modal_closed() -> void:
-	player.controls_enabled = true
-	_was_captured = false
-	_capture_mouse()
-
-
-func _pause_game() -> void:
-	get_tree().paused = true
-	_was_captured = false
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	_pause.open()
-
-
-func _resume() -> void:
-	_pause.close()
-	get_tree().paused = false
-	_capture_mouse()
-
-
-func _quit_to_menu() -> void:
-	get_tree().paused = false
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	get_tree().change_scene_to_file("res://game/ui/main_menu.tscn")
+		session.set_objective("Atenda o telefone.")
 
 
 # --- eventos do capítulo ---
@@ -234,7 +153,7 @@ func set_power(on: bool) -> void:
 func _on_power_restored() -> void:
 	set_power(true)
 	_phone.start_ringing()
-	_hud.set_objective("Um telefone está tocando. Encontre-o.")
+	session.set_objective("Um telefone está tocando. Encontre-o.")
 
 
 func _on_keypad_unlocked() -> void:
@@ -256,7 +175,7 @@ func on_key_taken() -> void:
 	listener.wake()
 	if _sting != null:
 		_sting.play()
-	_hud.set_objective("Chegue ao 304 sem fazer barulho.")
+	session.set_objective("Chegue ao 304 sem fazer barulho.")
 	_hud.show_message("A luz caiu. Tem algo no corredor. Agache [Ctrl] ou ande devagar [Alt]: ele só escuta.", 9.0)
 
 
@@ -283,17 +202,19 @@ func _respawn() -> void:
 
 func _on_phone_answered() -> void:
 	listener.sleep()
-	_hud.set_objective("Escute.")
+	session.set_objective("Escute.")
 
 
 func _on_call_finished() -> void:
 	chapter_ended = true
-	player.controls_enabled = false
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if _sting != null:
 		_sting.play()
-	_modal.show_ending("O PRIMEIRO CHAMADO",
-		"A voz no telefone sabia o seu nome.\n\nA transcrição no 303 descrevia esta noite, com 17 anos de antecedência.\n\nFim da primeira parte do Capítulo 1. A voz no telefone conhece a gravação do futuro.",
+	session.end_chapter("O PRIMEIRO CHAMADO",
+		"A voz no telefone sabia o seu nome.
+
+A transcrição no 303 descrevia esta noite, com 17 anos de antecedência.
+
+Fim do Capítulo 1.",
 		"res://game/scenes/chapter2/apartment_304.tscn")
 
 

@@ -16,8 +16,7 @@ var _wall_mat: StandardMaterial3D
 var _floor_mat: StandardMaterial3D
 var _wood_mat: StandardMaterial3D
 var _trim_mat: StandardMaterial3D
-var _was_captured := false
-var _controls_started := false
+var session: PlaySession
 
 
 func _ready() -> void:
@@ -32,42 +31,9 @@ func _ready() -> void:
 	_build_evidence()
 	_build_puzzle()
 	_build_exit()
+	_build_lamps()
 	_build_audio()
 	_build_player_and_ui()
-
-
-func _process(_delta: float) -> void:
-	if chapter_ended or _modal.is_open or get_tree().paused:
-		return
-	if OS.has_feature("web"):
-		_hud.set_click_hint(not _controls_started and not player.has_touch_controls())
-		return
-	var captured := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
-	if captured:
-		_was_captured = true
-		_hud.set_click_hint(false)
-	elif _was_captured:
-		_pause_game()
-	else:
-		_hud.set_click_hint(true)
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("pause"):
-		if chapter_ended:
-			_quit_to_menu()
-		elif get_tree().paused:
-			_resume()
-		else:
-			_pause_game()
-	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED \
-			and not get_tree().paused and not _modal.is_open and not chapter_ended:
-		if OS.has_feature("web"):
-			_controls_started = true
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			_hud.set_click_hint(false)
-		else:
-			_capture_mouse()
 
 
 func _build_environment() -> void:
@@ -76,7 +42,7 @@ func _build_environment() -> void:
 	env.background_color = Color(0.006, 0.005, 0.004)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.34, 0.26, 0.19)
-	env.ambient_light_energy = 0.22
+	env.ambient_light_energy = 0.5
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
 	env.tonemap_exposure = 1.0
 	env.fog_enabled = true
@@ -262,6 +228,25 @@ func _build_exit() -> void:
 	add_child(area)
 
 
+## Abajures acesos pelo apartamento: dão leitura ao espaço e guiam o jogador
+## de um telefone ao outro. Sem sombras, para ficar leve no navegador.
+func _build_lamps() -> void:
+	var warm := Color(1.0, 0.68, 0.38)
+	var lamps := [
+		Vector3(0, 2.3, 0.5),      # entrada
+		Vector3(0, 1.5, -2.8),     # mesa do rascunho
+		Vector3(-5.3, 1.6, -5.2),  # telefone grave
+		Vector3(5.7, 1.7, -9.6),   # aparador da fita
+		Vector3(0, 2.3, -12.7),    # meio do apartamento
+		Vector3(5.2, 1.6, -14.7),  # telefone agudo
+		Vector3(0, 2.3, -20.0),    # sala do fundo
+		Vector3(-5.6, 1.6, -22.7), # telefone médio
+		Vector3(0, 2.2, -27.2),    # porta sem número
+	]
+	for pos in lamps:
+		LevelKit.lamp(self, pos, warm, 0.85, 7.5, false)
+
+
 func _build_audio() -> void:
 	var hum := SoundKit.player_2d(self, SoundKit.hum(), -18.0)
 	hum.play()
@@ -274,8 +259,6 @@ func _build_player_and_ui() -> void:
 	player = Player.new()
 	player.position = Vector3(0, 0.05, 1.0)
 	player.add_to_group("player_target")
-	player.flashlight.light_energy = 3.8
-	player.flashlight.spot_angle = 31.0
 	add_child(player)
 	player.flashlight.visible = true
 	_hud = GameHud.new()
@@ -283,35 +266,23 @@ func _build_player_and_ui() -> void:
 	player.message.connect(_hud.show_message)
 	player.prompt_changed.connect(_hud.set_prompt)
 	player.inventory_changed.connect(_hud.set_inventory)
-	player.pause_requested.connect(_pause_game)
-	player.touch_mode_activated.connect(_on_touch_mode_activated)
 	_modal = ModalLayer.new()
 	add_child(_modal)
 	player.document_requested.connect(_modal.open_document)
-	_modal.opened.connect(func(): player.controls_enabled = false)
-	_modal.closed.connect(func():
-		player.controls_enabled = true
-		_was_captured = false
-		_capture_mouse())
 	_pause = PauseMenu.new()
 	add_child(_pause)
-	_pause.resumed.connect(_resume)
-	_pause.quit_to_menu.connect(_quit_to_menu)
+	session = PlaySession.new()
+	add_child(session)
+	session.bind(player, _hud, _modal, _pause)
 	add_child(preload("res://game/ui/debug_hud.tscn").instantiate())
-	_hud.set_objective("Descubra por que o 304 é maior por dentro.")
-	_hud.show_message("A porta fechou atrás de você. O corredor não termina.\nA fita está no aparador.", 8.0)
-	if player.has_touch_controls():
-		_hud.set_click_hint_text("Joystick: andar  •  deslize à direita: olhar")
-		_hud.set_click_hint(false)
-	else:
-		_hud.set_click_hint_text("WASD: andar  •  mouse: olhar  •  F: lanterna  •  E: interagir")
-		_hud.set_click_hint(true)
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	session.set_objective("Descubra por que o 304 é maior por dentro.")
+	_hud.show_message("A porta fechou atrás de você. O corredor não termina.
+A fita está no aparador.", 8.0)
 
 
 func _on_sequence_solved() -> void:
 	exit_door.sealed = false
-	_hud.set_objective("A porta sem número destravou. Atravesse.")
+	session.set_objective("A porta sem número destravou. Atravesse.")
 	_hud.show_message("Os três telefones tocam juntos. Do outro lado da porta, uma rua responde.", 7.0)
 
 
@@ -319,45 +290,13 @@ func _on_exit_entered(body: Node3D) -> void:
 	if body != player or not puzzle.is_solved or chapter_ended:
 		return
 	chapter_ended = true
-	player.controls_enabled = false
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	_modal.show_ending("SEM SINAL",
-		"A porta do 304 dá para uma rua que não existia no mapa.\n\nO rádio de Íris só recebe chiado. Ao longe, um orelhão começa a tocar.\n\nContinua: Capítulo 3 — Sem Sinal.")
+	session.end_chapter("SEM SINAL",
+		"A porta do 304 dá para uma rua que não existia no mapa.
+
+O rádio de Íris só recebe chiado. Ao longe, um orelhão começa a tocar.
+
+Continua: Capítulo 3 — Sem Sinal.")
 
 
 func _box(node_name: String, center: Vector3, size: Vector3, mat: Material, solid := true) -> Node3D:
 	return LevelKit.box(self, node_name, center, size, mat, solid)
-
-
-func _capture_mouse() -> void:
-	if OS.has_feature("web"):
-		_controls_started = true
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		_hud.set_click_hint(false)
-		return
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
-func _on_touch_mode_activated() -> void:
-	_controls_started = true
-	_hud.set_click_hint_text("Joystick: andar  •  deslize à direita: olhar  •  LUZ: lanterna  •  USAR: interagir")
-	_hud.set_click_hint(false)
-	_hud.show_message("Controles de toque ativados. O botao LUZ alterna a lanterna.", 6.0)
-
-
-func _pause_game() -> void:
-	get_tree().paused = true
-	_was_captured = false
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	_pause.open()
-
-
-func _resume() -> void:
-	_pause.close()
-	get_tree().paused = false
-	_capture_mouse()
-
-
-func _quit_to_menu() -> void:
-	get_tree().paused = false
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	get_tree().change_scene_to_file("res://game/ui/main_menu.tscn")

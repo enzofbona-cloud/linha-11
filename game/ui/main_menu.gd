@@ -2,6 +2,7 @@ extends Control
 ## Menu principal. A sala de boot fica renderizada ao fundo.
 
 const PROTOTYPE_SCENE := "res://game/scenes/prototype/prototype.tscn"
+const CHAPTER2_SCENE := "res://game/scenes/chapter2/apartment_304.tscn"
 
 
 func _ready() -> void:
@@ -28,10 +29,15 @@ func _ready() -> void:
 	box.add_child(UiKit.label("A  Ú L T I M A  C H A M A D A", 20, UiKit.AMBER))
 	box.add_child(UiKit.label(" ", 18))
 
-	var new_game := UiKit.button("Nova campanha")
+	var new_game := UiKit.button("Nova campanha  (Capítulo 1)")
 	new_game.name = "NewGameButton"
 	new_game.pressed.connect(_start)
 	box.add_child(new_game)
+
+	var chapter2 := UiKit.button("Capítulo 2 — Apartamento 304")
+	chapter2.name = "Chapter2Button"
+	chapter2.pressed.connect(func(): get_tree().change_scene_to_file(CHAPTER2_SCENE))
+	box.add_child(chapter2)
 
 	box.add_child(UiKit.button("Continuar  (em breve)", false))
 	box.add_child(UiKit.button("Criar sala  (em breve)", false))

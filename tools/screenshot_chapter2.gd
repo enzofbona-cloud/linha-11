@@ -18,6 +18,10 @@ func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	var scene: Node3D = load("res://game/scenes/chapter2/apartment_304.tscn").instantiate() as Node3D
 	root.add_child(scene)
+	await process_frame
+	await process_frame
+	scene.session.process_mode = Node.PROCESS_MODE_DISABLED  # sem captura nem pausa automática
+	scene.get_tree().paused = false
 	for i in 40:
 		await process_frame
 	scene.set_process(false)

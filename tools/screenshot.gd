@@ -23,6 +23,10 @@ func _run() -> void:
 
 	var scene: Node = load("res://game/scenes/prototype/prototype.tscn").instantiate()
 	root.add_child(scene)
+	await process_frame
+	await process_frame
+	scene.session.process_mode = Node.PROCESS_MODE_DISABLED  # sem captura nem pausa automática
+	scene.get_tree().paused = false
 	scene.set_process(false)
 	for i in 30:
 		await process_frame

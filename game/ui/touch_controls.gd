@@ -26,8 +26,10 @@ var _pressed_buttons: Dictionary = {}
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	is_touch_device = DisplayServer.is_touchscreen_available() \
-			or OS.has_feature("web_android") or OS.has_feature("web_ios")
+	# PCs com tela sensível ao toque continuam usando mouse e teclado: o modo
+	# toque só liga em celular/tablet ou quando o jogador realmente toca na tela.
+	is_touch_device = OS.has_feature("web_android") or OS.has_feature("web_ios") \
+			or OS.has_feature("android") or OS.has_feature("ios")
 	visible = is_touch_device
 	get_viewport().size_changed.connect(queue_redraw)
 	queue_redraw()

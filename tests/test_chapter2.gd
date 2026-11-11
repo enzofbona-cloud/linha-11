@@ -50,3 +50,46 @@ func test_fim_do_capitulo_1_exibe_botao_para_continuar():
 	modal.show_ending("O PRIMEIRO CHAMADO", "", "res://game/scenes/chapter2/apartment_304.tscn")
 	assert_true(modal._ending_continue.visible)
 	assert_eq(modal._ending_next_scene, "res://game/scenes/chapter2/apartment_304.tscn")
+
+
+func test_menu_permite_ir_direto_ao_capitulo_2():
+	var menu = load("res://game/ui/main_menu.tscn").instantiate()
+	add_child_autofree(menu)
+	var b = menu.find_child("Chapter2Button", true, false)
+	assert_not_null(b)
+	assert_false(b.disabled)
+
+
+func test_capitulo_2_do_inicio_ao_fim():
+	var scene = load("res://game/scenes/chapter2/apartment_304.tscn").instantiate()
+	add_child_autofree(scene)
+	await wait_physics_frames(3)
+	var p: Player = scene.player
+	assert_true(scene.exit_door.sealed)
+	scene.get_node("SequencePhone0").interact(p)
+	scene.get_node("SequencePhone2").interact(p)
+	scene.get_node("SequencePhone1").interact(p)
+	assert_true(scene.puzzle.is_solved)
+	assert_false(scene.exit_door.sealed)
+	scene.exit_door.animate = false
+	scene.exit_door.interact(p)
+	assert_true(scene.exit_door.is_open)
+	p.global_position = Vector3(0, 0.05, -31.0)
+	await wait_physics_frames(6)
+	assert_true(scene.chapter_ended)
+	assert_true(scene.session.ended)
+	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+func test_capitulo_2_tem_luz_suficiente_para_jogar():
+	var scene = load("res://game/scenes/chapter2/apartment_304.tscn").instantiate()
+	add_child_autofree(scene)
+	await wait_physics_frames(1)
+	var luzes := 0
+	for child in scene.get_children():
+		if child is OmniLight3D:
+			luzes += 1
+	assert_gte(luzes, 8, "abajures ao longo do apartamento")
+	assert_almost_eq(scene.player.flashlight.light_energy, 6.0, 0.01, "lanterna com a força padrão")
+	get_tree().paused = false

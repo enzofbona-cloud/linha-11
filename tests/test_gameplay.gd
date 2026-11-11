@@ -223,3 +223,52 @@ func test_porta_fechada_bloqueia_e_aberta_deixa_passar():
 	await wait_physics_frames(90)
 	_release_all()
 	assert_lt(p.global_position.x, -1.6, "porta aberta deve deixar entrar no 302")
+
+
+# --- captura do mouse (PlaySession) ---
+
+func test_durante_o_jogo_o_cursor_deve_ficar_preso():
+	assert_true(PlaySession.wants_capture(false, false, false, false, false))
+
+
+func test_cursor_fica_solto_na_pausa_no_fim_no_teclado_e_no_toque():
+	assert_false(PlaySession.wants_capture(true, false, false, false, false), "pausado")
+	assert_false(PlaySession.wants_capture(false, true, false, false, false), "fim de capítulo")
+	assert_false(PlaySession.wants_capture(false, false, true, false, false), "teclado de senha")
+	assert_false(PlaySession.wants_capture(false, false, false, true, false), "toque")
+	assert_false(PlaySession.wants_capture(false, false, false, false, true), "modo sem captura")
+
+
+func test_camera_so_gira_com_o_mouse_quando_liberada_pela_sessao():
+	var p := Player.new()
+	add_child_autofree(p)
+	var motion := InputEventMouseMotion.new()
+	motion.relative = Vector2(120, 0)
+	p.look_enabled = false
+	p._unhandled_input(motion)
+	assert_almost_eq(p.rotation.y, 0.0, 0.0001, "sem captura não gira")
+	p.look_enabled = true
+	p._unhandled_input(motion)
+	assert_lt(p.rotation.y, -0.1, "com captura gira para a direita")
+
+
+func test_pausar_e_retomar_pela_sessao():
+	var cena = _spawn_prototype()
+	await wait_physics_frames(3)
+	cena.session.pause()
+	assert_true(get_tree().paused)
+	assert_eq(Input.mouse_mode, Input.MOUSE_MODE_VISIBLE)
+	cena.session.resume()
+	assert_false(get_tree().paused)
+
+
+func test_teclado_de_senha_precisa_do_cursor_e_documento_nao():
+	var modal := ModalLayer.new()
+	add_child_autofree(modal)
+	modal.open_document("t", "c")
+	assert_false(modal.needs_cursor())
+	modal.close()
+	var k := Keypad.new()
+	add_child_autofree(k)
+	modal.open_keypad(k)
+	assert_true(modal.needs_cursor())
