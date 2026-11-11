@@ -317,20 +317,27 @@ func test_ouvinte_nao_da_salto_na_animacao_ao_acordar():
 	assert_lt(l.animation_state().walk, 0.2, "não acelera como se tivesse teletransportado")
 
 
-func test_ouvinte_tem_modelo_3d_articulado_sem_billboard():
+func test_ouvinte_mantem_a_aparencia_original_em_malha_articulada():
 	var l := _listener()
-	assert_null(l.find_child("CreatureSprite", true, false))
-	assert_not_null(l.find_child("LeftArm", true, false))
-	assert_not_null(l.find_child("RightArm", true, false))
-	assert_not_null(l.find_child("LeftLeg", true, false))
-	assert_not_null(l.find_child("RightLeg", true, false))
-	var meshes := l.find_children("*", "MeshInstance3D", true, false)
-	assert_gte(meshes.size(), 20)
-	for candidate in meshes:
-		assert_false((candidate as MeshInstance3D).mesh is QuadMesh, "o Ouvinte deve ter volume, não ser uma imagem plana")
+	var sprite := l.find_child("CreatureSprite", true, false) as MeshInstance3D
+	assert_not_null(sprite, "usa a imagem original da criatura")
+	assert_gt((sprite.mesh as QuadMesh).subdivide_depth, 10, "malha subdividida para articular")
+	assert_true(sprite.mesh.surface_get_material(0) is ShaderMaterial)
 
 
-# --- sons gravados ---
+func test_ouvinte_joga_o_peso_e_avanca_aos_trancos():
+	var l := _listener()
+	l.hear(Vector3(0, 0, -12), 100.0)
+	var corpo := l.find_child("Body", true, false) as Node3D
+	var lateral := 0.0
+	var tranco := 0.0
+	for i in 120:
+		l.tick(1.0 / 60.0, Vector3(5, 0, -30))
+		lateral = maxf(lateral, absf(corpo.position.x))
+		tranco = maxf(tranco, absf(corpo.position.z))
+	assert_gt(lateral, 0.04, "o corpo balança de um lado para o outro")
+	assert_gt(tranco, 0.05, "o avanço não é uma linha reta uniforme")
+
 
 func test_gravacoes_reais_existem_para_passos_portas_e_trinco():
 	for nome in SoundKit.FOOTSTEPS + SoundKit.DOOR_OPEN + SoundKit.DOOR_CLOSE + SoundKit.CREAKS + ["metallatch", "metalclick"]:

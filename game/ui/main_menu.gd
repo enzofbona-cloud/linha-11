@@ -36,7 +36,7 @@ func _ready() -> void:
 
 	var chapter2 := UiKit.button("Capítulo 2 — Apartamento 304")
 	chapter2.name = "Chapter2Button"
-	chapter2.pressed.connect(func(): get_tree().change_scene_to_file(CHAPTER2_SCENE))
+	chapter2.pressed.connect(_start_chapter2)
 	box.add_child(chapter2)
 
 	box.add_child(UiKit.button("Continuar  (em breve)", false))
@@ -57,4 +57,20 @@ func _ready() -> void:
 
 
 func _start() -> void:
-	get_tree().change_scene_to_file(PROTOTYPE_SCENE)
+	_start_chapter(PROTOTYPE_SCENE)
+
+
+func _start_chapter2() -> void:
+	_start_chapter(CHAPTER2_SCENE)
+
+
+func _start_chapter(scene_path: String) -> void:
+	# Pedir o pointer lock dentro do mesmo clique que inicia o capítulo.
+	_request_mouse_capture()
+	# Deixar o navegador confirmar a captura antes de trocar de cena.
+	await get_tree().process_frame
+	get_tree().change_scene_to_file(scene_path)
+
+
+func _request_mouse_capture() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
