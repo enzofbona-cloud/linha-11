@@ -284,3 +284,48 @@ func test_capitulo_inteiro_do_inicio_ao_fim():
 	telefone.interact(p)
 	await wait_seconds(0.6)
 	assert_true(cena.chapter_ended)
+
+
+# --- animação do Ouvinte ---
+
+func test_ouvinte_anima_a_passada_conforme_anda():
+	var l := _listener()
+	l.hear(Vector3(0, 0, -12), 100.0)
+	var antes: float = l.animation_state().gait_phase
+	for i in 60:
+		l.tick(1.0 / 60.0, Vector3(5, 0, -30))
+	var depois = l.animation_state()
+	assert_gt(depois.gait_phase, antes + 1.0, "a fase da passada avança com a distância")
+	assert_gt(depois.walk, 0.5, "está em ritmo de caminhada")
+
+
+func test_ouvinte_parado_quase_nao_marcha():
+	var l := _listener()
+	l.state = Listener.State.INVESTIGATE
+	l.target_z = l.position.z
+	for i in 60:
+		l.tick(1.0 / 60.0, Vector3(5, 0, -30))
+	assert_lt(l.animation_state().walk, 0.2)
+
+
+func test_ouvinte_tem_malha_subdividida_para_articular():
+	var l := _listener()
+	var sprite := l.find_child("CreatureSprite", true, false) as MeshInstance3D
+	assert_not_null(sprite)
+	assert_gt((sprite.mesh as QuadMesh).subdivide_depth, 10)
+	assert_true(sprite.mesh.surface_get_material(0) is ShaderMaterial)
+
+
+# --- sons gravados ---
+
+func test_gravacoes_reais_existem_para_passos_portas_e_trinco():
+	for nome in SoundKit.FOOTSTEPS + SoundKit.DOOR_OPEN + SoundKit.DOOR_CLOSE + SoundKit.CREAKS + ["metallatch", "metalclick"]:
+		assert_not_null(SoundKit.sfx(nome), nome)
+
+
+func test_sorteio_de_passos_nao_repete_o_anterior():
+	var anterior: AudioStream = SoundKit.pick(SoundKit.FOOTSTEPS)
+	for i in 30:
+		var atual: AudioStream = SoundKit.pick(SoundKit.FOOTSTEPS)
+		assert_ne(atual, anterior)
+		anterior = atual

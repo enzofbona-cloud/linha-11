@@ -7,6 +7,37 @@ const RATE := 22050
 static var _cache := {}
 
 
+const SFX_DIR := "res://assets/audio/sfx/"
+const FOOTSTEPS := ["footstep00", "footstep01", "footstep02", "footstep03", "footstep04",
+	"footstep05", "footstep06", "footstep07", "footstep08", "footstep09"]
+const DOOR_OPEN := ["dooropen_1", "dooropen_2"]
+const DOOR_CLOSE := ["doorclose_1", "doorclose_2", "doorclose_3", "doorclose_4"]
+const CREAKS := ["creak1", "creak2", "creak3"]
+const PAGES := ["bookflip1", "bookflip2", "bookflip3"]
+const PICKUPS := ["handlesmallleather", "handlesmallleather2", "cloth1", "cloth2"]
+
+static var _last_pick := {}
+
+
+## Gravação real (arquivo .ogg em assets/audio/sfx). Devolve null se não existir.
+static func sfx(sound_name: String) -> AudioStream:
+	var key := "sfx:" + sound_name
+	if not _cache.has(key):
+		var path := SFX_DIR + sound_name + ".ogg"
+		_cache[key] = load(path) if ResourceLoader.exists(path) else null
+	return _cache[key]
+
+
+## Sorteia uma variação sem repetir a anterior (evita o efeito "metralhadora").
+static func pick(group: Array) -> AudioStream:
+	var id := group.hash()
+	var index := randi() % group.size()
+	if group.size() > 1 and _last_pick.get(id, -1) == index:
+		index = (index + 1) % group.size()
+	_last_pick[id] = index
+	return sfx(group[index])
+
+
 static func _wav(samples: PackedFloat32Array, loop := false) -> AudioStreamWAV:
 	var bytes := PackedByteArray()
 	bytes.resize(samples.size() * 2)

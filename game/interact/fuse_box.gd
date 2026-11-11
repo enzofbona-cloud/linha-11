@@ -24,9 +24,11 @@ func interact(player: Player) -> void:
 		return
 	if not player.has_item(FUSE_ID):
 		player.notify("Falta um fusível. O encaixe está queimado e vazio.")
+		player.play_sfx(SoundKit.sfx("metallatch"), -6.0, 1.2)
 		return
 	player.remove_item(FUSE_ID)
 	powered = true
+	player.play_sfx(SoundKit.sfx("metalclick"), 0.0, 0.7)
 	player.make_noise(Player.NOISE_DOOR)
 	player.notify("O fusível encaixou. As luzes voltaram.")
 	power_restored.emit()

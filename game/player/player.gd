@@ -60,6 +60,7 @@ var _stride := 0.0
 var _was_on_floor := true
 var _step_audio: AudioStreamPlayer
 var _click_audio: AudioStreamPlayer
+var _sfx_audio: AudioStreamPlayer
 var _touch_controls: TouchControls
 var _touch_move := Vector2.ZERO
 var _touch_sprinting := false
@@ -120,8 +121,9 @@ func _init() -> void:
 	_ray.enabled = true
 	camera.add_child(_ray)
 
-	_step_audio = SoundKit.player_2d(self, SoundKit.step(), -8.0)
-	_click_audio = SoundKit.player_2d(self, SoundKit.click(), -6.0)
+	_step_audio = SoundKit.player_2d(self, SoundKit.pick(SoundKit.FOOTSTEPS), -8.0)
+	_click_audio = SoundKit.player_2d(self, SoundKit.sfx("metalclick"), -10.0)
+	_sfx_audio = SoundKit.player_2d(self, null, 0.0)
 
 
 func _ready() -> void:
@@ -246,6 +248,7 @@ func _update_steps(delta: float, on_floor: bool, sprinting: bool, crouching: boo
 
 
 func _play_step(volume_db: float) -> void:
+	_step_audio.stream = SoundKit.pick(SoundKit.FOOTSTEPS)
 	_step_audio.volume_db = volume_db
 	_step_audio.pitch_scale = randf_range(0.9, 1.1)
 	_step_audio.play()
@@ -307,6 +310,16 @@ func _update_prompt() -> void:
 	if text != _prompt:
 		_prompt = text
 		prompt_changed.emit(text)
+
+
+## Toca um efeito curto "na mão" do jogador (pegar item, virar página, trinco).
+func play_sfx(stream: AudioStream, volume_db := 0.0, pitch := 1.0) -> void:
+	if stream == null or not is_inside_tree():
+		return
+	_sfx_audio.stream = stream
+	_sfx_audio.volume_db = volume_db
+	_sfx_audio.pitch_scale = pitch
+	_sfx_audio.play()
 
 
 func current_prompt() -> String:

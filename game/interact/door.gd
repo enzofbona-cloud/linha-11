@@ -6,7 +6,7 @@ extends Node3D
 const WIDTH := 1.0
 const HEIGHT := 2.08
 const THICKNESS := 0.05
-const SWING_TIME := 0.55
+const SWING_TIME := 0.95
 
 @export var open_angle_deg := 90.0
 @export var locked_key := ""
@@ -83,21 +83,43 @@ func get_prompt(player: Player) -> String:
 func interact(player: Player) -> void:
 	if sealed:
 		player.notify(sealed_text)
+		_play(SoundKit.sfx("metallatch"), -4.0, randf_range(0.9, 1.05))
 		return
 	if locked_key != "":
 		if not player.has_item(locked_key):
 			player.notify(locked_text)
+			# maçaneta forçada: trinco batendo, sem abrir
+			_play(SoundKit.sfx("metallatch"), -3.0, randf_range(0.85, 1.0))
+			player.make_noise(Player.NOISE_DOOR * 0.5)
 			return
 		locked_key = ""
 		player.notify("A chave girou. A porta destrancou.")
+		player.play_sfx(SoundKit.sfx("metalclick"), -2.0, 0.8)
 	toggle()
 	player.make_noise(Player.NOISE_DOOR)
-	if is_inside_tree() and animate:
-		if _audio == null:
-			_audio = SoundKit.player_3d(self, SoundKit.creak(), 14.0, -4.0)
-			_audio.position = Vector3(0, 1.0, -0.5)
-		_audio.pitch_scale = randf_range(0.85, 1.15)
-		_audio.play()
+	if is_open:
+		_play(SoundKit.pick(SoundKit.DOOR_OPEN), -2.0, randf_range(0.92, 1.05))
+		_play_delayed(SoundKit.pick(SoundKit.CREAKS), 0.18, -9.0, randf_range(0.8, 1.0))
+	else:
+		# a batida acontece quando a folha encosta no batente
+		_play(SoundKit.pick(SoundKit.CREAKS), -11.0, randf_range(0.9, 1.1))
+		_play_delayed(SoundKit.pick(SoundKit.DOOR_CLOSE), SWING_TIME * 0.85, -1.0, randf_range(0.92, 1.05))
+
+
+func _play(stream: AudioStream, volume_db := 0.0, pitch := 1.0) -> void:
+	if stream == null or not is_inside_tree() or not animate:
+		return
+	var voice := SoundKit.player_3d(self, stream, 16.0, volume_db)
+	voice.position = Vector3(0, 1.0, -0.5)
+	voice.pitch_scale = pitch
+	voice.finished.connect(voice.queue_free)
+	voice.play()
+
+
+func _play_delayed(stream: AudioStream, delay: float, volume_db := 0.0, pitch := 1.0) -> void:
+	if stream == null or not is_inside_tree() or not animate:
+		return
+	get_tree().create_timer(delay).timeout.connect(_play.bind(stream, volume_db, pitch))
 
 
 func toggle() -> void:

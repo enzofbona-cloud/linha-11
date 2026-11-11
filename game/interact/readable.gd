@@ -19,6 +19,7 @@ func get_prompt(_player: Player) -> String:
 
 func interact(player: Player) -> void:
 	player.read_document(title, body)
+	player.play_sfx(SoundKit.pick(SoundKit.PAGES), -4.0)
 	if not _was_read:
 		_was_read = true
 		read.emit()

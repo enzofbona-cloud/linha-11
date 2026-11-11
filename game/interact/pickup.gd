@@ -19,5 +19,6 @@ func get_prompt(_player: Player) -> String:
 func interact(player: Player) -> void:
 	player.add_item(item_id, item_name)
 	player.notify("Você pegou: %s" % item_name)
+	player.play_sfx(SoundKit.pick(SoundKit.PICKUPS), -3.0)
 	picked.emit(item_id)
 	queue_free()
