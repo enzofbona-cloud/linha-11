@@ -25,7 +25,8 @@ local function makeBodyPart(model, name, size, cf, color, material, transparency
 	return part
 end
 
-function ListenerAI.new(parent, playerProvider, onCatch)
+function ListenerAI.new(parent, playerProvider, onCatch, config)
+	config = config or {}
 	local self = setmetatable({}, ListenerAI)
 	self.Parent = parent
 	self.PlayerProvider = playerProvider
@@ -33,7 +34,12 @@ function ListenerAI.new(parent, playerProvider, onCatch)
 	self.Awake = false
 	self.LastNoiseAt = 0
 	self.LastNoiseX = 0
-	self.Position = Vector3.new(-46, 0, 0)
+	self.MinX = config.minX or -51
+	self.MaxX = config.maxX or 51
+	self.PingMinX = config.pingMinX or (self.MinX - 6)
+	self.PingMaxX = config.pingMaxX or (self.MaxX + 6)
+	self.PatrolZ = config.z or 0
+	self.Position = Vector3.new(config.startX or -46, 0, self.PatrolZ)
 	self.PatrolDirection = 1
 	self.CatchCooldown = {}
 	self.Clock = 0
@@ -134,7 +140,7 @@ function ListenerAI:Ping(position, strength)
 	if not self.Awake or typeof(position) ~= "Vector3" then
 		return
 	end
-	if math.abs(position.Z) > 28 or position.X < -57 or position.X > 57 then
+	if math.abs(position.Z - self.PatrolZ) > 28 or position.X < self.PingMinX or position.X > self.PingMaxX then
 		return
 	end
 	local distance = math.abs(position.X - self.Position.X)
@@ -156,9 +162,9 @@ function ListenerAI:Step(dt)
 		targetX = self.LastNoiseX
 	else
 		targetX = self.Position.X + self.PatrolDirection * dt * 3.0
-		if targetX > 48 then
+		if targetX > self.MaxX then
 			self.PatrolDirection = -1
-		elseif targetX < -48 then
+		elseif targetX < self.MinX then
 			self.PatrolDirection = 1
 		end
 	end
@@ -166,9 +172,9 @@ function ListenerAI:Step(dt)
 	local speed = isHunting and 7.4 or 2.7
 	local delta = targetX - self.Position.X
 	local step = math.clamp(delta, -speed * dt, speed * dt)
-	local nextX = math.clamp(self.Position.X + step, -51, 51)
+	local nextX = math.clamp(self.Position.X + step, self.MinX, self.MaxX)
 	local facing = nextX >= self.Position.X and 1 or -1
-	self.Position = Vector3.new(nextX, 0, 0)
+	self.Position = Vector3.new(nextX, 0, self.PatrolZ)
 	local bodyCFrame = CFrame.lookAt(self.Position + Vector3.new(0, 0.05, 0), self.Position + Vector3.new(facing, 0.05, 0))
 	self.Model:PivotTo(bodyCFrame)
 	local gait = isHunting and 1.0 or 0.25
@@ -183,7 +189,7 @@ function ListenerAI:Step(dt)
 			local character = player.Character
 			local root = character and character:FindFirstChild("HumanoidRootPart")
 			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-			if root and humanoid and humanoid.Health > 0 and math.abs(root.Position.Z) < 4.5 and math.abs(root.Position.X - self.Position.X) < 4.7 then
+			if root and humanoid and humanoid.Health > 0 and math.abs(root.Position.Z - self.PatrolZ) < 4.5 and math.abs(root.Position.X - self.Position.X) < 4.7 then
 				if now - (self.CatchCooldown[player] or 0) > 18 then
 					self.CatchCooldown[player] = now
 					self.OnCatch(player)

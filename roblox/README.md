@@ -2,7 +2,7 @@
 
 Esta é a reconstrução ativa do jogo como experiência cooperativa do Roblox. A versão Godot permanece no histórico e nos arquivos antigos do repositório; ela não é a experiência atual.
 
-O plano da campanha Roblox, com 12 capítulos e metas de duração, está em [docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md](../docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md). Por enquanto, somente o capítulo 1 é jogável; a duração total ainda não foi validada em sessões.
+O plano da campanha Roblox, com 12 capítulos e metas de duração, está em [docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md](../docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md). A árvore de trabalho local prepara os capítulos 1 e 2 para teste privado; a versão já publicada ainda não foi atualizada com o segundo capítulo. A duração total não foi validada em sessões.
 
 ## Teste privado no Roblox
 
@@ -34,7 +34,9 @@ O menu inicial mantém o cursor livre. Ao começar a introdução, a câmera ent
 
 ## Missão e regras da história
 
-A missão cooperativa está em docs/historia-e-missao.md. O percurso inclui a chave no 305, o fusível na gaveta trancada do 301, três fragmentos da senha nos 301/302/305, o arquivo 303, a fita, o telefone no 304, o Ouvinte e a sala do repetidor. O código é 0317. A história termina em uma escolha entre transmitir a gravação ou cortar a linha.
+A missão cooperativa do primeiro capítulo está em docs/historia-e-missao.md. O percurso inclui a chave no 305, o fusível na gaveta trancada do 301, três fragmentos da senha nos 301/302/305, o arquivo 303, a fita, o telefone no 304, o Ouvinte e a sala do repetidor. O código é 0317. A história termina em uma escolha entre transmitir a gravação ou cortar a linha.
+
+O capítulo 2 agora tem um mapa separado do apartamento 304, com sala, cozinha, quarto, banheiro, lavanderia, coleta de pistas, derivação elétrica, dois pontos que precisam ser ativados em cooperação, perseguição pelo Ouvinte e uma conclusão que aponta para a escadaria B. Ele é selecionável no menu privado. A compilação Luau/Rojo foi validada; a execução visual e a sessão com dois clientes ainda precisam ser conferidas no Roblox Studio antes de substituir a versão privada publicada.
 
 O estado das pistas, portas, energia, criatura e puzzles é controlado pelo servidor. O segundo jogador precisa acionar a outra alavanca do repetidor; numa sessão solo, a janela de 12 segundos permite testar as duas alavancas com um único jogador. Esconder-se em um guarda-roupa impede o Ouvinte de capturar o jogador.
 
@@ -66,3 +68,18 @@ O script compila cada arquivo Luau e gera roblox/LINHA11_Roblox.rbxlx. O workflo
 - O .rbxlx foi aberto e testado em Play Solo no Roblox Studio. A sessão publicada pelo Roblox Player, dois clientes simultâneos e a conclusão completa da missão ainda não foram verificados.
 
 
+
+## Atualizacao local - 2026-11-11
+
+- Capitulo 2 (Apartamento 304): a arvore local tem o mapa, progressao e puzzle cooperativo. Corrigi a conexao dos eventos dos prompts: antes, os prompts desse mapa nao chegavam ao servidor.
+- Capitulo 3 (Sem Sinal): a build local inclui escadaria B, elevador de servico, sala tecnica, documentos de investigacao, puzzle de dois disjuntores em dupla, aparicao do Ouvinte apos religar o circuito e conclusao que encaminha a equipe para a rua.
+- Verificacao desta atualizacao: compilacao Luau e geracao Rojo do place. Ainda falta abrir esta build no Roblox Studio, revisar visualmente cada espaco e testar com dois clientes.
+- Esta arvore de trabalho ainda nao foi enviada ao Roblox, ao GitHub ou ao branch development. A ultima experiencia privada publicada nao inclui estes capitulos.
+## Campanha local completa em prototipo - 2026-11-11
+
+- A selecao local agora habilita os capitulos 1 a 12.
+- Os capitulos 4 a 12 ganharam mapas tematicos, tres documentos de historia por missao, sequencias de interacao especificas, objetivos e conclusoes que ligam cada descoberta ao capitulo seguinte.
+- O capitulo 7 usa duas alcas para levantar a bateria em conjunto; o capitulo 12 oferece os finais Transmitir a Prova e Cortar a Linha.
+- A build local passou no compilador Luau e foi gerada pelo Rojo. Isso confirma sintaxe e montagem do place, nao confirma jogabilidade no Roblox Studio.
+- Faltam testes Play Solo e com dois clientes, capturas de cada ambiente, medida de duracao, salvamento persistente, revisao de mobile/desempenho e verificacao dos finais no cliente.
+- Nada desta atualizacao foi enviado ao GitHub ou publicado no Roblox. A experiencia privada remota continua na versao anterior.

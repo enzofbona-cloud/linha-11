@@ -68,3 +68,21 @@ Um capítulo só conta como entregue se carregar, possuir objetivo e conclusão,
 - A campanha de 12 capítulos e a meta de 165 minutos são planejamento; apenas o capítulo 1 tem conteúdo jogável, e nenhum tempo de campanha foi medido.
 - A build foi publicada em uma experiência privada do Roblox. O Creator Hub/Studio confirmou que está disponível apenas para a conta dona e colaboradores; nenhum convite foi enviado. ID da experiência: `10776015621`; lugar inicial: `122255059176252`; página: [jogo privado](https://www.roblox.com/games/122255059176252/LINHA-11-A-ltima-Chamada).
 - A página autenticada mostrou o botão de iniciar. Clicar nele abriu o estado de carregamento do Roblox, mas não foi possível confirmar que o Roblox Player iniciou nesta sessão. A publicação permanece privada; não selecionar lançamento público.
+
+## Implementação local do capítulo 2
+
+- A árvore de trabalho local agora contém o apartamento 304 dividido em sala, cozinha, quarto, banheiro e lavanderia, com pistas, quadro de derivação, duas tomadas cooperativas, perseguição e conclusão narrativa.
+- O menu aceita a seleção do capítulo 2 e o servidor mantém o estado das pistas e do puzzle compartilhado entre jogadores.
+- A compilação Luau e a geração Rojo passaram. O Capítulo 2 ainda não foi executado no Roblox Studio, capturado por cômodo, testado com dois clientes nem publicado na experiência privada; portanto, esta implementação não substitui a build publicada.
+- O Ouvinte usa a silhueta procedural já existente também nesta área. O modelo GLB continua pendente de conversão/importação.
+
+## Progresso de implementacao local - 2026-11-11
+
+Capitulo 3 (Sem Sinal) foi adicionado a build local com rota pela escadaria B, elevador, sala tecnica, pistas que cruzam a evacuacao com o ramal 11 e puzzle A/B cooperativo com janela de 12 segundos. O Ouvinte desperta somente depois que o circuito fecha. O elevador revela a fita, e o registro final prepara a ida a cabine de emergencia na Avenida Norte.
+
+Capitulo 2 tambem recebeu a ligacao dos eventos de prompt ao servidor; os mapas dos capitulos 2 e 3 agora registram suas interacoes. A build passa no compilador Luau e no Rojo. Nenhum dos dois capitulos esta validado em runtime do Studio, com dois clientes ou por captura visual; portanto nao contam como entregas aprovadas pela regra de saida acima. Nao houve commit, push nem publicacao Roblox nesta etapa.
+## Atualizacao da campanha local - 2026-11-11
+
+O menu agora libera 1-12. Os capitulos 4-12 foram ligados a uma estrutura compartilhada de pistas, estado da missao, sequencias de puzzle e conclusao narrativa, com mapas tematicos independentes. O capitulo 7 exige levantar a bateria por duas alcas em dupla; o 12 termina com transmissao ou corte da linha. As sequencias possuem ordem propria e algumas etapas exigem jogadores diferentes.
+
+A build Luau/Rojo passa. Este e um prototipo local para permitir a revisao dos doze percursos; nao e ainda uma versao aprovada: faltam validar todos no Roblox Studio, testar com dois clientes, revisar screenshots de cada ambiente, confirmar que nao existe softlock, medir duracao e testar desempenho. Nao foi feito commit, push nem upload Roblox.

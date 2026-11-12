@@ -15,17 +15,17 @@
 Campaign.MinimumMinutes = 165
 Campaign.Chapters = {
 	{ id = 1, title = "O Primeiro Chamado", minMinutes = 15, maxMinutes = 17, playable = true },
-	{ id = 2, title = "Apartamento 304", minMinutes = 14, maxMinutes = 16 },
-	{ id = 3, title = "Sem Sinal", minMinutes = 12, maxMinutes = 14 },
-	{ id = 4, title = "A Cidade Vazia", minMinutes = 13, maxMinutes = 15 },
-	{ id = 5, title = "Central de Chamadas", minMinutes = 14, maxMinutes = 16 },
-	{ id = 6, title = "Arquivo 03:17", minMinutes = 12, maxMinutes = 14 },
-	{ id = 7, title = "Linha de Serviço", minMinutes = 14, maxMinutes = 16 },
-	{ id = 8, title = "Ala de Triagem", minMinutes = 13, maxMinutes = 15 },
-	{ id = 9, title = "Bloco de Transferência", minMinutes = 13, maxMinutes = 15 },
-	{ id = 10, title = "03:17", minMinutes = 14, maxMinutes = 16 },
-	{ id = 11, title = "A Testemunha", minMinutes = 15, maxMinutes = 17 },
-	{ id = 12, title = "A Última Chamada", minMinutes = 16, maxMinutes = 18 },
+	{ id = 2, title = "Apartamento 304", minMinutes = 14, maxMinutes = 16, playable = true },
+	{ id = 3, title = "Sem Sinal", minMinutes = 12, maxMinutes = 14, playable = true },
+	{ id = 4, title = "A Cidade Vazia", minMinutes = 13, maxMinutes = 15, playable = true },
+	{ id = 5, title = "Central de Chamadas", minMinutes = 14, maxMinutes = 16, playable = true },
+	{ id = 6, title = "Arquivo 03:17", minMinutes = 12, maxMinutes = 14, playable = true },
+	{ id = 7, title = "Linha de Serviço", minMinutes = 14, maxMinutes = 16, playable = true },
+	{ id = 8, title = "Ala de Triagem", minMinutes = 13, maxMinutes = 15, playable = true },
+	{ id = 9, title = "Bloco de Transferência", minMinutes = 13, maxMinutes = 15, playable = true },
+	{ id = 10, title = "03:17", minMinutes = 14, maxMinutes = 16, playable = true },
+	{ id = 11, title = "A Testemunha", minMinutes = 15, maxMinutes = 17, playable = true },
+	{ id = 12, title = "A Última Chamada", minMinutes = 16, maxMinutes = 18, playable = true },
 }
 
 return Campaign
@@ -33,6 +33,222 @@ return Campaign
         </Properties>
       </Item>
       <Item class="ModuleScript" referent="3">
+        <Properties>
+          <string name="Name">Chapter2Story</string>
+          <string name="Source"><![CDATA[local Chapter2Story = {}
+
+Chapter2Story.Title = "Apartamento 304"
+Chapter2Story.Prologue = {
+	"A fita 11 termina com um telefone tocando dentro do apartamento 304.",
+	"A central confirma que a linha do prédio continua recebendo corrente pela bateria de emergência.",
+	"Entrem no 304, localizem a derivação e registrem de onde vem o sinal.",
+	"Fiquem próximos. O corredor ainda está ligado ao circuito ECO.",
+}
+
+Chapter2Story.Clues = {
+	Phone = { title = "LINHA SEM TOM", text = "O telefone está desligado da tomada, mas a bobina ainda está morna. O fio não segue para a rua: ele desaparece dentro da parede." },
+	Photo = { title = "FOTOGRAFIA • 03:17", text = "A moradora do 304 aparece ao lado de uma caixa de interfone. No verso: ‘A voz vem do andar de cima, mesmo quando o prédio está vazio.’" },
+	ServiceKey = { title = "CHAVE DE SERVIÇO", text = "A chave abre o pequeno quadro de derivação da área de serviço. Há marcas recentes de uso apesar dos dezessete anos de abandono." },
+	Wiring = { title = "PLANTA DO CIRCUITO DOMÉSTICO", text = "Dois pontos precisam fechar o circuito ao mesmo tempo: a tomada da cozinha e o retorno da área de serviço. O traço termina atrás do espelho do banheiro." },
+	Signal = { title = "REGISTRO DO SINAL", text = "O tom não vem da central. Ele sobe pelo poço de serviço e termina na caixa telefônica da escadaria B. Há uma nova etiqueta presa ao cabo: 03:17." },
+}
+
+Chapter2Story.Objectives = {
+	[0] = "Entre no apartamento 304 e examine o telefone.",
+	[1] = "Investigue a fotografia, encontre a chave de serviço e leia a planta do circuito.",
+	[2] = "Use a chave e a planta para reativar o quadro da área de serviço.",
+	[3] = "Fechem juntos os dois pontos do circuito: cozinha e lavanderia.",
+	[4] = "Siga o sinal até o espelho do banheiro e registre a origem.",
+	[5] = "Volte ao telefone e confirme o registro da chamada.",
+	[6] = "Capítulo concluído. A derivação segue para a escadaria B.",
+}
+
+function Chapter2Story.GetObjective(stage: number): string
+	return Chapter2Story.Objectives[stage] or Chapter2Story.Objectives[6]
+end
+
+Chapter2Story.Completion = {
+	title = "CAPÍTULO 2 • A DERIVAÇÃO",
+	text = "O sinal subiu pelo poço de serviço até a escadaria B. Atrás do espelho havia um fio novo, ligado a uma caixa que não aparece na planta do prédio. Antes de a equipe conseguir cortá-lo, o telefone tocou outra vez — desta vez, no corredor.",
+}
+
+return Chapter2Story
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="4">
+        <Properties>
+          <string name="Name">Chapter3Story</string>
+          <string name="Source">local Chapter3Story = {}
+Chapter3Story.Title = "Sem Sinal"
+Chapter3Story.Prologue = {
+	"A escadaria B cheira a concreto molhado e fio queimado.",
+	"O telefone do patamar tocou antes de voces chegarem.",
+	"A derivacao do 304 desce para o elevador de servico.",
+	"Reconstruam o circuito. Se ouvirem passos, parem de correr.",
+}
+Chapter3Story.Objectives = {
+	[0] = "Atenda ao telefone no patamar da escadaria B.",
+	[1] = "Compare o livro do elevador e o aviso de rota; depois procure a chave tecnica.",
+	[2] = "Na sala tecnica, fechem os dois disjuntores em ate 12 segundos.",
+	[3] = "Abra o elevador de servico e recupere o gravador.",
+	[4] = "Volte ao patamar e registre o que o gravador revelou.",
+	[5] = "Capitulo concluido. A gravacao aponta para a cabine de emergencia na rua.",
+}
+function Chapter3Story.GetObjective(stage: number): string
+	return Chapter3Story.Objectives[stage] or Chapter3Story.Objectives[5]
+end
+Chapter3Story.Clues = {
+	Phone = { title="TELEFONE DE SERVICO • 02:41", text="A chamada vem do ramal 11, embora o cabo termine numa caixa vazia. Uma pessoa pede para abrir a escadaria; outra responde que a equipe ainda nao chegou." },
+	Log = { title="LIVRO DO ELEVADOR", text="O elevador foi isolado na noite da evacuacao. Mesmo assim, o contador registrou uma viagem as 03:17 para um nivel inexistente. A ordem de manutencao: 11-B." },
+	Route = { title="AVISO DE MANUTENCAO", text="Fechar os disjuntores A e B com no maximo doze segundos de intervalo. O retorno precisa de duas pessoas nos dois lados do quadro." },
+	Key = { title="ETIQUETA DA CHAVE", text="A chave abre a sala tecnica. Se o telefone tocar, nao responda com o seu nome." },
+	Recorder = { title="GRAVADOR DO ELEVADOR", text="Uma voz conta dois tecnicos entrando no predio. A outra diz: Ainda nao. Primeiro eles precisam atender. A fita termina com tres toques." },
+}
+Chapter3Story.Completion = {
+	title="CAPITULO 3 • SEM SINAL",
+	text="O gravador descreve a chegada da equipe antes de ela acontecer. No verso, alguem anotou a cabine de emergencia da Avenida Norte. Quando o telefone toca de novo, a voz usa o indicativo de voces.",
+}
+return Chapter3Story</string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="5">
+        <Properties>
+          <string name="Name">LaterChapterStory</string>
+          <string name="Source">local LaterChapterStory = {}
+
+LaterChapterStory.Chapters = {
+	[4] = {
+		Title="A Cidade Vazia", Theme="street", Location="Avenida Norte",
+		Prologue={"A cabine da Avenida Norte ainda recebe energia do ramal 11.","A lista oficial diz que todos os moradores embarcaram.","As marcas no meio-fio contam outra historia: nenhum onibus parou aqui."},
+		Objectives={[0]="Atenda a cabine de emergencia.",[1]="Recolha o livro de transporte e o registro da cabine.",[2]="Roteie a chamada pela sequencia indicada nos tres avisos.",[3]="Registre o destino real dos onibus no posto de evacuacao.",[4]="A chamada aponta para a antiga Central Municipal.",[5]="Capitulo concluido."},
+		Clues={
+			{title="QUADRO DE LINHAS",text="A linha 11 foi desviada para a Avenida Norte as 02:41. O campo de passageiros foi preenchido antes da chegada do primeiro onibus."},
+			{title="REGISTRO DA CABINE",text="A cabine recebeu uma chamada as 03:17. A voz do atendente pede para confirmar tres pontos da rota: terminal, retorno, garagem."},
+			{title="TALAO DE EMBARQUE",text="Onze bilhetes foram impressos, mas nenhum foi validado. No verso, a mesma letra escreveu: 'Nao houve embarque. A ordem veio da Central.'"},
+		},
+		PuzzleOrder={"A","B","C"}, CoopStep=2,
+		StepLabels={A={Action="Terminal",Object="Rota 1"},B={Action="Retorno",Object="Rota 2"},C={Action="Garagem",Object="Rota 3"}},
+		Completion={title="CAPITULO 4 • A CIDADE VAZIA",text="Os bilhetes nunca foram usados. A ordem de marcar a evacuacao veio da Central Municipal antes de qualquer onibus chegar. A linha registrada no talão aponta para a sala de despacho."},
+	},
+	[5] = {
+		Title="Central de Chamadas", Theme="callcenter", Location="Central Municipal",
+		Prologue={"A Central foi lacrada depois da evacuacao.","Onze chamadas continuam na mesa, cada uma com um horario diferente.","A gravacao mais recente tem a voz de um operador que afirma estar sozinho."},
+		Objectives={[0]="Examine os rolos e o quadro de despacho.",[1]="Encontre as tres fichas que ainda tem horario legivel.",[2]="Reordene as chamadas na mesa de gravacao.",[3]="Reproduza a fita integral e registre a origem do despacho.",[4]="A ordem da evacuacao foi emitida daqui, antes do primeiro chamado.",[5]="Capitulo concluido."},
+		Clues={
+			{title="FICHA DE DESPACHO A",text="02:41 — ramal 11 — solicitada ambulancia para o Distrito 11. A linha estava muda durante 19 segundos antes da resposta."},
+			{title="FICHA DE DESPACHO B",text="03:02 — ordem interna: preparar retirada total. Campo de autorizacao sem assinatura; carimbo aplicado 15 minutos depois."},
+			{title="FICHA DE DESPACHO C",text="03:17 — chamada recebida da sala de operacao, que estava vazia segundo o controle de acesso."},
+		},
+		PuzzleOrder={"A","C","B"}, CoopStep=0,
+		StepLabels={A={Action="02:41",Object="Rolo 1"},B={Action="03:02",Object="Rolo 2"},C={Action="03:17",Object="Rolo 3"}},
+		Completion={title="CAPITULO 5 • CENTRAL DE CHAMADAS",text="A ordem de retirada foi registrada antes de qualquer pedido de ajuda. A fita original foi levada ao Arquivo Municipal; a copia da Central foi editada. O numero de custodia termina em 0317."},
+	},
+	[6] = {
+		Title="Arquivo 03:17", Theme="archive", Location="Arquivo Municipal",
+		Prologue={"O arquivo guarda o original que a Central diz ter destruido.","As estantes foram reorganizadas depois do fechamento.","Algumas caixas tem poeira por cima e marcas recentes por baixo."},
+		Objectives={[0]="Localize a sala de consulta e procure o registro de custodia.",[1]="Leia a folha de saida, o carimbo e a ficha de transferencia.",[2]="Classifique os documentos pela ordem correta.",[3]="Abra o armario de custodia e recolha a fita original.",[4]="O manifesto nao confirma a evacuacao; ele registra uma transferencia sem destino.",[5]="Capitulo concluido."},
+		Clues={
+			{title="FOLHA DE SAIDA",text="A lista foi impressa as 03:17. O campo 'saida confirmada' esta marcado, mas o livro de portaria nao registra veiculos no perimetro."},
+			{title="CARIMBO DE CUSTODIA",text="A matriz do carimbo foi usada antes da folha existir. O lote do carimbo pertence ao turno seguinte."},
+			{title="FICHA DE TRANSFERENCIA",text="Destino apagado. Quantidade: onze volumes. Responsavel: R. Vale. Um segundo carimbo aponta para a Linha de Servico."},
+		},
+		PuzzleOrder={"B","C","A"}, CoopStep=0,
+		StepLabels={A={Action="Impressao",Object="Etapa 1"},B={Action="Carimbo",Object="Etapa 2"},C={Action="Custodia",Object="Etapa 3"}},
+		Completion={title="CAPITULO 6 • ARQUIVO 03:17",text="A fita original nao contem uma lista de passageiros. Contem onze ramais ativos e um pedido para manter a Linha de Servico ligada. O nome R. Vale aparece novamente na subestacao."},
+	},
+	[7] = {
+		Title="Linha de Servico", Theme="tunnel", Location="Subestacao Auxiliar",
+		Prologue={"A Linha de Servico passa por baixo do perimetro evacuado.","A bateria de emergencia foi removida do suporte e deixada no tunel.","A porta atras de voces nao vai continuar aberta por muito tempo."},
+		Objectives={[0]="Encontre o suporte e as duas alcas da bateria pesada.",[1]="Levante a bateria em dupla e leve-a ao receptaculo.",[2]="Restaure os tres trechos do circuito na ordem do diagrama.",[3]="Abra a passagem de retorno e recupere o registro da subestacao.",[4]="O consumo da linha coincide com a ala de triagem.",[5]="Capitulo concluido."},
+		Clues={
+			{title="DIAGRAMA DE CABOS",text="Trecho 1 alimenta a ala de triagem. Trecho 2 retorna ao repetidor. Trecho 3 foi ligado depois da evacuacao por alguem que conhecia o circuito."},
+			{title="ETIQUETA DA BATERIA",text="Bateria de chumbo, 86 kg. Transporte com duas pessoas. A alca esquerda esta travada."},
+			{title="ORDEM DA SUBESTACAO",text="Manter ativo ate receber confirmacao da triagem. Assinatura: R. Vale. A hora foi escrita por cima: 03:17."},
+		},
+		PuzzleOrder={"A","C","B"}, CoopStep=2, RequiresBattery=true,
+		StepLabels={A={Action="TRECHO 1",Object="Distribuicao"},B={Action="TRECHO 2",Object="Retorno"},C={Action="TRECHO 3",Object="Repetidor"}},
+		Completion={title="CAPITULO 7 • LINHA DE SERVICO",text="A bateria manteve um circuito vivo sob o bairro. O ramal vai para o abrigo de triagem. A ultima mensagem da subestacao pede para conferir as pulseiras antes de desligar qualquer coisa."},
+	},
+	[8] = {
+		Title="Ala de Triagem", Theme="triage", Location="Ginasio Aurora",
+		Prologue={"O ginasio foi convertido em abrigo na noite da evacuacao.","As camas estao arrumadas, mas nenhuma tem marcas de uso.","No balcao, as pulseiras foram contadas onze vezes."},
+		Objectives={[0]="Compare o mapa das camas com as pulseiras.",[1]="Procure a ficha da enfermaria e a lista de entrada.",[2]="Ligue a luz da ala e confira as tres estacoes de suprimentos.",[3]="Registre quem foi atendido e quem nunca chegou.",[4]="O endereco de transferencia leva ao Bloco 11.",[5]="Capitulo concluido."},
+		Clues={
+			{title="MAPA DAS CAMAS",text="Onze camas foram reservadas. A equipe marcou os leitos como ocupados, mas a contagem de cobertores permaneceu zero."},
+			{title="FICHA DA ENFERMARIA",text="Nenhum paciente registrado. A linha de observacao foi preenchida com a mesma frase: 'aguardando transporte'."},
+			{title="LISTA DE ENTRADA",text="A lista tem onze nomes, todos recebidos as 03:17. A assinatura do recebedor e R. Vale; o endereco e Bloco 11, apartamento 11."},
+		},
+		PuzzleOrder={"B","A","C"}, CoopStep=2,
+		StepLabels={A={Action="PULSEIRAS",Object="Estacao 1"},B={Action="FICHAS",Object="Estacao 2"},C={Action="SUPRIMENTOS",Object="Estacao 3"}},
+		Completion={title="CAPITULO 8 • ALA DE TRIAGEM",text="Nenhum morador chegou ao abrigo. A lista foi preenchida como se o grupo tivesse sido recebido e transferido. O proximo endereco e um bloco residencial sem registro de ocupacao."},
+	},
+	[9] = {
+		Title="Bloco de Transferencia", Theme="apartments", Location="Bloco 11",
+		Prologue={"O Bloco 11 consta como destino da transferencia.","Os apartamentos estao mobiliados; as caixas tem etiquetas com nomes diferentes.","Todas as fechaduras foram trocadas na mesma noite."},
+		Objectives={[0]="Investigue os tres apartamentos com etiquetas de transferencia.",[1]="Combine as fichas de morador com os objetos deixados para tras.",[2]="Abra a fechadura cooperativa da sala de recebimento.",[3]="Examine o livro de entrada e registre a divergencia.",[4]="O Bloco nunca recebeu moradores; as caixas foram preparadas como cenario.",[5]="Capitulo concluido."},
+		Clues={
+			{title="ETIQUETA 11-A",text="Nome: Elisa Moura. Conteudo: uma chave de casa, duas fotografias e um cartao de onibus sem validacao."},
+			{title="ETIQUETA 11-B",text="Nome: Davi Nunes. Conteudo: um relogio parado as 03:17 e uma ficha de abrigo em branco."},
+			{title="LIVRO DE ENTRADA",text="Nenhuma chave foi entregue. Todos os apartamentos aparecem ocupados antes da data oficial de transferencia."},
+		},
+		PuzzleOrder={"C","B","A"}, CoopStep=1,
+		StepLabels={A={Action="11-A",Object="Fechadura"},B={Action="11-B",Object="Trava"},C={Action="RECEPCAO",Object="Registro"}},
+		Completion={title="CAPITULO 9 • BLOCO DE TRANSFERENCIA",text="As caixas nunca foram entregues a moradores. Os nomes foram retirados de uma lista de chamadas, nao de um cadastro habitacional. O mesmo endereco aparece no relatorio do repetidor principal."},
+	},
+	[10] = {
+		Title="03:17", Theme="relay", Location="Camara do Repetidor",
+		Prologue={"A camara esta ligada desde a noite da evacuacao.","Tres valvulas controlam o retorno, mas uma delas esta quente.","O gravador recomenda uma sequencia diferente a cada repeticao."},
+		Objectives={[0]="Inspecione valvulas, relés e o gravador central.",[1]="Reconstitua a sequencia anotada no registro de manutencao.",[2]="Acione os tres controles na ordem: distribuicao, retorno, sincronismo.",[3]="Recupere a transmissao que atravessou a evacuacao.",[4]="A voz pede que alguem mantenha a linha aberta para servir de testemunha.",[5]="Capitulo concluido."},
+		Clues={
+			{title="REGISTRO DAS VALVULAS",text="Distribuicao primeiro. Retorno segundo. Sincronismo por ultimo. Se o retorno fechar antes da distribuicao, o circuito grava o som do proprio operador."},
+			{title="RELE 03",text="O rele foi trocado no dia seguinte ao fechamento do distrito. A peca retirada tem uma etiqueta com a data de hoje."},
+			{title="FITA DE SINCRONISMO",text="A mesma chamada aparece em onze ramais. Em cada copia, a voz esta mais perto do microfone, embora os aparelhos estejam em locais diferentes."},
+		},
+		PuzzleOrder={"A","B","C"}, CoopStep=2,
+		StepLabels={A={Action="DISTRIBUICAO",Object="Valvula 1"},B={Action="RETORNO",Object="Valvula 2"},C={Action="SINCRONISMO",Object="Valvula 3"}},
+		Completion={title="CAPITULO 10 • 03:17",text="O circuito repete chamadas, mas nao as cria. A origem esta no transmissor municipal. A pessoa que alterou os registros conhece a voz que aparece nas fitas."},
+	},
+	[11] = {
+		Title="A Testemunha", Theme="radio", Location="Torre Municipal",
+		Prologue={"A torre foi desativada, mas a antena ainda transmite.","A sala de gravacao guarda o rolo integral e um microfone ligado.","Uma pessoa responde pelo radio usando o nome R. Vale."},
+		Objectives={[0]="Encontre o rolo integral e o painel de transmissao.",[1]="Compare a fita fisica com o sinal ao vivo.",[2]="Sincronize o gravador e mantenha a transmissao protegida em dupla.",[3]="Ouça o depoimento completo e registre a identidade da testemunha.",[4]="R. Vale afirma que recebeu uma chamada de dentro do distrito.",[5]="Capitulo concluido."},
+		Clues={
+			{title="ROLO INTEGRAL",text="A fita tem onze canais separados. O canal 11 contem uma pessoa pedindo ajuda; os outros dez repetem a resposta do operador."},
+			{title="SINAL AO VIVO",text="A voz identifica R. Vale como operadora da noite da evacuacao. Ela diz que a ordem chegou pelo canal de emergencia, sem origem registrada."},
+			{title="ANOTACAO DA TESTEMUNHA",text="A operadora escreveu: 'Eu mudei o relatorio porque a voz usou meu nome. Nao sei se veio da linha ou de dentro da sala.'"},
+		},
+		PuzzleOrder={"B","C","A"}, CoopStep=2,
+		StepLabels={A={Action="FITA",Object="Gravador"},B={Action="ANTENA",Object="Sinal ao vivo"},C={Action="MESA",Object="Transmissao"}},
+		Completion={title="CAPITULO 11 • A TESTEMUNHA",text="R. Vale confirma que adulterou a ordem de saida, mas nega ter criado a chamada. A fita original registra um detalhe que ela nao contou: uma segunda respiração no microfone, antes de qualquer voz."},
+	},
+	[12] = {
+		Title="A Ultima Chamada", Theme="aurora", Location="Edificio Aurora",
+		Prologue={"A equipe retorna ao Aurora, onde tudo comecou.","O repetidor principal espera no antigo quarto de manutencao.","A chamada pede dois nomes; a testemunha diz para nao responder."},
+		Objectives={[0]="Volte ao corredor do 304 e localize a caixa do repetidor.",[1]="Use as provas reunidas para abrir o painel final.",[2]="Feche o circuito em dupla enquanto o Ouvinte percorre o andar.",[3]="Escolha: transmita a prova ou corte a linha.",[4]="A decisao altera o destino da chamada e o epilogo.",[5]="Campanha concluida."},
+		Clues={
+			{title="FIO DO 304",text="O fio novo atras do espelho nao alimentava o apartamento. Ele levava a uma caixa instalada no dia da evacuacao."},
+			{title="REGISTRO DE R. VALE",text="A testemunha escreveu que a chamada pedia dois nomes. O formulario de despacho foi alterado depois que ela respondeu."},
+			{title="ULTIMA TRANSCRICAO",text="A fita contem o primeiro chamado e o ultimo ao mesmo tempo. A voz do outro lado diz: 'Nao desliguem. Ainda falta alguem atender.'"},
+		},
+		PuzzleOrder={"C","A","B"}, CoopStep=2, FinalChoice=true,
+		StepLabels={A={Action="ABRIR PAINEL",Object="Repetidor"},B={Action="RETORNO",Object="Circuito"},C={Action="SINCRONIZAR",Object="Linha"}},
+		Endings={
+			Transmit={title="FINAL • A PROVA",text="A equipe transmite a fita integral para os canais de emergencia. O Distrito 11 deixa de ser um rumor: onze chamadas, onze registros falsos e uma voz que ainda responde. A ultima transmissao termina com o indicativo de voces."},
+			Cut={title="FINAL • LINHA CORTADA",text="A equipe corta o repetidor e interrompe o retorno. O silencio dura ate o amanhecer. No relatorio, os nomes dos tecnicos aparecem como a ultima chamada recebida, mas sem horario de encerramento."},
+		},
+		Completion={title="CAMPANHA CONCLUIDA",text="A ultima chamada foi atendida. O que aconteceu com o Distrito 11 agora depende da decisao da equipe."},
+	},
+}
+
+function LaterChapterStory.Get(chapterId)
+	return LaterChapterStory.Chapters[chapterId]
+end
+
+return LaterChapterStory</string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="6">
         <Properties>
           <string name="Name">MonetizationConfig</string>
           <string name="Source"><![CDATA[local MonetizationConfig = {}
@@ -58,7 +274,7 @@ return MonetizationConfig
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="4">
+      <Item class="ModuleScript" referent="7">
         <Properties>
           <string name="Name">Story</string>
           <string name="Source"><![CDATA[local Story = {}
@@ -142,15 +358,490 @@ return Story
       </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="5">
+  <Item class="ServerScriptService" referent="8">
     <Properties>
       <string name="Name">ServerScriptService</string>
     </Properties>
-    <Item class="Folder" referent="6">
+    <Item class="Folder" referent="9">
       <Properties>
         <string name="Name">Server</string>
       </Properties>
-      <Item class="Script" referent="7">
+      <Item class="ModuleScript" referent="10">
+        <Properties>
+          <string name="Name">Chapter2Map</string>
+          <string name="Source"><![CDATA[local TweenService = game:GetService("TweenService")
+
+local Chapter2Map = {}
+local BASE_X = 160
+local world
+local prompts = {}
+local lights = {}
+local jacks = {}
+local door
+local doorClosedCFrame
+local doorPrompt
+local doorOpen = false
+
+local COLORS = {
+	wall = Color3.fromRGB(105, 96, 83),
+	wallDark = Color3.fromRGB(52, 51, 47),
+	floor = Color3.fromRGB(54, 47, 40),
+	wood = Color3.fromRGB(78, 54, 40),
+	woodLight = Color3.fromRGB(112, 82, 58),
+	fabric = Color3.fromRGB(68, 64, 59),
+	metal = Color3.fromRGB(61, 67, 67),
+	amber = Color3.fromRGB(240, 176, 94),
+}
+
+local function pos(x, y, z)
+	return Vector3.new(BASE_X + x, y, z)
+end
+
+local function part(parent, name, size, position, color, material, transparency, canCollide, shape)
+	local item = Instance.new("Part")
+	item.Name = name
+	item.Size = size
+	item.Position = position
+	item.Anchored = true
+	item.CanCollide = canCollide ~= false
+	item.CanTouch = false
+	item.CanQuery = true
+	item.CastShadow = true
+	item.TopSurface = Enum.SurfaceType.Smooth
+	item.BottomSurface = Enum.SurfaceType.Smooth
+	item.Color = color or COLORS.wall
+	item.Material = material or Enum.Material.Concrete
+	item.Transparency = transparency or 0
+	if shape then item.Shape = shape end
+	item.Parent = parent
+	return item
+end
+
+local function prompt(host, name, actionId, actionText, objectText, hold)
+	local item = Instance.new("ProximityPrompt")
+	item.Name = name
+	item.ActionText = actionText
+	item.ObjectText = objectText
+	item.KeyboardKeyCode = Enum.KeyCode.E
+	item.GamepadKeyCode = Enum.KeyCode.ButtonX
+	item.HoldDuration = hold or 0.35
+	item.MaxActivationDistance = 8
+	item.RequiresLineOfSight = false
+	item:SetAttribute("ActionId", actionId)
+	item.Parent = host
+	table.insert(prompts, item)
+	return item
+end
+
+local function anchor(parent, name, x, y, z, actionId, actionText, objectText, hold)
+	local host = part(parent, name, Vector3.new(0.8, 0.8, 0.8), pos(x, y, z), Color3.new(0, 0, 0), Enum.Material.SmoothPlastic, 1, false)
+	host.CanQuery = false
+	prompt(host, "Interagir", actionId, actionText, objectText, hold)
+	return host
+end
+
+local function wallX(parent, name, x, z, length)
+	return part(parent, name, Vector3.new(0.5, 10.2, length), pos(x, 5.1, z), COLORS.wall, Enum.Material.Plaster)
+end
+
+local function wallZ(parent, name, x, z, length)
+	return part(parent, name, Vector3.new(length, 10.2, 0.5), pos(x, 5.1, z), COLORS.wall, Enum.Material.Plaster)
+end
+
+local function light(parent, name, x, z)
+	local fixture = part(parent, name .. "_Base", Vector3.new(1.8, 0.18, 0.65), pos(x, 10, z), COLORS.metal, Enum.Material.Metal)
+	local bulb = part(parent, name .. "_Difusor", Vector3.new(1.35, 0.08, 0.42), pos(x, 9.86, z), Color3.fromRGB(30, 30, 28), Enum.Material.Glass, 0.05, false)
+	local point = Instance.new("PointLight")
+	point.Name = "Luz_" .. name
+	point.Color = COLORS.amber
+	point.Brightness = 0
+	point.Range = 17
+	point.Shadows = false
+	point.Parent = bulb
+	table.insert(lights, { point = point, bulb = bulb, fixture = fixture })
+end
+
+local function document(parent, name, title, body, x, z, actionId, surfaceY)
+	local paperY = surfaceY or 2.48
+	local paper = part(parent, name, Vector3.new(2, 0.1, 1.45), pos(x, paperY, z), Color3.fromRGB(191, 178, 151), Enum.Material.SmoothPlastic)
+	local gui = Instance.new("SurfaceGui")
+	gui.Name = "PapelImpresso"
+	gui.Face = Enum.NormalId.Top
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = 65
+	gui.Parent = paper
+	local text = Instance.new("TextLabel")
+	text.Size = UDim2.fromScale(1, 1)
+	text.BackgroundColor3 = Color3.fromRGB(188, 174, 146)
+	text.BackgroundTransparency = 0.05
+	text.TextColor3 = Color3.fromRGB(38, 32, 26)
+	text.Font = Enum.Font.Garamond
+	text.TextScaled = true
+	text.TextWrapped = true
+	text.Text = title .. "\n" .. body
+	text.Parent = gui
+	anchor(parent, "Ler_" .. name, x, paperY + 0.72, z, actionId, "Examinar", title, 0.25)
+end
+
+local function counter(parent, name, x, z, width)
+	part(parent, name .. "_Base", Vector3.new(width, 2.2, 2), pos(x, 1.1, z), COLORS.wood, Enum.Material.WoodPlanks)
+	part(parent, name .. "_Tampo", Vector3.new(width + 0.12, 0.18, 2.15), pos(x, 2.28, z), Color3.fromRGB(125, 112, 94), Enum.Material.Marble)
+end
+
+local function addJack(parent, side, x, z)
+	part(parent, "Tomada_" .. side, Vector3.new(0.9, 1.1, 0.12), pos(x, 3.1, z), COLORS.wallDark, Enum.Material.Metal)
+	local bulb = part(parent, "Indicador_" .. side, Vector3.new(0.23, 0.23, 0.12), pos(x, 3.5, z - 0.08), Color3.fromRGB(44, 39, 34), Enum.Material.Glass, 0, false, Enum.PartType.Ball)
+	local lightPart = Instance.new("PointLight")
+	lightPart.Name = "Retorno_" .. side
+	lightPart.Color = Color3.fromRGB(170, 44, 36)
+	lightPart.Brightness = 0
+	lightPart.Range = 4
+	lightPart.Shadows = false
+	lightPart.Parent = bulb
+	jacks[side] = { bulb = bulb, light = lightPart }
+	anchor(parent, "Ponto_" .. side, x, 3.3, z - 0.5, "C2_Jack" .. side, "Conectar", side == "A" and "Tomada da cozinha" or "Retorno da lavanderia", 0.6)
+end
+
+local function buildWorld()
+	local oldWorld = workspace:FindFirstChild("Linha11Chapter2World")
+	if oldWorld then oldWorld:Destroy() end
+	world = Instance.new("Model")
+	world.Name = "Linha11Chapter2World"
+	world.Parent = workspace
+	prompts = {}
+	lights = {}
+	jacks = {}
+
+	part(world, "Corredor_Piso", Vector3.new(110, 0.6, 12), pos(55, -0.35, 0), COLORS.floor, Enum.Material.WoodPlanks)
+	part(world, "Corredor_Teto", Vector3.new(110, 0.5, 12), pos(55, 11.9, 0), COLORS.wallDark, Enum.Material.Concrete)
+	part(world, "Corredor_Parede_Norte", Vector3.new(110, 12, 0.55), pos(55, 6, -6), COLORS.wall, Enum.Material.Plaster)
+	part(world, "Corredor_Parede_Sul_Esq", Vector3.new(51, 12, 0.55), pos(25.5, 6, 6), COLORS.wall, Enum.Material.Plaster)
+	part(world, "Corredor_Parede_Sul_Dir", Vector3.new(53, 12, 0.55), pos(83.5, 6, 6), COLORS.wall, Enum.Material.Plaster)
+	part(world, "Corredor_Parede_Oeste", Vector3.new(0.8, 16, 12), pos(0, 7.5, 0), COLORS.wallDark, Enum.Material.Concrete)
+	part(world, "Corredor_Parede_Leste", Vector3.new(0.8, 16, 12), pos(110, 7.5, 0), COLORS.wallDark, Enum.Material.Concrete)
+	for index, x in ipairs({ 16, 40, 64, 88 }) do light(world, "Corredor_" .. index, x, 0) end
+
+	local spawn = Instance.new("SpawnLocation")
+	spawn.Name = "InicioCapitulo02"
+	spawn.Size = Vector3.new(4, 0.6, 4)
+	spawn.Position = pos(4, 0.1, 0)
+	spawn.Anchored = true
+	spawn.Transparency = 1
+	spawn.CanCollide = false
+	spawn.Neutral = true
+	spawn.Duration = 0
+	spawn.Parent = world
+
+	local apt = Instance.new("Model")
+	apt.Name = "Apartamento_304_Interior"
+	apt.Parent = world
+	part(apt, "Piso_304", Vector3.new(40, 0.45, 20), pos(54, 0.02, 16), COLORS.floor, Enum.Material.WoodPlanks)
+	part(apt, "Teto_304", Vector3.new(40, 0.5, 20), pos(54, 10.45, 16), COLORS.wallDark, Enum.Material.Concrete)
+	part(apt, "Parede_Oeste", Vector3.new(0.55, 11, 20), pos(34, 5.5, 16), COLORS.wall, Enum.Material.Plaster)
+	part(apt, "Parede_Leste", Vector3.new(0.55, 11, 20), pos(74, 5.5, 16), COLORS.wall, Enum.Material.Plaster)
+	part(apt, "Parede_Fundo", Vector3.new(40, 11, 0.55), pos(54, 5.5, 26), COLORS.wall, Enum.Material.Plaster)
+	part(apt, "Parede_Frontal_Esq", Vector3.new(17, 11, 0.55), pos(42.5, 5.5, 6), COLORS.wall, Enum.Material.Plaster)
+	part(apt, "Parede_Frontal_Dir", Vector3.new(17, 11, 0.55), pos(65.5, 5.5, 6), COLORS.wall, Enum.Material.Plaster)
+	door = part(apt, "Porta_304_C2", Vector3.new(5.5, 8.6, 0.42), pos(54, 4.3, 6), COLORS.wood, Enum.Material.WoodPlanks)
+	part(apt, "Batente_304_Esq", Vector3.new(0.35, 9, 0.75), pos(51.25, 4.5, 6), COLORS.woodLight, Enum.Material.Wood)
+	part(apt, "Batente_304_Dir", Vector3.new(0.35, 9, 0.75), pos(56.75, 4.5, 6), COLORS.woodLight, Enum.Material.Wood)
+	part(apt, "Batente_304_Topo", Vector3.new(5.85, 0.35, 0.75), pos(54, 8.95, 6), COLORS.woodLight, Enum.Material.Wood)
+	part(apt, "Macaneta_304_C2", Vector3.new(0.16, 0.16, 0.18), pos(55.9, 4.3, 5.72), Color3.fromRGB(145, 111, 70), Enum.Material.Metal, 0, false, Enum.PartType.Ball)
+	doorClosedCFrame = door.CFrame
+	doorPrompt = prompt(door, "Abrir_304_C2", "C2_Door304", "Fechar", "Porta do apartamento 304", 0.2)
+	doorPrompt.MaxActivationDistance = 9
+	local sign = part(world, "Placa_304_Corredor", Vector3.new(3.2, 0.85, 0.12), pos(54, 8.4, 5.65), COLORS.wood, Enum.Material.Wood)
+	local signGui = Instance.new("SurfaceGui")
+	signGui.Face = Enum.NormalId.Front
+	signGui.PixelsPerStud = 45
+	signGui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	signGui.Parent = sign
+	local signText = Instance.new("TextLabel")
+	signText.Size = UDim2.fromScale(1, 1)
+	signText.BackgroundTransparency = 1
+	signText.Text = "304  •  AURORA"
+	signText.TextColor3 = Color3.fromRGB(224, 211, 188)
+	signText.Font = Enum.Font.Garamond
+	signText.TextScaled = true
+	signText.Parent = signGui
+
+	-- Divisórias criam sala, eixo de circulação, cozinha, lavanderia, quarto e banheiro.
+	wallX(apt, "Parede_Sala_A", 52, 9.5, 7)
+	wallX(apt, "Parede_Sala_B", 52, 22.5, 7)
+	wallX(apt, "Parede_Ala_A", 56, 7, 2)
+	wallX(apt, "Parede_Ala_B", 56, 14.5, 5)
+	wallX(apt, "Parede_Ala_C", 56, 23.5, 5)
+	wallZ(apt, "Divisoria_Frente_A", 58, 16, 4)
+	wallZ(apt, "Divisoria_Frente_B", 70.5, 16, 7)
+	wallX(apt, "Divisoria_Servico_A", 66, 7, 2)
+	wallX(apt, "Divisoria_Servico_B", 66, 14.5, 5)
+	wallX(apt, "Divisoria_Servico_C", 66, 23.5, 5)
+
+	-- Sala de estar: sofá, mesa do telefone, estante e fotografia pessoal.
+	part(apt, "Tapete_Sala", Vector3.new(11, 0.06, 7), pos(43, 0.29, 13), Color3.fromRGB(72, 57, 46), Enum.Material.Fabric, 0.04, false)
+	local sofa = part(apt, "Sofa_304", Vector3.new(7.8, 2.15, 2.65), pos(40.5, 1.35, 15), Color3.fromRGB(63, 59, 54), Enum.Material.Fabric)
+	part(apt, "Encosto_Sofa", Vector3.new(7.8, 2.5, 0.55), sofa.Position + Vector3.new(0, 0.9, 1.15), Color3.fromRGB(52, 48, 44), Enum.Material.Fabric)
+	for _, x in ipairs({ 36.8, 44.2 }) do part(apt, "Braco_Sofa", Vector3.new(0.52, 1.65, 2.65), pos(x, 1.5, 15), COLORS.fabric, Enum.Material.Fabric) end
+	for _, x in ipairs({ 38.3, 40.5, 42.7 }) do part(apt, "Almofada_Sofa", Vector3.new(1.8, 0.35, 1.85), pos(x, 2.6, 14.8), Color3.fromRGB(83, 74, 63), Enum.Material.Fabric, 0, false) end
+	local tableTop = part(apt, "Mesa_Telefone", Vector3.new(4.4, 0.2, 2.8), pos(46.2, 2.15, 11), COLORS.wood, Enum.Material.WoodPlanks)
+	for _, offset in ipairs({ Vector3.new(-1.8, -1.05, -1), Vector3.new(1.8, -1.05, -1), Vector3.new(-1.8, -1.05, 1), Vector3.new(1.8, -1.05, 1) }) do
+		part(apt, "Perna_Mesa_Telefone", Vector3.new(0.2, 2.1, 0.2), tableTop.Position + offset, COLORS.wood, Enum.Material.Wood)
+	end
+	part(apt, "Telefone_304", Vector3.new(1.2, 0.5, 0.85), pos(46.2, 2.5, 11), COLORS.wallDark, Enum.Material.SmoothPlastic)
+	part(apt, "Disco_Telefone", Vector3.new(0.72, 0.08, 0.72), pos(46.2, 2.78, 11), Color3.fromRGB(119, 103, 82), Enum.Material.SmoothPlastic, 0, false, Enum.PartType.Cylinder)
+	anchor(apt, "Atender_Telefone_304", 46.2, 3.15, 11, "C2_Phone", "Examinar", "Telefone 304", 0.6)
+	part(apt, "Caderno_Equipe", Vector3.new(1.2, 0.14, 0.9), pos(48.2, 2.35, 11.5), Color3.fromRGB(71, 57, 44), Enum.Material.Fabric)
+	anchor(apt, "Confirmar_Registro_304", 48.2, 3.05, 11.5, "C2_Report", "Registrar", "Caderno de campo", 0.5)
+	part(apt, "Estante_Sala", Vector3.new(0.45, 6.5, 6), pos(37, 3.25, 22), COLORS.wood, Enum.Material.WoodPlanks)
+	for index = 1, 5 do part(apt, "Prateleira_Sala", Vector3.new(2.8, 0.18, 5.7), pos(38.5, 0.9 + index * 1.05, 22), COLORS.woodLight, Enum.Material.Wood) end
+	part(apt, "Aparador_Fotografia", Vector3.new(2.7, 2.3, 1.7), pos(46, 1.15, 18.8), COLORS.wood, Enum.Material.WoodPlanks)
+	part(apt, "Tampo_Aparador_Fotografia", Vector3.new(2.85, 0.16, 1.85), pos(46, 2.38, 18.8), COLORS.woodLight, Enum.Material.Wood)
+	document(apt, "Fotografia_304_C2", "FOTOGRAFIA", "A moradora e o interfone.", 46, 18.8, "C2_Photo", 2.5)
+
+	-- Cozinha: bancada, geladeira, pia, fogão e a chave de serviço.
+	part(apt, "Piso_Cozinha", Vector3.new(10, 0.07, 9), pos(61, 0.3, 10.5), Color3.fromRGB(91, 84, 75), Enum.Material.Marble, 0.02, false)
+	counter(apt, "Bancada_Cozinha", 61, 7.8, 8)
+	part(apt, "Armarios_Superiores_Cozinha", Vector3.new(8, 2.4, 0.8), pos(61, 7.4, 6.9), COLORS.wood, Enum.Material.WoodPlanks)
+	part(apt, "Geladeira_304", Vector3.new(2.7, 6.4, 2.8), pos(58, 3.2, 12.6), Color3.fromRGB(110, 112, 108), Enum.Material.Metal)
+	part(apt, "Puxador_Geladeira", Vector3.new(0.12, 2.5, 0.15), pos(59.25, 3.5, 11.15), Color3.fromRGB(174, 165, 147), Enum.Material.Metal, 0, false)
+	part(apt, "Cuba_Pia", Vector3.new(2, 0.16, 1), pos(59, 2.4, 7.7), Color3.fromRGB(89, 96, 96), Enum.Material.Metal, 0, false)
+	part(apt, "Fogao_304", Vector3.new(2.2, 0.22, 1.7), pos(63.4, 2.4, 7.7), COLORS.metal, Enum.Material.Metal)
+	for _, x in ipairs({ 62.8, 64 }) do for _, z in ipairs({ 7.2, 8.2 }) do part(apt, "Queimador_Fogao", Vector3.new(0.65, 0.12, 0.65), pos(x, 2.57, z), Color3.fromRGB(32, 32, 30), Enum.Material.Metal, 0, false, Enum.PartType.Cylinder) end end
+	local cup = part(apt, "Copo_Cozinha", Vector3.new(0.42, 0.65, 0.42), pos(62, 2.72, 8), Color3.fromRGB(116, 105, 87), Enum.Material.SmoothPlastic, 0, false, Enum.PartType.Cylinder)
+	prompt(cup, "Examinar_Copo", "C2_KitchenObject", "Examinar", "Copo com marca de batom", 0.25)
+	part(apt, "Gaveteiro_Cozinha", Vector3.new(3.2, 2.1, 1.6), pos(62, 1.05, 10.5), COLORS.wood, Enum.Material.WoodPlanks)
+	local drawer = part(apt, "Frente_Gaveta_Chave", Vector3.new(2.7, 0.55, 0.14), pos(62, 1.65, 9.66), COLORS.woodLight, Enum.Material.Wood)
+	part(apt, "Puxador_Gaveta_Chave", Vector3.new(0.48, 0.1, 0.12), pos(62, 1.65, 9.55), Color3.fromRGB(147, 112, 71), Enum.Material.Metal, 0, false)
+	part(apt, "Chave_Servico_304", Vector3.new(0.95, 0.14, 0.16), pos(62.5, 2.25, 9.45), Color3.fromRGB(170, 132, 72), Enum.Material.Metal, 0, false)
+	anchor(apt, "Gaveta_Chave_304", 62, 2.4, 9.2, "C2_ServiceKey", "Abrir gaveta", "Chave de serviço", 0.55)
+	addJack(apt, "A", 63.5, 13.4)
+
+	-- Quarto: cama, criado-mudo, guarda-roupa e planta dobrada.
+	part(apt, "Tapete_Quarto", Vector3.new(7.5, 0.06, 6.5), pos(60.5, 0.29, 21.5), Color3.fromRGB(77, 66, 56), Enum.Material.Fabric, 0.05, false)
+	part(apt, "Estrado_Cama_304", Vector3.new(5.5, 1.1, 7.2), pos(58.5, 0.82, 22.2), COLORS.wood, Enum.Material.WoodPlanks)
+	part(apt, "Colchao_Cama_304", Vector3.new(5.3, 0.68, 7), pos(58.5, 1.7, 22.2), Color3.fromRGB(155, 148, 132), Enum.Material.Fabric)
+	part(apt, "Cobertor_Cama_304", Vector3.new(5.35, 0.22, 4.5), pos(58.5, 2.12, 21.1), Color3.fromRGB(89, 91, 86), Enum.Material.Fabric, 0, false)
+	part(apt, "Cabeceira_Cama_304", Vector3.new(5.7, 2.4, 0.35), pos(58.5, 1.6, 25.5), COLORS.wood, Enum.Material.Wood)
+	part(apt, "Criado_Mudo_304", Vector3.new(2, 2.1, 1.8), pos(63.6, 1.05, 24), COLORS.wood, Enum.Material.WoodPlanks)
+	part(apt, "GuardaRoupa_304", Vector3.new(2.5, 7.4, 3.2), pos(63.2, 3.7, 18.4), COLORS.wood, Enum.Material.WoodPlanks)
+	document(apt, "Planta_Circuito_304", "PLANTA", "Cozinha + serviço = retorno.", 61, 19, "C2_Wiring", 2.12)
+
+	-- Banheiro: louça, cuba, espelho manchado e origem aparente do tom.
+	part(apt, "Piso_Banheiro", Vector3.new(8, 0.07, 9), pos(70, 0.3, 21), Color3.fromRGB(102, 98, 90), Enum.Material.Marble, 0.03, false)
+	local vanity = part(apt, "Gabinete_Banheiro", Vector3.new(3.8, 2, 1.8), pos(70.2, 1, 17.8), COLORS.wood, Enum.Material.WoodPlanks)
+	part(apt, "Cuba_Banheiro", Vector3.new(2.3, 0.28, 1.4), vanity.Position + Vector3.new(0, 1.15, -0.1), Color3.fromRGB(163, 158, 145), Enum.Material.Marble, 0, false)
+	part(apt, "Espelho_Manchado", Vector3.new(3.5, 3.2, 0.12), pos(70.2, 5, 17.05), Color3.fromRGB(93, 103, 103), Enum.Material.Glass, 0.18, false)
+	part(apt, "Sanitario_304", Vector3.new(1.6, 2.1, 2.3), pos(68.2, 1.05, 23), Color3.fromRGB(155, 151, 140), Enum.Material.Marble)
+	part(apt, "Caixa_Sanitario", Vector3.new(1.7, 1.4, 0.75), pos(68.2, 2.7, 24.1), Color3.fromRGB(155, 151, 140), Enum.Material.Marble)
+	part(apt, "Base_Chuveiro", Vector3.new(3.1, 0.25, 3.2), pos(72, 0.48, 23), Color3.fromRGB(111, 108, 99), Enum.Material.Marble)
+	part(apt, "Cortina_Chuveiro", Vector3.new(0.08, 7.2, 3), pos(70.4, 4.1, 23), Color3.fromRGB(105, 102, 94), Enum.Material.Fabric, 0.2, false)
+	anchor(apt, "Derivacao_Espelho", 71.8, 3.2, 17.6, "C2_Trace", "Seguir sinal", "Atrás do espelho", 0.7)
+
+	-- Lavanderia: máquina, prateleira de limpeza e quadro de derivação.
+	part(apt, "Piso_Lavanderia", Vector3.new(8, 0.07, 9), pos(70, 0.3, 10.5), Color3.fromRGB(90, 87, 80), Enum.Material.Marble, 0.03, false)
+	local washer = part(apt, "Lavadora_304", Vector3.new(3.2, 4.7, 3), pos(71.4, 2.65, 8.1), Color3.fromRGB(91, 97, 97), Enum.Material.Metal)
+	part(apt, "Aro_Lavadora", Vector3.new(1.75, 1.75, 0.14), washer.Position + Vector3.new(0, 0.15, -1.58), Color3.fromRGB(54, 61, 63), Enum.Material.Glass, 0.1, false, Enum.PartType.Cylinder)
+	part(apt, "Prateleira_Lavanderia", Vector3.new(0.35, 6.8, 5.2), pos(73, 3.4, 12.8), COLORS.metal, Enum.Material.CorrodedMetal)
+	for index = 1, 3 do part(apt, "Prateleira_Limpeza", Vector3.new(2.2, 0.18, 4.7), pos(71.9, 1 + index * 1.65, 12.8), COLORS.wood, Enum.Material.WoodPlanks) end
+	part(apt, "Quadro_Derivacao_304", Vector3.new(2, 3.2, 0.32), pos(68.7, 4.3, 14.8), COLORS.metal, Enum.Material.CorrodedMetal)
+	part(apt, "Visor_Quadro_304", Vector3.new(1.2, 0.75, 0.12), pos(68.7, 4.55, 14.58), Color3.fromRGB(25, 27, 27), Enum.Material.Glass)
+	anchor(apt, "Ativar_Derivacao_304", 68.7, 3.8, 14, "C2_Breaker", "Restaurar circuito", "Quadro de derivação", 0.8)
+	addJack(apt, "B", 71.5, 13.4)
+
+	for _, room in ipairs({ { "Sala", 43, 11.5 }, { "Cozinha", 61, 11.5 }, { "Lavanderia", 70, 11.5 }, { "Quarto", 61, 23 }, { "Banheiro", 70, 23 } }) do
+		light(apt, "Luz_" .. room[1], room[2], room[3])
+	end
+
+	doorOpen = false
+	Chapter2Map.SetPower(false)
+	Chapter2Map.SetDoor(true)
+	return world, spawn
+end
+
+function Chapter2Map.Build()
+	return buildWorld()
+end
+
+function Chapter2Map.GetPrompts()
+	return prompts
+end
+
+function Chapter2Map.SetPower(enabled)
+	for _, record in ipairs(lights) do
+		record.point.Brightness = enabled and 1.2 or 0
+		record.point.Range = enabled and 17 or 0
+		record.bulb.Color = enabled and COLORS.amber or Color3.fromRGB(30, 30, 28)
+		record.bulb.Material = enabled and Enum.Material.Neon or Enum.Material.Glass
+	end
+	if world then world:SetAttribute("PowerOn", enabled) end
+end
+
+function Chapter2Map.SetJack(side, enabled)
+	local record = jacks[side]
+	if not record then return false end
+	record.bulb.Color = enabled and Color3.fromRGB(153, 81, 53) or Color3.fromRGB(44, 39, 34)
+	record.light.Brightness = enabled and 0.55 or 0
+	return true
+end
+
+function Chapter2Map.SetDoor(open)
+	if not door then return false end
+	doorOpen = open
+	if doorPrompt then doorPrompt.ActionText = open and "Fechar" or "Abrir" end
+	door.CanCollide = not open
+	door.Transparency = open and 1 or 0
+	local target = doorClosedCFrame * CFrame.Angles(0, math.rad(open and 82 or 0), 0)
+	TweenService:Create(door, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CFrame = target }):Play()
+	return true
+end
+
+function Chapter2Map.GetDoorState()
+	return doorOpen
+end
+
+return Chapter2Map
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="11">
+        <Properties>
+          <string name="Name">Chapter3Map</string>
+          <string name="Source"><![CDATA[local TweenService=game:GetService("TweenService")
+local M={}
+local X=300
+local world,spawn
+local prompts,lights,sockets={},{},{}
+local doorA,doorB,closedA,closedB
+local techDoor,techDoorClosed
+local function v(x,y,z) return Vector3.new(X+x,y,z) end
+local function part(parent,name,size,at,color,material,trans,collide,shape)
+	local p=Instance.new("Part"); p.Name=name; p.Size=size; p.Position=at; p.Anchored=true
+	p.CanCollide=collide~=false; p.CanTouch=false; p.CanQuery=true; p.CastShadow=true
+	p.TopSurface=Enum.SurfaceType.Smooth; p.BottomSurface=Enum.SurfaceType.Smooth
+	p.Color=color or Color3.fromRGB(76,73,68); p.Material=material or Enum.Material.Concrete
+	p.Transparency=trans or 0; if shape then p.Shape=shape end; p.Parent=parent; return p
+end
+local function act(parent,name,x,y,z,id,label,object,hold)
+	local p=part(parent,name,Vector3.new(.8,.8,.8),v(x,y,z),Color3.new(),Enum.Material.SmoothPlastic,1,false); p.CanQuery=false
+	local q=Instance.new("ProximityPrompt"); q.Name="Interagir"; q.ActionText=label; q.ObjectText=object
+	q.KeyboardKeyCode=Enum.KeyCode.E; q.GamepadKeyCode=Enum.KeyCode.ButtonX; q.HoldDuration=hold or .45
+	q.MaxActivationDistance=8; q.RequiresLineOfSight=false; q:SetAttribute("ActionId",id); q.Parent=p
+	table.insert(prompts,q); return p
+end
+local function wall(parent,name,x,z,sx,sz)
+	return part(parent,name,Vector3.new(sx,11.7,sz),v(x,5.85,z),Color3.fromRGB(98,92,81),Enum.Material.Plaster)
+end
+local function sign(parent,name,x,y,z,text,size)
+	local p=part(parent,name,size,v(x,y,z),Color3.fromRGB(38,39,37),Enum.Material.Metal,0,false)
+	local gui=Instance.new("SurfaceGui"); gui.Face=Enum.NormalId.Front; gui.PixelsPerStud=40; gui.SizingMode=Enum.SurfaceGuiSizingMode.PixelsPerStud; gui.Parent=p
+	local t=Instance.new("TextLabel"); t.Size=UDim2.fromScale(1,1); t.BackgroundTransparency=1; t.Text=text
+	t.TextColor3=Color3.fromRGB(210,195,166); t.Font=Enum.Font.Garamond; t.TextScaled=true; t.Parent=gui
+end
+local function doc(parent,name,x,y,z,title,body,id)
+	local p=part(parent,name,Vector3.new(2.6,.08,1.75),v(x,y,z),Color3.fromRGB(185,174,150),Enum.Material.Fabric,0,false)
+	local gui=Instance.new("SurfaceGui"); gui.Face=Enum.NormalId.Top; gui.PixelsPerStud=50; gui.SizingMode=Enum.SurfaceGuiSizingMode.PixelsPerStud; gui.Parent=p
+	local t=Instance.new("TextLabel"); t.Size=UDim2.fromScale(1,1); t.BackgroundTransparency=1; t.Text=title.."\n"..body
+	t.TextColor3=Color3.fromRGB(47,42,35); t.Font=Enum.Font.Code; t.TextScaled=true; t.TextWrapped=true; t.Parent=gui
+	act(parent,name.."_Ler",x,y+.8,z,id,"Ler",title,.4)
+end
+local function lamp(parent,name,x,z)
+	part(parent,name.."_Base",Vector3.new(4,.18,.7),v(x,10.9,z),Color3.fromRGB(62,67,67),Enum.Material.Metal,0,false)
+	local b=part(parent,name.."_Luz",Vector3.new(3.6,.08,.45),v(x,10.75,z),Color3.fromRGB(34,34,32),Enum.Material.Glass,.05,false)
+	local l=Instance.new("PointLight"); l.Color=Color3.fromRGB(230,170,100); l.Brightness=0; l.Range=18; l.Shadows=false; l.Parent=b
+	table.insert(lights,{b=b,l=l})
+end
+local function build()
+	local old=workspace:FindFirstChild("Linha11Chapter3World"); if old then old:Destroy() end
+	table.clear(prompts); table.clear(lights); table.clear(sockets)
+	world=Instance.new("Folder"); world.Name="Linha11Chapter3World"; world.Parent=workspace
+	part(world,"Piso_Corredor",Vector3.new(108,.55,14),v(54,-.35,0),Color3.fromRGB(55,52,47),Enum.Material.Concrete)
+	part(world,"Teto_Corredor",Vector3.new(108,.5,14),v(54,11.6,0),Color3.fromRGB(31,32,31),Enum.Material.Concrete)
+	-- Corredor com aberturas para escada, elevador e sala eletrica.
+	wall(world,"Parede_Norte_A",2.5,-6.8,5,.55); wall(world,"Parede_Norte_B",44,-6.8,48,.55); wall(world,"Parede_Norte_C",99,-6.8,18,.55)
+	wall(world,"Parede_Sul_A",19,6.8,38,.55); wall(world,"Parede_Sul_B",79,6.8,58,.55)
+	techDoor=part(world,"Porta_Sala_Tecnica",Vector3.new(20,9.4,.35),v(79,4.7,-6.8),Color3.fromRGB(62,68,68),Enum.Material.Metal)
+	techDoorClosed=techDoor.CFrame
+	for _,x in ipairs({8,31,55,82,101}) do lamp(world,"Luminaria_"..x,x,0) end
+	-- Escadaria B e corrimaos.
+	part(world,"Piso_Escadaria",Vector3.new(24,.4,20),v(12,-.04,-17),Color3.fromRGB(55,52,47),Enum.Material.Concrete)
+	wall(world,"Parede_Escada_Leste",24,-17,.45,20); wall(world,"Parede_Escada_Fundo",12,-27,24,.45)
+	for i=1,9 do part(world,"Degrau_"..i,Vector3.new(1.7,.45,9),v(3.4+i*1.65,.2+i*.43,-18.3),Color3.fromRGB(75,73,68),Enum.Material.Concrete) end
+	for _,z in ipairs({-22.4,-14.2}) do part(world,"Corrimao",Vector3.new(17.5,.16,.16),v(12,3.3,z),Color3.fromRGB(62,68,68),Enum.Material.Metal,0,false) end
+	sign(world,"Placa_Escadaria",12,8,-7.65,"ESCADARIA B / ANDAR 3",Vector3.new(5,1,.15))
+	-- Elevador lateral com portas deslizantes e poco escuro.
+	part(world,"Piso_Elevador",Vector3.new(22,.45,19),v(44,-.05,17),Color3.fromRGB(55,52,47),Enum.Material.Concrete)
+	part(world,"Teto_Elevador",Vector3.new(22,.5,19),v(44,11.3,17),Color3.fromRGB(31,32,31),Enum.Material.Concrete)
+	wall(world,"Fundo_Elevador",44,26.4,22,.45); wall(world,"Lado_Elevador_A",33,17,.45,19); wall(world,"Lado_Elevador_B",55,17,.45,19)
+	part(world,"Poco_Elevador",Vector3.new(10,9,.3),v(44,5,25.9),Color3.fromRGB(8,9,9),Enum.Material.Slate,0,false)
+	for x=39,49,2 do part(world,"Cabo_Poco",Vector3.new(.12,10,.12),v(x,5,25.55),Color3.fromRGB(62,68,68),Enum.Material.Metal,0,false) end
+	doorA=part(world,"Porta_Elevador_A",Vector3.new(3,7,.28),v(42.5,3.5,6.6),Color3.fromRGB(76,78,75),Enum.Material.Metal)
+	doorB=part(world,"Porta_Elevador_B",Vector3.new(3,7,.28),v(45.5,3.5,6.6),Color3.fromRGB(76,78,75),Enum.Material.Metal)
+	closedA,closedB=doorA.CFrame,doorB.CFrame
+	act(world,"Painel_Elevador",44,2.6,5.3,"C3_ElevatorCall","Abrir","Elevador de servico",.5)
+	act(world,"Gravador",44,2.2,17,"C3_Recorder","Examinar","Gravador no piso",.55)
+	part(world,"Gravador_Fita",Vector3.new(1.8,.4,1.2),v(44,.42,17),Color3.fromRGB(31,32,31),Enum.Material.Metal,0,false)
+	sign(world,"Placa_Elevador",44,8,6.4,"ELEVADOR / SERVICO",Vector3.new(5,.8,.15))
+	-- Sala tecnica com dois pontos do circuito separados para a dupla.
+	part(world,"Piso_Sala_Tecnica",Vector3.new(31,.45,19),v(78,-.05,-17),Color3.fromRGB(55,52,47),Enum.Material.Concrete)
+	part(world,"Teto_Sala_Tecnica",Vector3.new(31,.5,19),v(78,11.3,-17),Color3.fromRGB(31,32,31),Enum.Material.Concrete)
+	wall(world,"Fundo_Tecnica",78,-26.4,31,.45); wall(world,"Lado_Tecnica_A",62.5,-17,.45,19); wall(world,"Lado_Tecnica_B",93.5,-17,.45,19)
+	part(world,"Painel_Disjuntores",Vector3.new(10,5.8,.3),v(78,5.5,-25.9),Color3.fromRGB(62,68,68),Enum.Material.CorrodedMetal)
+	for _,side in ipairs({{"A",72},{"B",85}}) do
+		local id,x=side[1],side[2]
+		local box=part(world,"Caixa_Retorno_"..id,Vector3.new(3.2,3.7,.65),v(x,4.6,-8.7),Color3.fromRGB(62,68,68),Enum.Material.CorrodedMetal)
+		local bulb=part(world,"Indicador_"..id,Vector3.new(.5,.5,.16),v(x,5.3,-8.3),Color3.fromRGB(43,39,34),Enum.Material.Glass,0,false)
+		local l=Instance.new("PointLight"); l.Color=Color3.fromRGB(226,160,83); l.Brightness=0; l.Range=8; l.Parent=bulb
+		sockets[id]={bulb=bulb,lamp=l}; act(world,"Acionar_"..id,x,3.3,-8.35,"C3_Breaker"..id,"Acionar","Disjuntor "..id,.8)
+		part(world,"Chave_Mecanica_"..id,Vector3.new(.35,1,.35),v(x,4.1,-8.25),Color3.fromRGB(34,37,36),Enum.Material.Metal,0,false)
+	end
+	for _,x in ipairs({70,78,86}) do lamp(world,"Luz_Tecnica_"..x,x,-17) end
+	sign(world,"Placa_Retorno",78,9,-7.35,"RETORNO A + B",Vector3.new(6,.9,.14))
+	-- Telefone, armario e documentos da investigacao.
+	part(world,"Mesa_Telefone",Vector3.new(3.2,.22,1.8),v(8,2.2,2.8),Color3.fromRGB(79,61,45),Enum.Material.WoodPlanks)
+	part(world,"Telefone",Vector3.new(1.4,.48,1),v(8,2.55,2.8),Color3.fromRGB(31,32,31),Enum.Material.Metal)
+	act(world,"Atender_Telefone",8,3.2,2.8,"C3_Phone","Atender","Telefone de servico",.6)
+	act(world,"Registrar",14,2.3,4.5,"C3_Report","Registrar","Caderno de campo",.5)
+	part(world,"Armario_Ferramentas",Vector3.new(2.5,5,1.7),v(25,2.5,3.9),Color3.fromRGB(71,77,75),Enum.Material.Metal)
+	act(world,"Chave_Tecnica",25,3.3,2.6,"C3_Key","Abrir armario","Armario de manutencao",.75)
+	part(world,"Balcao_Livro",Vector3.new(3.4,.3,2.1),v(31,2.1,-2.7),Color3.fromRGB(79,61,45),Enum.Material.WoodPlanks)
+	doc(world,"Livro_Elevador",31,2.48,-2.7,"LIVRO DO ELEVADOR","ORDEM 11-B","C3_Log")
+	doc(world,"Aviso_Rota",17,2.55,-2.5,"AVISO DE MANUTENCAO","RETORNO A + B","C3_Route")
+	local s=Instance.new("SpawnLocation"); s.Name="InicioCapitulo03"; s.Size=Vector3.new(4,.6,4); s.Position=v(4,.1,0)
+	s.Anchored=true; s.Transparency=1; s.CanCollide=false; s.Neutral=true; s.Duration=0; s.Parent=world; spawn=s
+	M.SetPower(false); M.SetElevatorOpen(false); M.SetTechDoorOpen(false); return world,spawn
+end
+function M.Build() return build() end
+function M.GetPrompts() return prompts end
+function M.SetPower(on)
+	for _,r in ipairs(lights) do
+		r.l.Brightness=on and 1.15 or 0
+		r.b.Material=on and Enum.Material.Neon or Enum.Material.Glass
+		r.b.Color=on and Color3.fromRGB(226,160,83) or Color3.fromRGB(35,34,31)
+	end
+	if world then world:SetAttribute("PowerOn",on) end
+end
+function M.SetBreaker(id,on)
+	local r=sockets[id]; if not r then return false end
+	r.bulb.Material=on and Enum.Material.Neon or Enum.Material.Glass; r.bulb.Color=on and Color3.fromRGB(195,112,65) or Color3.fromRGB(43,39,34); r.lamp.Brightness=on and .55 or 0; return true
+end
+function M.SetElevatorOpen(on)
+	if not doorA or not doorB then return false end
+	doorA.CanCollide=not on; doorB.CanCollide=not on
+	TweenService:Create(doorA,TweenInfo.new(.55,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{CFrame=closedA*CFrame.new(on and -1.65 or 0,0,0)}):Play()
+	TweenService:Create(doorB,TweenInfo.new(.55,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{CFrame=closedB*CFrame.new(on and 1.65 or 0,0,0)}):Play()
+	return true
+end
+function M.SetTechDoorOpen(on)
+	if not techDoor then return false end
+	techDoor.CanCollide=not on
+	TweenService:Create(techDoor,TweenInfo.new(.65,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{CFrame=techDoorClosed*CFrame.new(0,on and 9.8 or 0,0)}):Play()
+	return true
+end
+return M
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="Script" referent="12">
         <Properties>
           <string name="Name">GameService</string>
           <token name="RunContext">0</token>
@@ -160,8 +851,14 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local RunService = game:GetService("RunService")
 
 local Story = require(ReplicatedStorage.Shared.Story)
+local Chapter2Story = require(ReplicatedStorage.Shared.Chapter2Story)
+local Chapter3Story = require(ReplicatedStorage.Shared.Chapter3Story)
+local LaterChapterStory = require(ReplicatedStorage.Shared.LaterChapterStory)
 local MonetizationConfig = require(ReplicatedStorage.Shared.MonetizationConfig)
 local MapBuilder = require(script.Parent.MapBuilder)
+local Chapter2Map = require(script.Parent.Chapter2Map)
+local Chapter3Map = require(script.Parent.Chapter3Map)
+local LaterChapterMap = require(script.Parent.LaterChapterMap)
 local ListenerAI = require(script.Parent.ListenerAI)
 
 local remote = ReplicatedStorage:FindFirstChild("Linha11Remote")
@@ -173,6 +870,9 @@ end
 
 local world, spawnPoint = MapBuilder.Build()
 MapBuilder.SetPower(false)
+local chapter2World, chapter2Spawn = Chapter2Map.Build()
+local chapter3World, chapter3Spawn = Chapter3Map.Build()
+local laterWorlds, laterSpawns, laterPrompts = LaterChapterMap.BuildAll()
 
 local mission = {
 	started = false,
@@ -189,6 +889,29 @@ local mission = {
 	ending = nil,
 	stage = 0,
 }
+local chapter2Mission = {
+	started = false,
+	phone = false,
+	photo = false,
+	serviceKey = false,
+	wiring = false,
+	power = false,
+	jacks = { A = nil, B = nil },
+	jacksConnected = false,
+	traced = false,
+	complete = false,
+	stage = 0,
+}
+local chapter3Mission = {
+	started=false, phone=false, log=false, route=false, controlKey=false,
+	switches={A=nil,B=nil}, power=false, elevatorOpened=false, recorder=false, complete=false, stage=0,
+}
+local laterMissions, laterAis = {}, {}
+for chapterId=4,12 do
+	laterMissions[chapterId]={started=false,found={},puzzleStep=0,lastPuzzlePlayer=nil,puzzleComplete=false,complete=false,choice=nil,batteryLift={A=nil,B=nil},batteryRaised=false,batteryMoved=false}
+end
+local ensureLaterAI
+local activeChapterId = nil
 local remoteCooldowns = {}
 local noiseCooldowns = {}
 local purchaseCooldowns = {}
@@ -204,7 +927,34 @@ local function startedPlayers()
 end
 
 local function makeSnapshot()
+	if activeChapterId and activeChapterId >= 4 then
+		local m=laterMissions[activeChapterId]
+		local foundCount=0
+		for _,found in pairs(m.found) do if found then foundCount+=1 end end
+		return {chapterId=activeChapterId,stage=m.stage,objective=LaterChapterStory.Get(activeChapterId).Objectives[m.stage],foundCount=foundCount,puzzleStep=m.puzzleStep,puzzleComplete=m.puzzleComplete,batteryRaised=m.batteryRaised,batteryMoved=m.batteryMoved,choice=m.choice,complete=m.complete}
+	end
+	if activeChapterId == 3 then
+		return {chapterId=3,stage=chapter3Mission.stage,objective=Chapter3Story.GetObjective(chapter3Mission.stage),phone=chapter3Mission.phone,log=chapter3Mission.log,route=chapter3Mission.route,controlKey=chapter3Mission.controlKey,breakerA=chapter3Mission.switches.A~=nil,breakerB=chapter3Mission.switches.B~=nil,power=chapter3Mission.power,elevatorOpened=chapter3Mission.elevatorOpened,recorder=chapter3Mission.recorder,complete=chapter3Mission.complete}
+	end
+	if activeChapterId == 2 then
+		return {
+			chapterId = 2,
+			stage = chapter2Mission.stage,
+			objective = Chapter2Story.GetObjective(chapter2Mission.stage),
+			phone = chapter2Mission.phone,
+			photo = chapter2Mission.photo,
+			serviceKey = chapter2Mission.serviceKey,
+			wiring = chapter2Mission.wiring,
+			power = chapter2Mission.power,
+			jackA = chapter2Mission.jacks.A ~= nil,
+			jackB = chapter2Mission.jacks.B ~= nil,
+			jacksConnected = chapter2Mission.jacksConnected,
+			traced = chapter2Mission.traced,
+			complete = chapter2Mission.complete,
+		}
+	end
 	return {
+		chapterId = 1,
 		stage = mission.stage,
 		objective = Story.GetObjective(mission.stage),
 		power = mission.power,
@@ -247,6 +997,47 @@ local function tellAll(text, kind)
 end
 
 local function updateStage()
+	if activeChapterId and activeChapterId >= 4 then
+		local m=laterMissions[activeChapterId]
+		local foundCount=0
+		for _,found in pairs(m.found) do if found then foundCount+=1 end end
+		if not m.started then m.stage=0
+		elseif foundCount<3 then m.stage=1
+		elseif not m.puzzleComplete then m.stage=m.puzzleStep>0 and 3 or 2
+		elseif not m.complete then m.stage=4
+		else m.stage=5 end
+		return
+	end
+	if activeChapterId == 3 then
+		if not chapter3Mission.started then chapter3Mission.stage=0
+		elseif not chapter3Mission.phone then chapter3Mission.stage=1
+		elseif not (chapter3Mission.log and chapter3Mission.route and chapter3Mission.controlKey) then chapter3Mission.stage=2
+		elseif not chapter3Mission.power then chapter3Mission.stage=3
+		elseif not chapter3Mission.recorder then chapter3Mission.stage=4
+		elseif not chapter3Mission.complete then chapter3Mission.stage=5
+		else chapter3Mission.stage=6 end
+		return
+	end
+	if activeChapterId == 2 then
+		if not chapter2Mission.started then
+			chapter2Mission.stage = 0
+		elseif not chapter2Mission.phone then
+			chapter2Mission.stage = 1
+		elseif not (chapter2Mission.photo and chapter2Mission.serviceKey and chapter2Mission.wiring) then
+			chapter2Mission.stage = 2
+		elseif not chapter2Mission.power then
+			chapter2Mission.stage = 3
+		elseif not chapter2Mission.jacksConnected then
+			chapter2Mission.stage = 4
+		elseif not chapter2Mission.traced then
+			chapter2Mission.stage = 5
+		elseif not chapter2Mission.complete then
+			chapter2Mission.stage = 6
+		else
+			chapter2Mission.stage = 7
+		end
+		return
+	end
 	if not mission.started then
 		mission.stage = 0
 	elseif not mission.key then
@@ -283,12 +1074,16 @@ local function playerNear(player, position, maxDistance)
 	return root and (root.Position - position).Magnitude <= maxDistance
 end
 
-local function teleportToStart(player)
+local function teleportToStart(player, requestedSpawn)
 	local character = player.Character
 	if not character then
 		return
 	end
-	local playerPosition = spawnPoint.Position + Vector3.new(0, 3.4, 0)
+	local chapter=player:GetAttribute("Linha11Chapter")
+	local laterSpawn=chapter and chapter>=4 and laterSpawns[chapter] or nil
+	local defaultSpawn=chapter==2 and chapter2Spawn or (chapter==3 and chapter3Spawn or (laterSpawn or spawnPoint))
+	local start=requestedSpawn or defaultSpawn
+	local playerPosition = start.Position + Vector3.new(0, 3.4, 0)
 	character:PivotTo(CFrame.lookAt(playerPosition, playerPosition + Vector3.xAxis))
 	local root = character:FindFirstChild("HumanoidRootPart")
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
@@ -302,15 +1097,31 @@ local function teleportToStart(player)
 	end
 end
 
-local function startPlayer(player)
-	mission.started = true
+local function startPlayer(player, requestedChapterId)
+	local chapterId = typeof(requestedChapterId) == "number" and math.floor(requestedChapterId) or 1
+	if chapterId < 1 or chapterId > 12 then
+		tell(player, "Esse capítulo ainda está em desenvolvimento.", "info")
+		return
+	end
+	if activeChapterId and activeChapterId ~= chapterId then
+		tell(player, "A sessão já começou em outro capítulo. Escolham o mesmo capítulo para jogar juntos.", "error")
+		return
+	end
+	activeChapterId = chapterId
+	if chapterId>=4 then ensureLaterAI(chapterId); laterMissions[chapterId].started=true
+	elseif chapterId==2 then chapter2Mission.started=true
+	elseif chapterId==3 then chapter3Mission.started=true
+	else mission.started=true end
+	player:SetAttribute("Linha11Chapter", chapterId)
 	player:SetAttribute("Linha11Started", true)
 	player:SetAttribute("Linha11Hidden", false)
 	player:SetAttribute("Linha11IntroPending", true)
 	updateStage()
 	local character = player.Character
 	if character then
-		teleportToStart(player)
+		local laterSpawn=chapterId>=4 and laterSpawns[chapterId] or nil
+		local chapterSpawn=chapterId==2 and chapter2Spawn or (chapterId==3 and chapter3Spawn or (laterSpawn or spawnPoint))
+		teleportToStart(player,chapterSpawn)
 		local humanoid = character:FindFirstChildOfClass("Humanoid")
 		if humanoid then
 			humanoid.WalkSpeed = 0
@@ -318,7 +1129,9 @@ local function startPlayer(player)
 		end
 	end
 	send(player, "StartGame", {
-		prologue = Story.Prologue,
+		chapterId = chapterId,
+		chapterTitle=chapterId==2 and Chapter2Story.Title or (chapterId==3 and Chapter3Story.Title or (chapterId>=4 and LaterChapterStory.Get(chapterId).Title or "Distrito 11 • Andar 3")),
+		prologue=chapterId==2 and Chapter2Story.Prologue or (chapterId==3 and Chapter3Story.Prologue or (chapterId>=4 and LaterChapterStory.Get(chapterId).Prologue or Story.Prologue)),
 		state = makeSnapshot(),
 	})
 	broadcast("MissionState", makeSnapshot())
@@ -357,6 +1170,24 @@ end
 local ai = ListenerAI.new(world, function()
 	return Players:GetPlayers()
 end, handleCatch)
+local ai2 = ListenerAI.new(chapter2World, function()
+	return Players:GetPlayers()
+end, handleCatch, {
+	minX = 162,
+	maxX = 268,
+	pingMinX = 154,
+	pingMaxX = 276,
+	startX = 164,
+	z = 0,
+})
+local ai3=ListenerAI.new(chapter3World,function() return Players:GetPlayers() end,handleCatch,
+	{minX=303,maxX=404,pingMinX=292,pingMaxX=410,startX=397,z=0})
+ensureLaterAI=function(chapterId)
+	if not laterAis[chapterId] then
+		laterAis[chapterId]=ListenerAI.new(laterWorlds[chapterId],function() return Players:GetPlayers() end,handleCatch,LaterChapterMap.GetAIConfig(chapterId))
+	end
+	return laterAis[chapterId]
+end
 
 local function setPlayerPass(player, passKey, owned)
 	if passKey == "AmberLight" then
@@ -510,7 +1341,7 @@ remote.OnServerEvent:Connect(function(player, action, value)
 	remoteCooldowns[player] = now
 
 	if action == "Start" then
-		startPlayer(player)
+		startPlayer(player, value)
 		return
 	end
 
@@ -612,6 +1443,248 @@ local function showDocument(player, clueKey)
 	end
 end
 
+local function showChapter2Document(player, clueKey)
+	local clue = Chapter2Story.Clues[clueKey]
+	if clue then
+		send(player, "Document", { title = clue.title, text = clue.text })
+	end
+end
+
+local function handleChapter2Prompt(player, prompt, id)
+	if activeChapterId ~= 2 or player:GetAttribute("Linha11Chapter") ~= 2 then
+		return
+	end
+	local now = os.clock()
+	if id == "C2_Door304" then
+		Chapter2Map.SetDoor(not Chapter2Map.GetDoorState())
+	elseif id == "C2_Phone" then
+		if not chapter2Mission.phone then
+			chapter2Mission.phone = true
+			showChapter2Document(player, "Phone")
+			tellAll("A bobina está quente. O Ouvinte ainda não apareceu, mas algo arrasta um móvel no andar de cima.", "scare")
+			publishState()
+		else
+			showChapter2Document(player, "Phone")
+		end
+	elseif id == "C2_Photo" then
+		chapter2Mission.photo = true
+		showChapter2Document(player, "Photo")
+		publishState()
+	elseif id == "C2_ServiceKey" then
+		if not chapter2Mission.serviceKey then
+			chapter2Mission.serviceKey = true
+			showChapter2Document(player, "ServiceKey")
+			tellAll("A chave do quadro de derivação foi encontrada na cozinha.", "success")
+			publishState()
+		else
+			tell(player, "A chave já está com a equipe.", "info")
+		end
+	elseif id == "C2_Wiring" then
+		chapter2Mission.wiring = true
+		showChapter2Document(player, "Wiring")
+		publishState()
+	elseif id == "C2_KitchenObject" then
+		tell(player, "A borda do copo está limpa. Alguém esteve aqui depois do fechamento.", "story")
+	elseif id == "C2_Breaker" then
+		if not (chapter2Mission.photo and chapter2Mission.serviceKey and chapter2Mission.wiring) then
+			tell(player, "Compare a fotografia, a chave e a planta antes de mexer no quadro.", "objective")
+		elseif not chapter2Mission.power then
+			chapter2Mission.power = true
+			Chapter2Map.SetPower(true)
+			ai2:Wake()
+			ai2:Ping(prompt.Parent.Position, 105)
+			tellAll("O circuito acende. Do poço de serviço vem uma respiração longa, logo acima de vocês.", "scare")
+			publishState()
+		else
+			tell(player, "A derivação está energizada.", "info")
+		end
+	elseif id == "C2_JackA" or id == "C2_JackB" then
+		if not chapter2Mission.power then
+			tell(player, "O quadro de derivação ainda está desligado.", "objective")
+			return
+		end
+		if chapter2Mission.jacksConnected then
+			tell(player, "O circuito já está fechado. Sigam o sinal até o banheiro.", "info")
+			return
+		end
+		local side = id == "C2_JackA" and "A" or "B"
+		local other = side == "A" and "B" or "A"
+		local otherJack = chapter2Mission.jacks[other]
+		if otherJack and now - otherJack.time > 12 then
+			chapter2Mission.jacks.A = nil
+			chapter2Mission.jacks.B = nil
+			Chapter2Map.SetJack("A", false)
+			Chapter2Map.SetJack("B", false)
+			tellAll("O retorno caiu. Tentem fechar os dois pontos com poucos segundos de diferença.", "error")
+			publishState()
+			return
+		end
+		if chapter2Mission.jacks[side] then
+			tell(player, "Esse ponto já está conectado. Ativem o outro lado.", "info")
+			return
+		end
+		local activeCount = #startedPlayers()
+		if activeCount >= 2 and otherJack and otherJack.player == player then
+			tell(player, "O outro ponto precisa ser acionado pelo parceiro.", "objective")
+			return
+		end
+		chapter2Mission.jacks[side] = { player = player, time = now }
+		Chapter2Map.SetJack(side, true)
+		if otherJack and now - math.min(otherJack.time, now) <= 12 then
+			chapter2Mission.jacksConnected = true
+			tellAll("Os dois pontos fecharam o circuito. O tom está atrás do espelho do banheiro.", "success")
+		else
+			tellAll("Ponto conectado. O parceiro precisa fechar o retorno em até 12 segundos.", "objective")
+		end
+		publishState()
+	elseif id == "C2_Trace" then
+		if not chapter2Mission.jacksConnected then
+			tell(player, "O espelho vibra, mas o sinal ainda não chegou. Fechem os dois pontos do circuito.", "objective")
+		elseif not chapter2Mission.traced then
+			chapter2Mission.traced = true
+			showChapter2Document(player, "Signal")
+			tellAll("O fio sobe para a escadaria B. Registrem a descoberta no caderno da sala.", "success")
+			publishState()
+		else
+			showChapter2Document(player, "Signal")
+		end
+	elseif id == "C2_Report" then
+		if not chapter2Mission.traced then
+			tell(player, "Primeiro descubram para onde sobe o sinal.", "objective")
+		elseif not chapter2Mission.complete then
+			chapter2Mission.complete = true
+			publishState()
+			broadcast("ChapterComplete", Chapter2Story.Completion)
+		else
+			tell(player, "O registro já foi confirmado.", "info")
+		end
+	end
+end
+
+local function showChapter3Document(player,key)
+	local clue=Chapter3Story.Clues[key]
+	if clue then send(player,"Document",{title=clue.title,text=clue.text}) end
+end
+local function handleChapter3Prompt(player,prompt,id)
+	if activeChapterId~=3 or player:GetAttribute("Linha11Chapter")~=3 then return end
+	local now=os.clock()
+	if id=="C3_Phone" then
+		chapter3Mission.phone=true; showChapter3Document(player,"Phone")
+		tellAll("O ramal toca sem cabo. No corredor, alguma coisa responde com tres batidas.","scare")
+	elseif id=="C3_Log" then chapter3Mission.log=true; showChapter3Document(player,"Log")
+	elseif id=="C3_Route" then chapter3Mission.route=true; showChapter3Document(player,"Route")
+	elseif id=="C3_Key" then
+		if not(chapter3Mission.log and chapter3Mission.route) then tell(player,"Compare o livro do elevador e o aviso de manutencao.","objective")
+		else chapter3Mission.controlKey=true; Chapter3Map.SetTechDoorOpen(true); showChapter3Document(player,"Key"); tellAll("A porta da sala tecnica sobe. Do elevador vem um unico toque.","success") end
+	elseif id=="C3_BreakerA" or id=="C3_BreakerB" then
+		if not(chapter3Mission.log and chapter3Mission.route and chapter3Mission.controlKey) then tell(player,"Faltam a chave e os registros para identificar o retorno.","objective"); return end
+		if chapter3Mission.power then tell(player,"O retorno A/B ja esta fechado.","info"); return end
+		local side=id=="C3_BreakerA" and "A" or "B"; local other=side=="A" and "B" or "A"
+		local otherSwitch=chapter3Mission.switches[other]
+		if otherSwitch and now-otherSwitch.time>12 then
+			chapter3Mission.switches.A=nil; chapter3Mission.switches.B=nil
+			Chapter3Map.SetBreaker("A",false); Chapter3Map.SetBreaker("B",false)
+			tellAll("O retorno caiu. Fechem os dois disjuntores com poucos segundos de diferenca.","error"); publishState(); return
+		end
+		if chapter3Mission.switches[side] then tell(player,"Esse disjuntor ja foi acionado.","info"); return end
+		if otherSwitch and #startedPlayers()>=2 and otherSwitch.player==player then tell(player,"O outro lado precisa do parceiro.","objective"); return end
+		chapter3Mission.switches[side]={player=player,time=now}; Chapter3Map.SetBreaker(side,true); ai3:Ping(prompt.Parent.Position,95)
+		if otherSwitch and now-otherSwitch.time<=12 then
+			chapter3Mission.power=true; Chapter3Map.SetPower(true); ai3:Wake(); ai3:Ping(prompt.Parent.Position,110)
+			tellAll("As luzes voltam. O elevador abre por dentro, embora o cabo ainda esteja solto.","scare")
+		else tellAll("Um disjuntor travou. O parceiro precisa fechar o outro em ate 12 segundos.","objective") end
+	elseif id=="C3_ElevatorCall" then
+		if not chapter3Mission.power then tell(player,"O painel nao responde. Fechem juntos A e B.","objective")
+		else chapter3Mission.elevatorOpened=true; Chapter3Map.SetElevatorOpen(true); tellAll("A cabine esta vazia; um gravador continua girando no chao.","story") end
+	elseif id=="C3_Recorder" then
+		if not chapter3Mission.elevatorOpened then tell(player,"O gravador esta alem das portas fechadas.","objective")
+		else chapter3Mission.recorder=true; showChapter3Document(player,"Recorder"); tellAll("A fita repete o indicativo da equipe, gravado antes do despacho.","scare") end
+	elseif id=="C3_Report" then
+		if not chapter3Mission.recorder then tell(player,"Levem o gravador ao patamar e registrem a descoberta.","objective")
+		else chapter3Mission.complete=true; publishState(); broadcast("ChapterComplete",Chapter3Story.Completion) end
+	end
+	publishState()
+end
+
+local function handleLaterChapterPrompt(player,prompt,id)
+	local chapterText,action=string.match(id,"^C(%d+)_(.+)$")
+	local chapterId=tonumber(chapterText)
+	if not chapterId or chapterId<4 or chapterId>12 or activeChapterId~=chapterId or player:GetAttribute("Linha11Chapter")~=chapterId then return end
+	local m= laterMissions[chapterId]
+	local info=LaterChapterStory.Get(chapterId)
+	local now=os.clock()
+	local foundCount=0
+	for _,found in pairs(m.found) do if found then foundCount+=1 end end
+	local clueNumber=tonumber(string.match(action,"^Clue(%d+)$"))
+	if clueNumber then
+		if clueNumber>=1 and clueNumber<=#info.Clues then
+			m.found[clueNumber]=true
+			local clue=info.Clues[clueNumber]
+			send(player,"Document",{title=clue.title,text=clue.text})
+			if foundCount==0 then tellAll("A primeira pista liga o local ao ramal 11.","story") end
+		end
+	elseif chapterId==7 and (action=="LiftA" or action=="LiftB") then
+		if foundCount<3 then tell(player,"Leiam o diagrama, a etiqueta e a ordem da subestacao antes de mover a bateria.","objective")
+		elseif m.batteryRaised then tell(player,"A bateria ja foi levantada pela equipe.","info")
+		else
+			local side=action=="LiftA" and "A" or "B"; local other=side=="A" and "B" or "A"
+			local otherLift=m.batteryLift[other]
+			if otherLift and now-otherLift.time>12 then m.batteryLift.A=nil; m.batteryLift.B=nil; tellAll("A bateria volta ao suporte. Tentem levantar as duas alcas juntas.","error")
+			elseif otherLift and #startedPlayers()>=2 and otherLift.player==player then tell(player,"A segunda alca precisa do parceiro.","objective")
+			else
+				m.batteryLift[side]={player=player,time=now}
+				if otherLift and now-otherLift.time<=12 then
+					m.batteryRaised=true; LaterChapterMap.MoveBattery(7)
+					tellAll("A equipe levanta a bateria pesada e a desliza ate o receptaculo. Um dos cabos se parte no tunel.","scare")
+					local monster=laterAis[7]; if monster then monster:Wake(); monster:Ping(prompt.Parent.Position,100) end
+				else tellAll("Uma alca esta presa. O parceiro precisa segurar a outra em ate 12 segundos.","objective") end
+			end
+		end
+	elseif chapterId==7 and action=="BatterySocket" then
+		if not m.batteryRaised then tell(player,"A bateria ainda esta presa ao suporte.","objective")
+		else m.batteryMoved=true; tellAll("A bateria encaixa no receptaculo. O painel dos tres trechos acende.","success") end
+	elseif string.match(action,"^Step[A-C]$") then
+		if foundCount<3 then tell(player,"Encontrem as tres pistas antes de mexer nos controles.","objective")
+		elseif chapterId==7 and not m.batteryMoved then tell(player,"Levem a bateria ao receptaculo antes de fechar os trechos.","objective")
+		elseif m.puzzleComplete then tell(player,"A sequencia ja foi confirmada. Sigam para o registro final.","info")
+		else
+			local step=string.sub(action,5)
+			local expected=info.PuzzleOrder[m.puzzleStep+1]
+			local nextIndex=m.puzzleStep+1
+			if step~=expected then
+				m.puzzleStep=0; m.lastPuzzlePlayer=nil
+				tellAll("O mecanismo rejeita a ordem. Leiam a sequencia nas pistas e recomecem.","error")
+				local monster=laterAis[chapterId]; if monster then monster:Wake(); monster:Ping(prompt.Parent.Position,95) end
+			elseif info.CoopStep and info.CoopStep>0 and nextIndex==info.CoopStep and #startedPlayers()>=2 and m.lastPuzzlePlayer==player then
+				tell(player,"Esta etapa exige que o parceiro assuma o outro controle.","objective")
+			else
+				m.puzzleStep=nextIndex; m.lastPuzzlePlayer=player
+				local monster=laterAis[chapterId]; if monster then monster:Wake(); monster:Ping(prompt.Parent.Position,85) end
+				if m.puzzleStep>=#info.PuzzleOrder then
+					m.puzzleComplete=true
+					tellAll("A sequencia fecha. Um sinal atravessa o ambiente e o registro final fica acessivel.","success")
+					if monster then monster:Ping(prompt.Parent.Position,110) end
+				else tellAll("Controle aceito. A proxima etapa do circuito esta ativa.","objective") end
+			end
+		end
+	elseif action=="Report" then
+		if not m.puzzleComplete then tell(player,"Concluam o mecanismo antes de registrar a descoberta.","objective")
+		elseif chapterId==12 then tell(player,"Escolham transmitir a prova ou cortar a linha nos controles do repetidor.","objective")
+		elseif not m.complete then
+			m.complete=true
+			broadcast("ChapterComplete",info.Completion)
+		else tell(player,"Este capitulo ja foi registrado.","info") end
+	elseif chapterId==12 and (action=="Transmit" or action=="Cut") then
+		if not m.puzzleComplete then tell(player,"Fechem o circuito antes de decidir o destino da chamada.","objective")
+		elseif not m.complete then
+			local key=action=="Transmit" and "Transmit" or "Cut"
+			m.choice=key; m.complete=true
+			broadcast("ChapterComplete",info.Endings[key])
+		else tell(player,"A decisao da equipe ja foi tomada.","info") end
+	end
+	publishState()
+end
+
 local function handlePrompt(player, prompt)
 	if not player:GetAttribute("Linha11Started") then
 		tell(player, "Clique em JOGAR para entrar no turno.", "info")
@@ -624,6 +1697,9 @@ local function handlePrompt(player, prompt)
 	if typeof(id) ~= "string" then
 		return
 	end
+	if string.sub(id,1,3)=="C2_" then handleChapter2Prompt(player,prompt,id); return
+	elseif string.sub(id,1,3)=="C3_" then handleChapter3Prompt(player,prompt,id); return
+	elseif string.match(id,"^C%d+_") then handleLaterChapterPrompt(player,prompt,id); return end
 
 	if string.sub(id, 1, 5) == "Door_" then
 		local roomId = string.sub(id, 6)
@@ -809,11 +1885,13 @@ local function handlePrompt(player, prompt)
 	end
 end
 
-for _, prompt in ipairs(MapBuilder.GetPrompts()) do
-	prompt.Triggered:Connect(function(player)
-		handlePrompt(player, prompt)
-	end)
+local function connectPromptList(list)
+	for _,prompt in ipairs(list) do prompt.Triggered:Connect(function(player) handlePrompt(player,prompt) end) end
 end
+connectPromptList(MapBuilder.GetPrompts())
+connectPromptList(Chapter2Map.GetPrompts())
+connectPromptList(Chapter3Map.GetPrompts())
+connectPromptList(laterPrompts)
 
 RunService.Heartbeat:Connect(function()
 	local now = os.clock()
@@ -824,7 +1902,9 @@ RunService.Heartbeat:Connect(function()
 			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 			if root and humanoid and humanoid.WalkSpeed >= 20 and root.AssemblyLinearVelocity.Magnitude > 13 and now - (noiseCooldowns[player] or 0) > 1.8 then
 				noiseCooldowns[player] = now
-				ai:Ping(root.Position, 75)
+				ai:Ping(root.Position, 75); ai2:Ping(root.Position, 75); ai3:Ping(root.Position, 75)
+				local chapterId=player:GetAttribute("Linha11Chapter"); local laterAI=laterAis[chapterId]
+				if laterAI then laterAI:Ping(root.Position,75) end
 			end
 		end
 	end
@@ -848,7 +1928,185 @@ updateStage()
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="8">
+      <Item class="ModuleScript" referent="13">
+        <Properties>
+          <string name="Name">LaterChapterMap</string>
+          <string name="Source">local TweenService=game:GetService("TweenService")
+local ReplicatedStorage=game:GetService("ReplicatedStorage")
+local Story=require(ReplicatedStorage.Shared.LaterChapterStory)
+local Map={}
+local worlds,spawns,prompts,batteries={},{},{},{}
+local function base(id) return 500+(id-4)*126 end
+local function pos(id,x,y,z) return Vector3.new(base(id)+x,y,z) end
+local function part(parent,id,name,size,at,color,material,trans,collide,shape)
+	local p=Instance.new("Part"); p.Name=name; p.Size=size; p.Position=at; p.Anchored=true
+	p.CanCollide=collide~=false; p.CanTouch=false; p.CanQuery=true; p.CastShadow=true
+	p.TopSurface=Enum.SurfaceType.Smooth; p.BottomSurface=Enum.SurfaceType.Smooth
+	p.Color=color or Color3.fromRGB(74,70,63); p.Material=material or Enum.Material.Concrete
+	p.Transparency=trans or 0; if shape then p.Shape=shape end; p.Parent=parent; return p
+end
+local function anchor(parent,id,name,x,y,z,actionId,action,object,hold)
+	local p=part(parent,id,name,Vector3.new(.8,.8,.8),pos(id,x,y,z),Color3.new(),Enum.Material.SmoothPlastic,1,false); p.CanQuery=false
+	local prompt=Instance.new("ProximityPrompt"); prompt.Name="Interagir"; prompt.ActionText=action; prompt.ObjectText=object
+	prompt.KeyboardKeyCode=Enum.KeyCode.E; prompt.GamepadKeyCode=Enum.KeyCode.ButtonX
+	prompt.HoldDuration=hold or .45; prompt.MaxActivationDistance=8; prompt.RequiresLineOfSight=false
+	prompt:SetAttribute("ActionId",actionId); prompt.Parent=p; table.insert(prompts,prompt); return p
+end
+local function label(parent,id,name,x,y,z,text,size)
+	local p=part(parent,id,name,size,pos(id,x,y,z),Color3.fromRGB(37,38,36),Enum.Material.Metal,0,false)
+	local gui=Instance.new("SurfaceGui"); gui.Face=Enum.NormalId.Front; gui.SizingMode=Enum.SurfaceGuiSizingMode.PixelsPerStud; gui.PixelsPerStud=38; gui.Parent=p
+	local t=Instance.new("TextLabel"); t.Size=UDim2.fromScale(1,1); t.BackgroundTransparency=1; t.Text=text
+	t.TextColor3=Color3.fromRGB(209,194,164); t.Font=Enum.Font.Garamond; t.TextScaled=true; t.Parent=gui
+end
+local function light(parent,id,x,z)
+	part(parent,id,"Luminaria_Base",Vector3.new(3.2,.16,.6),pos(id,x,10.9,z),Color3.fromRGB(56,61,61),Enum.Material.Metal,0,false)
+	local bulb=part(parent,id,"Luminaria_Difusor",Vector3.new(2.8,.08,.4),pos(id,x,10.77,z),Color3.fromRGB(167,132,82),Enum.Material.Glass,.12,false)
+	local l=Instance.new("PointLight"); l.Color=Color3.fromRGB(213,166,104); l.Brightness=.65; l.Range=15; l.Shadows=false; l.Parent=bulb
+end
+local function document(parent,id,index,x)
+	local data=Story.Get(id).Clues[index]
+	local paper=part(parent,id,"Documento_"..index,Vector3.new(2.5,.08,1.65),pos(id,x,2.28,3),Color3.fromRGB(186,174,150),Enum.Material.Fabric,0,false)
+	local gui=Instance.new("SurfaceGui"); gui.Face=Enum.NormalId.Top; gui.SizingMode=Enum.SurfaceGuiSizingMode.PixelsPerStud; gui.PixelsPerStud=46; gui.Parent=paper
+	local t=Instance.new("TextLabel"); t.Size=UDim2.fromScale(1,1); t.BackgroundTransparency=1; t.Text=data.title.."\n"..string.sub(data.text,1,68)
+	t.TextColor3=Color3.fromRGB(44,40,34); t.Font=Enum.Font.Code; t.TextScaled=true; t.TextWrapped=true; t.Parent=gui
+	anchor(parent,id,"Ler_Pista_"..index,x,3.05,3,"C"..id.."_Clue"..index,"Examinar",data.title,.35)
+end
+local function furniture(parent,id,theme)
+	local wood=Color3.fromRGB(75,57,43); local metal=Color3.fromRGB(57,63,63); local fabric=Color3.fromRGB(73,69,62)
+	if theme=="street" then
+		part(parent,id,"Pavimento_Rua",Vector3.new(106,.22,18),pos(id,54,-.22,0),Color3.fromRGB(44,46,46),Enum.Material.Asphalt)
+		part(parent,id,"Calcada_Norte",Vector3.new(106,.24,4),pos(id,54,-.05,-10),Color3.fromRGB(92,88,79),Enum.Material.Concrete)
+		part(parent,id,"Calcada_Sul",Vector3.new(106,.24,4),pos(id,54,-.05,10),Color3.fromRGB(92,88,79),Enum.Material.Concrete)
+		for x=23,31,2 do part(parent,id,"Faixa_Pedestre",Vector3.new(1.1,.04,7),pos(id,x,.02,0),Color3.fromRGB(174,168,152),Enum.Material.Concrete,0,false) end
+		for _,x in ipairs({38,48}) do
+			part(parent,id,"Abrigo_Onibus_Pilar",Vector3.new(.25,7,.25),pos(id,x,3.5,8),metal,Enum.Material.Metal)
+			part(parent,id,"Abrigo_Onibus_Teto",Vector3.new(12,.3,3),pos(id,43,7,8),Color3.fromRGB(50,54,54),Enum.Material.Metal)
+			part(parent,id,"Abrigo_Onibus_Vidro",Vector3.new(11,5,.12),pos(id,43,3.2,9.2),Color3.fromRGB(86,99,102),Enum.Material.Glass,.35,false)
+		end
+		part(parent,id,"Banco_Ponto",Vector3.new(7,.25,1),pos(id,43,1.8,7.2),wood,Enum.Material.WoodPlanks)
+		for _,x in ipairs({4,100}) do part(parent,id,"Poste_Rua",Vector3.new(.25,9,.25),pos(id,x,4.5,-9),metal,Enum.Material.Metal); part(parent,id,"Luminaria_Rua",Vector3.new(2,.18,.7),pos(id,x,9,-9),Color3.fromRGB(51,53,52),Enum.Material.Metal) end
+		for _,x in ipairs({28,33,89,94}) do part(parent,id,"Barreira_Evacuacao",Vector3.new(1.4,3,.5),pos(id,x,1.5,-8),Color3.fromRGB(119,42,34),Enum.Material.Metal) end
+	elseif theme=="callcenter" then
+		for _,x in ipairs({23,43,63,83}) do
+			part(parent,id,"Mesa_Despacho",Vector3.new(9, .28,4),pos(id,x,2,1),wood,Enum.Material.WoodPlanks)
+			part(parent,id,"Console_Operador",Vector3.new(5,1.1,1.7),pos(id,x,2.7,.2),metal,Enum.Material.Metal)
+			for n=1,5 do part(parent,id,"Botao_Ramal",Vector3.new(.35,.16,.35),pos(id,x-2.2+n*.8,3.35,-.3),Color3.fromRGB(118,83,54),Enum.Material.Neon,0,false) end
+			part(parent,id,"Cadeira_Operador",Vector3.new(2,2.3,2),pos(id,x,1.15,4.2),fabric,Enum.Material.Fabric)
+		end
+		part(parent,id,"Quadro_Canais",Vector3.new(18,7,.3),pos(id,53,6,-11.6),metal,Enum.Material.CorrodedMetal)
+	elseif theme=="archive" then
+		for _,x in ipairs({12,27,42,57,72,87}) do
+			part(parent,id,"Estante_Arquivo",Vector3.new(.35,8,6),pos(id,x,4,-8),wood,Enum.Material.WoodPlanks)
+			for n=1,5 do part(parent,id,"Prateleira_Arquivo",Vector3.new(3,.18,5.7),pos(id,x+1.7,.8+n*1.35,-8),wood,Enum.Material.Wood) end
+			for n=1,3 do part(parent,id,"Caixa_Arquivo",Vector3.new(1.7,1,1.2),pos(id,x+1,1.1+n*1.65,-8),Color3.fromRGB(94,79,58),Enum.Material.WoodPlanks) end
+		end
+		part(parent,id,"Mesa_Consulta",Vector3.new(10,.25,4),pos(id,52,2,5),wood,Enum.Material.WoodPlanks)
+	elseif theme=="tunnel" then
+		for _,z in ipairs({-8,8}) do
+			part(parent,id,"Duto_Servico",Vector3.new(102,.8,.8),pos(id,54,8,z),metal,Enum.Material.Metal,0,false,Enum.PartType.Cylinder)
+			part(parent,id,"Cabo_Power",Vector3.new(102,.24,.24),pos(id,54,6.8,z),Color3.fromRGB(25,25,23),Enum.Material.Rubber,0,false)
+		end
+		for _,x in ipairs({15,35,55,75,95}) do part(parent,id,"Pilar_Tunel",Vector3.new(.5,10,18),pos(id,x,5,0),Color3.fromRGB(66,65,60),Enum.Material.Concrete) end
+		local battery=part(parent,id,"Bateria_Pesada",Vector3.new(4,3,3),pos(id,38,1.5,4),Color3.fromRGB(44,53,52),Enum.Material.Metal)
+		batteries[id]={part=battery,from=battery.CFrame,to=CFrame.new(pos(id,75,1.5,0))}
+		anchor(parent,id,"Alca_Bateria_A",36,2.5,2,"C7_LiftA","Segurar","Alca A",1)
+		anchor(parent,id,"Alca_Bateria_B",40,2.5,6,"C7_LiftB","Segurar","Alca B",1)
+		anchor(parent,id,"Receptaculo_Bateria",75,2,0,"C7_BatterySocket","Conectar","Suporte da subestacao",.7)
+	elseif theme=="triage" then
+		for _,x in ipairs({15,36,57,78}) do
+			part(parent,id,"Maca_Triagem",Vector3.new(7,1.1,3),pos(id,x,1.2,-7),Color3.fromRGB(92,93,87),Enum.Material.Metal)
+			part(parent,id,"Colchao_Triagem",Vector3.new(6.7,.35,2.8),pos(id,x,1.9,-7),Color3.fromRGB(153,147,130),Enum.Material.Fabric)
+			part(parent,id,"Biombo_Triagem",Vector3.new(.15,6,5),pos(id,x+5,3,-8),Color3.fromRGB(125,121,111),Enum.Material.Fabric,.18,false)
+			part(parent,id,"Carrinho_Medico",Vector3.new(3,2,.8),pos(id,x,1.2,7),metal,Enum.Material.Metal)
+		end
+	elseif theme=="apartments" then
+		for _,x in ipairs({15,35,55,75,95}) do
+			part(parent,id,"Porta_Apartamento",Vector3.new(.28,8,5),pos(id,x,4,-10),wood,Enum.Material.WoodPlanks)
+			part(parent,id,"Placa_Apartamento",Vector3.new(2,1,.15),pos(id,x,8,-9.7),metal,Enum.Material.Metal,0,false)
+			part(parent,id,"Sofa_Transferencia",Vector3.new(6,2,2.4),pos(id,x+5,1.2,7),fabric,Enum.Material.Fabric)
+			part(parent,id,"Mesa_Apartamento",Vector3.new(3,.2,2),pos(id,x+9,1.6,7),wood,Enum.Material.WoodPlanks)
+		end
+	elseif theme=="relay" then
+		for _,x in ipairs({25,48,71}) do
+			part(parent,id,"Coluna_Repetidor",Vector3.new(5,9,5),pos(id,x,4.5,-7),metal,Enum.Material.Metal)
+			part(parent,id,"Volante_Valvula",Vector3.new(2.8,.22,2.8),pos(id,x,6,0),Color3.fromRGB(119,75,48),Enum.Material.Metal,0,false,Enum.PartType.Cylinder)
+			for n=1,4 do part(parent,id,"Raio_Valvula",Vector3.new(.18,2.5,.18),pos(id,x,6,0),Color3.fromRGB(146,100,66),Enum.Material.Metal,0,false) end
+			part(parent,id,"Tubo_Pressao",Vector3.new(18,.55,.55),pos(id,x,8,0),metal,Enum.Material.Metal,0,false,Enum.PartType.Cylinder)
+		end
+	elseif theme=="radio" then
+		for _,x in ipairs({20,50,80}) do
+			part(parent,id,"Console_Radio",Vector3.new(8,1.1,3),pos(id,x,2.4,4),metal,Enum.Material.Metal)
+			part(parent,id,"Gravador_Bobina",Vector3.new(3,1.8,1),pos(id,x,3.8,3),Color3.fromRGB(38,40,39),Enum.Material.Metal)
+			for _,dx in ipairs({-1,1}) do part(parent,id,"Bobina",Vector3.new(1.2,.18,1.2),pos(id,x+dx,4.8,2.4),Color3.fromRGB(112,99,78),Enum.Material.Metal,0,false,Enum.PartType.Cylinder) end
+		end
+		part(parent,id,"Mastro_Antena",Vector3.new(.35,25,.35),pos(id,96,12,0),metal,Enum.Material.Metal)
+		for _,y in ipairs({6,13,20}) do part(parent,id,"Braco_Antena",Vector3.new(12,.22,.22),pos(id,96,y,0),metal,Enum.Material.Metal,0,false) end
+	elseif theme=="aurora" then
+		for _,x in ipairs({18,45,72}) do
+			part(parent,id,"Porta_Aurora",Vector3.new(.3,8,6),pos(id,x,4,-10),wood,Enum.Material.WoodPlanks)
+			part(parent,id,"Mesa_Telefone",Vector3.new(5,2,3),pos(id,x+8,1,7),wood,Enum.Material.WoodPlanks)
+			part(parent,id,"Telefone_Emergencia",Vector3.new(1.4,.6,1),pos(id,x+8,2.3,6),metal,Enum.Material.Metal)
+		end
+		part(parent,id,"Rack_Repetidor",Vector3.new(7,9,4),pos(id,88,4.5,-7),metal,Enum.Material.CorrodedMetal)
+	end
+end
+local function buildOne(id)
+	local info=Story.Get(id); local folder=Instance.new("Folder"); folder.Name="Linha11Chapter"..id.."World"; folder:SetAttribute("ChapterId",id); folder.Parent=workspace
+	local theme=info.Theme
+	local floorMat=theme=="street" and Enum.Material.Asphalt or Enum.Material.Concrete
+	part(folder,id,"Piso_Base",Vector3.new(110,.55,26),pos(id,55,-.35,0),Color3.fromRGB(53,51,47),floorMat)
+	if theme~="street" then
+		part(folder,id,"Teto_Base",Vector3.new(110,.5,26),pos(id,55,11.5,0),Color3.fromRGB(31,32,31),Enum.Material.Concrete)
+		part(folder,id,"Parede_Norte",Vector3.new(110,11, .5),pos(id,55,5.5,-12.8),Color3.fromRGB(91,86,77),Enum.Material.Plaster)
+		part(folder,id,"Parede_Sul",Vector3.new(110,11,.5),pos(id,55,5.5,12.8),Color3.fromRGB(91,86,77),Enum.Material.Plaster)
+		for _,x in ipairs({34,67}) do
+			part(folder,id,"Divisoria_Ala_A",Vector3.new(.45,10,9),pos(id,x,5,-8),Color3.fromRGB(80,77,70),Enum.Material.Concrete)
+			part(folder,id,"Divisoria_Ala_B",Vector3.new(.45,10,9),pos(id,x,5,8),Color3.fromRGB(80,77,70),Enum.Material.Concrete)
+		end
+	end
+	furniture(folder,id,theme)
+	for _,x in ipairs({12,48,86}) do light(folder,id,x,0) end
+	for i=1,3 do
+		local x=15+(i-1)*20
+		part(folder,id,"Mesa_Pista_"..i,Vector3.new(4,.24,2.8),pos(id,x,1.8,3),Color3.fromRGB(75,57,43),Enum.Material.WoodPlanks)
+		document(folder,id,i,x,1.95,3)
+	end
+	for _,side in ipairs({"A","B","C"}) do
+		local data=info.StepLabels[side]
+		part(folder,id,"Console_"..side,Vector3.new(2.8,2.5,1.4),pos(id,63+(string.byte(side)-65)*13,1.25,-3),Color3.fromRGB(57,63,63),Enum.Material.Metal)
+		anchor(folder,id,"Etapa_"..side,63+(string.byte(side)-65)*13,2.4,-2,"C"..id.."_Step"..side,data.Action,data.Object,.55)
+	end
+	anchor(folder,id,"Registro_Final",99,2,0,"C"..id.."_Report","Registrar","Caderno de campo",.55)
+	if id==12 then
+		anchor(folder,id,"Transmitir_Prova",91,2,6,"C12_Transmit","Transmitir","Prova integral",.75)
+		anchor(folder,id,"Cortar_Linha",91,2,-6,"C12_Cut","Cortar","Repetidor principal",.75)
+	end
+	if id==8 then anchor(folder,id,"Esconder_Atrás_Biombo",54,2,-7,"Hide_Triage","Esconder","Biombo da enfermaria",.6) end
+	local s=Instance.new("SpawnLocation"); s.Name="InicioCapitulo"..id; s.Size=Vector3.new(4,.6,4); s.Position=pos(id,4,.1,0)
+	s.Anchored=true; s.Transparency=1; s.CanCollide=false; s.Neutral=true; s.Duration=0; s.Parent=folder
+	worlds[id]=folder; spawns[id]=s
+end
+function Map.BuildAll()
+	table.clear(worlds); table.clear(spawns); table.clear(prompts); table.clear(batteries)
+	for id=4,12 do
+		local old=workspace:FindFirstChild("Linha11Chapter"..id.."World"); if old then old:Destroy() end
+		buildOne(id)
+	end
+	for _,world in pairs(worlds) do for _,item in ipairs(world:GetDescendants()) do if item:IsA("ProximityPrompt") then table.insert(prompts,item) end end end
+	return worlds,spawns,prompts
+end
+function Map.GetAIConfig(id)
+	local b=base(id); return {minX=b+2,maxX=b+106,pingMinX=b-8,pingMaxX=b+112,startX=b+101,z=0}
+end
+function Map.MoveBattery(id)
+	local item=batteries[id]; if not item then return false end
+	TweenService:Create(item.part,TweenInfo.new(2.5,Enum.EasingStyle.Quad,Enum.EasingDirection.InOut),{CFrame=item.to}):Play()
+	return true
+end
+return Map</string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="14">
         <Properties>
           <string name="Name">ListenerAI</string>
           <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
@@ -878,7 +2136,8 @@ local function makeBodyPart(model, name, size, cf, color, material, transparency
 	return part
 end
 
-function ListenerAI.new(parent, playerProvider, onCatch)
+function ListenerAI.new(parent, playerProvider, onCatch, config)
+	config = config or {}
 	local self = setmetatable({}, ListenerAI)
 	self.Parent = parent
 	self.PlayerProvider = playerProvider
@@ -886,7 +2145,12 @@ function ListenerAI.new(parent, playerProvider, onCatch)
 	self.Awake = false
 	self.LastNoiseAt = 0
 	self.LastNoiseX = 0
-	self.Position = Vector3.new(-46, 0, 0)
+	self.MinX = config.minX or -51
+	self.MaxX = config.maxX or 51
+	self.PingMinX = config.pingMinX or (self.MinX - 6)
+	self.PingMaxX = config.pingMaxX or (self.MaxX + 6)
+	self.PatrolZ = config.z or 0
+	self.Position = Vector3.new(config.startX or -46, 0, self.PatrolZ)
 	self.PatrolDirection = 1
 	self.CatchCooldown = {}
 	self.Clock = 0
@@ -987,7 +2251,7 @@ function ListenerAI:Ping(position, strength)
 	if not self.Awake or typeof(position) ~= "Vector3" then
 		return
 	end
-	if math.abs(position.Z) > 28 or position.X < -57 or position.X > 57 then
+	if math.abs(position.Z - self.PatrolZ) > 28 or position.X < self.PingMinX or position.X > self.PingMaxX then
 		return
 	end
 	local distance = math.abs(position.X - self.Position.X)
@@ -1009,9 +2273,9 @@ function ListenerAI:Step(dt)
 		targetX = self.LastNoiseX
 	else
 		targetX = self.Position.X + self.PatrolDirection * dt * 3.0
-		if targetX > 48 then
+		if targetX > self.MaxX then
 			self.PatrolDirection = -1
-		elseif targetX < -48 then
+		elseif targetX < self.MinX then
 			self.PatrolDirection = 1
 		end
 	end
@@ -1019,9 +2283,9 @@ function ListenerAI:Step(dt)
 	local speed = isHunting and 7.4 or 2.7
 	local delta = targetX - self.Position.X
 	local step = math.clamp(delta, -speed * dt, speed * dt)
-	local nextX = math.clamp(self.Position.X + step, -51, 51)
+	local nextX = math.clamp(self.Position.X + step, self.MinX, self.MaxX)
 	local facing = nextX >= self.Position.X and 1 or -1
-	self.Position = Vector3.new(nextX, 0, 0)
+	self.Position = Vector3.new(nextX, 0, self.PatrolZ)
 	local bodyCFrame = CFrame.lookAt(self.Position + Vector3.new(0, 0.05, 0), self.Position + Vector3.new(facing, 0.05, 0))
 	self.Model:PivotTo(bodyCFrame)
 	local gait = isHunting and 1.0 or 0.25
@@ -1036,7 +2300,7 @@ function ListenerAI:Step(dt)
 			local character = player.Character
 			local root = character and character:FindFirstChild("HumanoidRootPart")
 			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-			if root and humanoid and humanoid.Health > 0 and math.abs(root.Position.Z) < 4.5 and math.abs(root.Position.X - self.Position.X) < 4.7 then
+			if root and humanoid and humanoid.Health > 0 and math.abs(root.Position.Z - self.PatrolZ) < 4.5 and math.abs(root.Position.X - self.Position.X) < 4.7 then
 				if now - (self.CatchCooldown[player] or 0) > 18 then
 					self.CatchCooldown[player] = now
 					self.OnCatch(player)
@@ -1061,7 +2325,7 @@ return ListenerAI
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="9">
+      <Item class="ModuleScript" referent="15">
         <Properties>
           <string name="Name">MapBuilder</string>
           <string name="Source"><![CDATA[local TweenService = game:GetService("TweenService")
@@ -1645,15 +2909,15 @@ return MapBuilder
       </Item>
     </Item>
   </Item>
-  <Item class="StarterPlayer" referent="10">
+  <Item class="StarterPlayer" referent="16">
     <Properties>
       <string name="Name">StarterPlayer</string>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="11">
+    <Item class="StarterPlayerScripts" referent="17">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="LocalScript" referent="12">
+      <Item class="LocalScript" referent="18">
         <Properties>
           <string name="Name">Client</string>
           <string name="Source"><![CDATA[local Players = game:GetService("Players")
@@ -1836,11 +3100,11 @@ for _, chapter in ipairs(Campaign.Chapters) do
 	if chapter.playable then
 		row.Activated:Connect(function()
 			chapterPanel.Visible = false
-			remote:FireServer("Start")
+			remote:FireServer("Start", chapter.id)
 		end)
 	end
 end
-label(chapterPanel, "Aviso", UDim2.new(0.06, 0, 0.89, 0), UDim2.new(0.88, 0, 0.06, 0), "Somente o capítulo 1 está jogável nesta versão privada de desenvolvimento.", Enum.Font.Gotham, 13, COLORS.gold)
+label(chapterPanel, "Aviso", UDim2.new(0.06,0,0.89,0), UDim2.new(0.88,0,0.06,0), "Capitulos 1 a 12 estao na build experimental. Revisao visual e testes de campanha ainda pendentes.", Enum.Font.Gotham, 13, COLORS.gold)
 
 local controls = Instance.new("Frame")
 controls.Name = "Controles"
@@ -1900,10 +3164,17 @@ corner(toast, 5)
 stroke(toast, COLORS.line, 0.35, 1)
 
 local documentPanel = panel("Documento", UDim2.new(0.62, 0, 0.43, 0), UDim2.new(0.19, 0, 0.285, 0))
+documentPanel.Active = true
+documentPanel.ZIndex = 80
 local docTitle = label(documentPanel, "Titulo", UDim2.new(0.07, 0, 0.08, 0), UDim2.new(0.86, 0, 0.15, 0), "", Enum.Font.Garamond, 25, COLORS.gold)
 local docText = label(documentPanel, "Corpo", UDim2.new(0.08, 0, 0.28, 0), UDim2.new(0.84, 0, 0.47, 0), "", Enum.Font.Garamond, 22, COLORS.text)
 docText.TextYAlignment = Enum.TextYAlignment.Top
-local docClose = button(documentPanel, "Fechar", UDim2.new(0.31, 0, 0.82, 0), UDim2.new(0.38, 0, 0.12, 0), "FECHAR", false)
+docTitle.ZIndex = 81
+docText.ZIndex = 81
+local docClose = button(documentPanel, "Fechar", UDim2.new(0.69, 0, 0.06, 0), UDim2.new(0.24, 0, 0.14, 0), "FECHAR  ×", true)
+docClose.ZIndex = 82
+docClose.Active = true
+docClose.Selectable = true
 
 local keypadPanel = panel("Teclado", UDim2.new(0.37, 0, 0.69, 0), UDim2.new(0.315, 0, 0.155, 0))
 label(keypadPanel, "Titulo", UDim2.new(0.08, 0, 0.035, 0), UDim2.new(0.84, 0, 0.09, 0), "ARQUIVO 303", Enum.Font.Garamond, 24, COLORS.gold, Enum.TextXAlignment.Center)
@@ -2058,6 +3329,7 @@ local function showDocument(data)
 	closeOverlays()
 	docTitle.Text = data.title or "REGISTRO"
 	docText.Text = data.text or ""
+	docClose.Text = "FECHAR  ×"
 	documentPanel.Visible = true
 	setCapture(false)
 end
@@ -2124,7 +3396,10 @@ end
 
 introNext.Activated:Connect(advanceIntro)
 introSkip.Activated:Connect(completeIntro)
-docClose.Activated:Connect(function()
+local function closeDocument()
+	if not documentPanel.Visible then
+		return
+	end
 	documentPanel.Visible = false
 	if finalShown then
 		finalShown = false
@@ -2141,6 +3416,13 @@ docClose.Activated:Connect(function()
 		showMenuCamera()
 	elseif playing then
 		setCapture(true)
+	end
+end
+
+docClose.Activated:Connect(closeDocument)
+UserInputService.InputBegan:Connect(function(input)
+	if input.KeyCode == Enum.KeyCode.Escape and documentPanel.Visible then
+		closeDocument()
 	end
 end)
 
@@ -2278,6 +3560,7 @@ end
 
 remote.OnClientEvent:Connect(function(eventName, data)
 	if eventName == "StartGame" then
+		hudTitle.Text = data.chapterTitle or "DISTRITO 11  /  ANDAR 3"
 		chapterPanel.Visible = false
 		overlay.Visible = false
 		menu.Visible = false
@@ -2301,13 +3584,13 @@ remote.OnClientEvent:Connect(function(eventName, data)
 		createShop(data)
 	elseif eventName == "OpenEnding" then
 		openEnding(data)
-	elseif eventName == "Ending" then
+	elseif eventName == "Ending" or eventName == "ChapterComplete" then
 		closeOverlays()
 		finalShown = true
 		documentPanel.Visible = true
 		docTitle.Text = data.title or "FIM"
 		docText.Text = data.text or ""
-		docClose.Text = "ENCERRAR TURNO"
+		docClose.Text = eventName == "ChapterComplete" and "VOLTAR AO MENU  ×" or "ENCERRAR TURNO  ×"
 		setCapture(false)
 	elseif eventName == "Caught" then
 		showToast(data.text or "O Ouvinte encontrou você.", "error")
@@ -2336,7 +3619,7 @@ shopMenuButton.Activated:Connect(shopFunction)
 shopHudButton.Activated:Connect(shopFunction)
 
 startButton.Activated:Connect(function()
-	remote:FireServer("Start")
+	remote:FireServer("Start", 1)
 end)
 
 local function toggleFlashlight(_, inputState)
@@ -2376,6 +3659,10 @@ RunService:BindToRenderStep("Linha11CameraLight", Enum.RenderPriority.Camera.Val
 	local camera = workspace.CurrentCamera
 	if not camera then
 		return
+	end
+	if modalActive then
+		UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+		UserInputService.MouseIconEnabled = true
 	end
 	if menuActive and menuLightPart then
 		menuLightPart.CFrame = camera.CFrame

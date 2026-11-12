@@ -178,11 +178,11 @@ for _, chapter in ipairs(Campaign.Chapters) do
 	if chapter.playable then
 		row.Activated:Connect(function()
 			chapterPanel.Visible = false
-			remote:FireServer("Start")
+			remote:FireServer("Start", chapter.id)
 		end)
 	end
 end
-label(chapterPanel, "Aviso", UDim2.new(0.06, 0, 0.89, 0), UDim2.new(0.88, 0, 0.06, 0), "Somente o capítulo 1 está jogável nesta versão privada de desenvolvimento.", Enum.Font.Gotham, 13, COLORS.gold)
+label(chapterPanel, "Aviso", UDim2.new(0.06,0,0.89,0), UDim2.new(0.88,0,0.06,0), "Capitulos 1 a 12 estao na build experimental. Revisao visual e testes de campanha ainda pendentes.", Enum.Font.Gotham, 13, COLORS.gold)
 
 local controls = Instance.new("Frame")
 controls.Name = "Controles"
@@ -242,10 +242,17 @@ corner(toast, 5)
 stroke(toast, COLORS.line, 0.35, 1)
 
 local documentPanel = panel("Documento", UDim2.new(0.62, 0, 0.43, 0), UDim2.new(0.19, 0, 0.285, 0))
+documentPanel.Active = true
+documentPanel.ZIndex = 80
 local docTitle = label(documentPanel, "Titulo", UDim2.new(0.07, 0, 0.08, 0), UDim2.new(0.86, 0, 0.15, 0), "", Enum.Font.Garamond, 25, COLORS.gold)
 local docText = label(documentPanel, "Corpo", UDim2.new(0.08, 0, 0.28, 0), UDim2.new(0.84, 0, 0.47, 0), "", Enum.Font.Garamond, 22, COLORS.text)
 docText.TextYAlignment = Enum.TextYAlignment.Top
-local docClose = button(documentPanel, "Fechar", UDim2.new(0.31, 0, 0.82, 0), UDim2.new(0.38, 0, 0.12, 0), "FECHAR", false)
+docTitle.ZIndex = 81
+docText.ZIndex = 81
+local docClose = button(documentPanel, "Fechar", UDim2.new(0.69, 0, 0.06, 0), UDim2.new(0.24, 0, 0.14, 0), "FECHAR  ×", true)
+docClose.ZIndex = 82
+docClose.Active = true
+docClose.Selectable = true
 
 local keypadPanel = panel("Teclado", UDim2.new(0.37, 0, 0.69, 0), UDim2.new(0.315, 0, 0.155, 0))
 label(keypadPanel, "Titulo", UDim2.new(0.08, 0, 0.035, 0), UDim2.new(0.84, 0, 0.09, 0), "ARQUIVO 303", Enum.Font.Garamond, 24, COLORS.gold, Enum.TextXAlignment.Center)
@@ -400,6 +407,7 @@ local function showDocument(data)
 	closeOverlays()
 	docTitle.Text = data.title or "REGISTRO"
 	docText.Text = data.text or ""
+	docClose.Text = "FECHAR  ×"
 	documentPanel.Visible = true
 	setCapture(false)
 end
@@ -466,7 +474,10 @@ end
 
 introNext.Activated:Connect(advanceIntro)
 introSkip.Activated:Connect(completeIntro)
-docClose.Activated:Connect(function()
+local function closeDocument()
+	if not documentPanel.Visible then
+		return
+	end
 	documentPanel.Visible = false
 	if finalShown then
 		finalShown = false
@@ -483,6 +494,13 @@ docClose.Activated:Connect(function()
 		showMenuCamera()
 	elseif playing then
 		setCapture(true)
+	end
+end
+
+docClose.Activated:Connect(closeDocument)
+UserInputService.InputBegan:Connect(function(input)
+	if input.KeyCode == Enum.KeyCode.Escape and documentPanel.Visible then
+		closeDocument()
 	end
 end)
 
@@ -620,6 +638,7 @@ end
 
 remote.OnClientEvent:Connect(function(eventName, data)
 	if eventName == "StartGame" then
+		hudTitle.Text = data.chapterTitle or "DISTRITO 11  /  ANDAR 3"
 		chapterPanel.Visible = false
 		overlay.Visible = false
 		menu.Visible = false
@@ -643,13 +662,13 @@ remote.OnClientEvent:Connect(function(eventName, data)
 		createShop(data)
 	elseif eventName == "OpenEnding" then
 		openEnding(data)
-	elseif eventName == "Ending" then
+	elseif eventName == "Ending" or eventName == "ChapterComplete" then
 		closeOverlays()
 		finalShown = true
 		documentPanel.Visible = true
 		docTitle.Text = data.title or "FIM"
 		docText.Text = data.text or ""
-		docClose.Text = "ENCERRAR TURNO"
+		docClose.Text = eventName == "ChapterComplete" and "VOLTAR AO MENU  ×" or "ENCERRAR TURNO  ×"
 		setCapture(false)
 	elseif eventName == "Caught" then
 		showToast(data.text or "O Ouvinte encontrou você.", "error")
@@ -678,7 +697,7 @@ shopMenuButton.Activated:Connect(shopFunction)
 shopHudButton.Activated:Connect(shopFunction)
 
 startButton.Activated:Connect(function()
-	remote:FireServer("Start")
+	remote:FireServer("Start", 1)
 end)
 
 local function toggleFlashlight(_, inputState)
@@ -718,6 +737,10 @@ RunService:BindToRenderStep("Linha11CameraLight", Enum.RenderPriority.Camera.Val
 	local camera = workspace.CurrentCamera
 	if not camera then
 		return
+	end
+	if modalActive then
+		UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+		UserInputService.MouseIconEnabled = true
 	end
 	if menuActive and menuLightPart then
 		menuLightPart.CFrame = camera.CFrame
