@@ -1,7 +1,7 @@
 local Story = {}
 
 Story.Title = "LINHA 11 — A ÚLTIMA CHAMADA"
-Story.Version = "Roblox Prototype 0.1.0"
+Story.Version = "1.0"
 Story.Code = "0317"
 
 Story.Prologue = {
@@ -49,7 +49,7 @@ Story.Objectives = {
 	[2] = "Use a chave para abrir a gaveta de fusíveis no apartamento 301.",
 	[3] = "Recolha os três fragmentos da senha nos apartamentos 301, 302 e 305.",
 	[4] = "Instale o fusível no quadro do corredor.",
-	[5] = "Digite 0317 no teclado do arquivo 303.",
+	[5] = "Junte os três fragmentos e digite a senha no teclado do arquivo 303.",
 	[6] = "Recupere a fita e verifique o telefone do apartamento 304.",
 	[7] = "Encontre o pé de cabra no 304 e abra a sala do repetidor.",
 	[8] = "Ative as duas alavancas do repetidor. Fiquem juntos e em silêncio.",

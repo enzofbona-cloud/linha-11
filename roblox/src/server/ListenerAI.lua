@@ -105,6 +105,23 @@ function ListenerAI.new(parent, playerProvider, onCatch, config)
 		register(shard, CFrame.new(side * 0.72, 3.4, 0.55) * CFrame.Angles(0, 0, math.rad(side * -8)), side, 0.08)
 	end
 
+	-- Sons presos ao corpo: o jogador ouve de que lado ele vem e a que distância está.
+	local function voice(name, id, volume, speed, maxDistance)
+		local sound = Instance.new("Sound")
+		sound.Name = name
+		sound.SoundId = id
+		sound.Volume = volume
+		sound.PlaybackSpeed = speed
+		sound.RollOffMode = Enum.RollOffMode.Linear
+		sound.RollOffMinDistance = 6
+		sound.RollOffMaxDistance = maxDistance
+		sound.Parent = root
+		return sound
+	end
+	self.StepSound = voice("Passo", "rbxasset://sounds/action_jump_land.mp3", 1.4, 0.5, 95)
+	self.WakeSound = voice("Despertar", "rbxasset://sounds/impact_water.mp3", 1.6, 0.32, 140)
+	self.StepDistance = 0
+
 	self.AnimatedParts = animated
 	self.OriginalTransparency = {}
 	for _, part in ipairs(model:GetDescendants()) do
@@ -134,6 +151,9 @@ function ListenerAI:Wake()
 	end
 	table.clear(self.OriginalTransparency)
 	self.Model:SetAttribute("Awake", true)
+	if self.WakeSound then
+		self.WakeSound:Play()
+	end
 end
 
 function ListenerAI:Ping(position, strength)
@@ -174,6 +194,16 @@ function ListenerAI:Step(dt)
 	local step = math.clamp(delta, -speed * dt, speed * dt)
 	local nextX = math.clamp(self.Position.X + step, self.MinX, self.MaxX)
 	local facing = nextX >= self.Position.X and 1 or -1
+	-- Um passo pesado a cada trecho percorrido; mais rápido e mais agudo quando ele caça.
+	self.StepDistance += math.abs(nextX - self.Position.X)
+	if self.StepDistance >= (isHunting and 3.4 or 2.6) then
+		self.StepDistance = 0
+		self.Steps = (self.Steps or 0) + 1
+		if self.StepSound then
+			self.StepSound.PlaybackSpeed = (isHunting and 0.62 or 0.48) + (self.Steps % 3) * 0.03
+			self.StepSound:Play()
+		end
+	end
 	self.Position = Vector3.new(nextX, 0, self.PatrolZ)
 	local bodyCFrame = CFrame.lookAt(self.Position + Vector3.new(0, 0.05, 0), self.Position + Vector3.new(facing, 0.05, 0))
 	self.Model:PivotTo(bodyCFrame)

@@ -51,6 +51,9 @@ local function build()
 	-- Corredor com aberturas para escada, elevador e sala eletrica.
 	wall(world,"Parede_Norte_A",2.5,-6.8,5,.55); wall(world,"Parede_Norte_B",44,-6.8,48,.55); wall(world,"Parede_Norte_C",99,-6.8,18,.55)
 	wall(world,"Parede_Sul_A",19,6.8,38,.55); wall(world,"Parede_Sul_B",79,6.8,58,.55)
+	-- Fecha os vãos ao lado das portas do elevador: só se entra na cabine abrindo as portas.
+	wall(world,"Batente_Elevador_A",39.5,6.8,3,.55); wall(world,"Batente_Elevador_B",48.5,6.8,3,.55)
+	part(world,"Verga_Elevador",Vector3.new(6,4.7,.55),v(44,9.35,6.8),Color3.fromRGB(98,92,81),Enum.Material.Plaster)
 	techDoor=part(world,"Porta_Sala_Tecnica",Vector3.new(20,9.4,.35),v(79,4.7,-6.8),Color3.fromRGB(62,68,68),Enum.Material.Metal)
 	techDoorClosed=techDoor.CFrame
 	for _,x in ipairs({8,31,55,82,101}) do lamp(world,"Luminaria_"..x,x,0) end
@@ -69,10 +72,10 @@ local function build()
 	doorA=part(world,"Porta_Elevador_A",Vector3.new(3,7,.28),v(42.5,3.5,6.6),Color3.fromRGB(76,78,75),Enum.Material.Metal)
 	doorB=part(world,"Porta_Elevador_B",Vector3.new(3,7,.28),v(45.5,3.5,6.6),Color3.fromRGB(76,78,75),Enum.Material.Metal)
 	closedA,closedB=doorA.CFrame,doorB.CFrame
-	act(world,"Painel_Elevador",44,2.6,5.3,"C3_ElevatorCall","Abrir","Elevador de servico",.5)
+	act(world,"Painel_Elevador",44,2.6,5.3,"C3_ElevatorCall","Abrir","Elevador de serviço",.5)
 	act(world,"Gravador",44,2.2,17,"C3_Recorder","Examinar","Gravador no piso",.55)
 	part(world,"Gravador_Fita",Vector3.new(1.8,.4,1.2),v(44,.42,17),Color3.fromRGB(31,32,31),Enum.Material.Metal,0,false)
-	sign(world,"Placa_Elevador",44,8,6.4,"ELEVADOR / SERVICO",Vector3.new(5,.8,.15))
+	sign(world,"Placa_Elevador",44,8,6.4,"ELEVADOR / SERVIÇO",Vector3.new(5,.8,.15))
 	-- Sala tecnica com dois pontos do circuito separados para a dupla.
 	part(world,"Piso_Sala_Tecnica",Vector3.new(31,.45,19),v(78,-.05,-17),Color3.fromRGB(55,52,47),Enum.Material.Concrete)
 	part(world,"Teto_Sala_Tecnica",Vector3.new(31,.5,19),v(78,11.3,-17),Color3.fromRGB(31,32,31),Enum.Material.Concrete)
@@ -91,13 +94,13 @@ local function build()
 	-- Telefone, armario e documentos da investigacao.
 	part(world,"Mesa_Telefone",Vector3.new(3.2,.22,1.8),v(8,2.2,2.8),Color3.fromRGB(79,61,45),Enum.Material.WoodPlanks)
 	part(world,"Telefone",Vector3.new(1.4,.48,1),v(8,2.55,2.8),Color3.fromRGB(31,32,31),Enum.Material.Metal)
-	act(world,"Atender_Telefone",8,3.2,2.8,"C3_Phone","Atender","Telefone de servico",.6)
+	act(world,"Atender_Telefone",8,3.2,2.8,"C3_Phone","Atender","Telefone de serviço",.6)
 	act(world,"Registrar",14,2.3,4.5,"C3_Report","Registrar","Caderno de campo",.5)
 	part(world,"Armario_Ferramentas",Vector3.new(2.5,5,1.7),v(25,2.5,3.9),Color3.fromRGB(71,77,75),Enum.Material.Metal)
-	act(world,"Chave_Tecnica",25,3.3,2.6,"C3_Key","Abrir armario","Armario de manutencao",.75)
+	act(world,"Chave_Tecnica",25,3.3,2.6,"C3_Key","Abrir armário","Armário de manutenção",.75)
 	part(world,"Balcao_Livro",Vector3.new(3.4,.3,2.1),v(31,2.1,-2.7),Color3.fromRGB(79,61,45),Enum.Material.WoodPlanks)
 	doc(world,"Livro_Elevador",31,2.48,-2.7,"LIVRO DO ELEVADOR","ORDEM 11-B","C3_Log")
-	doc(world,"Aviso_Rota",17,2.55,-2.5,"AVISO DE MANUTENCAO","RETORNO A + B","C3_Route")
+	doc(world,"Aviso_Rota",17,2.55,-2.5,"AVISO DE MANUTENÇÃO","RETORNO A + B","C3_Route")
 	local s=Instance.new("SpawnLocation"); s.Name="InicioCapitulo03"; s.Size=Vector3.new(4,.6,4); s.Position=v(4,.1,0)
 	s.Anchored=true; s.Transparency=1; s.CanCollide=false; s.Neutral=true; s.Duration=0; s.Parent=world; spawn=s
 	M.SetPower(false); M.SetElevatorOpen(false); M.SetTechDoorOpen(false); return world,spawn

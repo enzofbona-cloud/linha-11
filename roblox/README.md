@@ -2,7 +2,33 @@
 
 Esta é a reconstrução ativa do jogo como experiência cooperativa do Roblox. A versão Godot permanece no histórico e nos arquivos antigos do repositório; ela não é a experiência atual.
 
-O plano da campanha Roblox, com 12 capítulos e metas de duração, está em [docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md](../docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md). A árvore de trabalho local prepara os capítulos 1 e 2 para teste privado; a versão já publicada ainda não foi atualizada com o segundo capítulo. A duração total não foi validada em sessões.
+O plano da campanha Roblox, com 12 capítulos e metas de duração, está em [docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md](../docs/superpowers/plans/2026-11-11-reconstrucao-roblox-12-capitulos.md). A duração total não foi medida em sessões com jogadores.
+
+## Estado em 2026-11-16 (versão 1.0, pronta para publicar)
+
+Esta seção vale mais do que as notas antigas mais abaixo.
+
+- Os 12 capítulos podem ser jogados em sequência no mesmo servidor. Ao terminar um capítulo, o texto final mostra o botão do capítulo seguinte, que leva a equipe inteira; o botão MENU devolve o jogador ao menu.
+- Cada capítulo é remontado do zero quando uma nova equipe começa (mapa, portas, luzes, criatura e progresso). Quando o último jogador sai, o servidor fica livre para qualquer capítulo.
+- Quem entra num servidor com equipe em andamento cai no capítulo dela.
+- O maior capítulo concluído fica salvo na conta (DataStore `Linha11Progresso_v1`); o botão principal vira "CONTINUAR • CAPÍTULO N".
+- Etapas de dupla só exigem o parceiro se ele estiver por perto (até 70 studs). Sozinho, ou com o parceiro longe, um jogador faz as duas partes dentro dos 12 segundos.
+- Depois de dois erros na sequência de controles (capítulos 4 a 12), a equipe recebe a dica do controle que faltava.
+- Sons: só arquivos que vêm com o Roblox (`rbxasset://sounds/...`), em tons diferentes — passos e despertar do Ouvinte (3D), batimento quando ele está perto, impacto nos sustos, cliques e papel. Não há música nem voz.
+- Corrigido nesta versão: interações dos capítulos 4 a 12 eram registradas duas vezes (a segunda leitura desfazia a etapa aceita); objetivos dos capítulos 2 a 12 apareciam um passo adiantado; textos dos capítulos 3 a 12 estavam sem acentos; vãos ao lado das portas do elevador no capítulo 3.
+
+### Como isto foi verificado
+
+`node roblox/tools/sim/run.mjs` roda os scripts reais do jogo num simulador da API do Roblox (`roblox/tools/sim/`) e joga a campanha inteira pelo caminho principal usando a interface do cliente: capítulos 1 a 12, rejogar um capítulo, dupla, tempo esgotado, parceiro longe, captura pelo Ouvinte, esconderijo e saída de jogador. Resultado em 2026-11-16: 215 verificações, 0 falhas.
+
+O simulador não desenha nada e não toca som. **Não foi verificado no Roblox de verdade:** aparência dos mapas, colisão e passagem pelos cômodos, volume e timbre dos sons, celular e controle, e o salvamento na nuvem. Isso exige abrir o arquivo no Studio.
+
+### Para publicar
+
+1. Abra `roblox/LINHA11_Roblox.rbxlx` no Roblox Studio e aperte Play para um teste rápido.
+2. File → Publish to Roblox As… → escolha a experiência "LINHA 11 — A Última Chamada" já existente e sobrescreva o lugar inicial.
+3. No Creator Hub: limite de jogadores por servidor em 4 (a missão é compartilhada por quem está no servidor), ícone, miniaturas, descrição e o questionário de classificação (terror, sem sangue).
+4. Só então mude a audiência para pública. O Roblox mostra na própria tela os requisitos da conta para isso.
 
 ## Teste privado no Roblox
 

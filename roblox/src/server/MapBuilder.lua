@@ -337,7 +337,7 @@ local function roomFurniture(parent, roomId, centerX, side, centerZ)
 		tvText.Size = UDim2.fromScale(1, 1)
 		tvText.BackgroundColor3 = Color3.fromRGB(24, 32, 35)
 		tvText.BackgroundTransparency = 0
-		tvText.Text = "03:17\\nSEM SINAL"
+		tvText.Text = "03:17\nSEM SINAL"
 		tvText.TextColor3 = Color3.fromRGB(161, 177, 180)
 		tvText.Font = Enum.Font.Code
 		tvText.TextScaled = true

@@ -127,13 +127,13 @@ teaser.TextYAlignment = Enum.TextYAlignment.Top
 local startButton = button(menu, "Comecar", UDim2.new(0.075, 0, 0.58, 0), UDim2.new(0.28, 0, 0.075, 0), "INICIAR INVESTIGAÇÃO", true)
 local shopMenuButton = button(menu, "Cosmeticos", UDim2.new(0.075, 0, 0.67, 0), UDim2.new(0.28, 0, 0.065, 0), "COSMÉTICOS OPCIONAIS", false)
 local chaptersButton = button(menu, "Capitulos", UDim2.new(0.075, 0, 0.75, 0), UDim2.new(0.28, 0, 0.065, 0), "CAPÍTULOS", false)
-local version = label(menu, "Versao", UDim2.new(0.075, 0, 0.92, 0), UDim2.new(0.34, 0, 0.035, 0), "PROTÓTIPO ROBLOX  •  0.1.0", Enum.Font.Gotham, 12, COLORS.muted)
+local version = label(menu, "Versao", UDim2.new(0.075, 0, 0.92, 0), UDim2.new(0.34, 0, 0.035, 0), "VERSÃO 1.0  •  1 A 4 JOGADORES", Enum.Font.Gotham, 12, COLORS.muted)
 
 local chapterPanel = panel("SelecaoCapitulos", UDim2.new(0.72, 0, 0.78, 0), UDim2.new(0.14, 0, 0.11, 0))
 chapterPanel.BackgroundTransparency = 0.02
 local chapterHeader = label(chapterPanel, "Cabecalho", UDim2.new(0.055, 0, 0.035, 0), UDim2.new(0.72, 0, 0.09, 0), "CAMPANHA  •  12 CAPÍTULOS", Enum.Font.Garamond, 29, COLORS.text)
 chapterHeader.TextXAlignment = Enum.TextXAlignment.Left
-label(chapterPanel, "Duracao", UDim2.new(0.06, 0, 0.125, 0), UDim2.new(0.85, 0, 0.055, 0), "Meta de duração: pelo menos 165 min • tempos ainda não validados em sessões", Enum.Font.Gotham, 13, COLORS.muted)
+label(chapterPanel, "Duracao", UDim2.new(0.06, 0, 0.125, 0), UDim2.new(0.85, 0, 0.055, 0), "Cada capítulo continua a história do anterior. Jogue sozinho ou em equipe.", Enum.Font.Gotham, 13, COLORS.muted)
 local chapterClose = button(chapterPanel, "Fechar", UDim2.new(0.82, 0, 0.04, 0), UDim2.new(0.12, 0, 0.075, 0), "VOLTAR", false)
 local chapterList = Instance.new("ScrollingFrame")
 chapterList.Name = "Lista"
@@ -158,13 +158,12 @@ chapterPadding.PaddingLeft = UDim.new(0, 9)
 chapterPadding.PaddingRight = UDim.new(0, 9)
 chapterPadding.Parent = chapterList
 for _, chapter in ipairs(Campaign.Chapters) do
-	local status = chapter.playable and "DISPONÍVEL" or "EM DESENVOLVIMENTO"
 	local row = button(
 		chapterList,
 		"Capitulo" .. tostring(chapter.id),
 		UDim2.new(),
 		UDim2.new(1, -18, 0, 48),
-		string.format("%02d  •  %s   |   %d–%d min   |   %s", chapter.id, chapter.title, chapter.minMinutes, chapter.maxMinutes, status),
+		string.format("%02d  •  %s", chapter.id, chapter.title),
 		chapter.playable
 	)
 	row.LayoutOrder = chapter.id
@@ -182,7 +181,7 @@ for _, chapter in ipairs(Campaign.Chapters) do
 		end)
 	end
 end
-label(chapterPanel, "Aviso", UDim2.new(0.06,0,0.89,0), UDim2.new(0.88,0,0.06,0), "Capitulos 1 a 12 estao na build experimental. Revisao visual e testes de campanha ainda pendentes.", Enum.Font.Gotham, 13, COLORS.gold)
+label(chapterPanel, "Aviso", UDim2.new(0.06,0,0.89,0), UDim2.new(0.88,0,0.06,0), "Os capítulos concluídos ficam salvos na sua conta.", Enum.Font.Gotham, 13, COLORS.gold)
 
 local controls = Instance.new("Frame")
 controls.Name = "Controles"
@@ -253,7 +252,95 @@ local docClose = button(documentPanel, "Fechar", UDim2.new(0.69, 0, 0.06, 0), UD
 docClose.ZIndex = 82
 docClose.Active = true
 docClose.Selectable = true
+-- Só aparece no fim de um capítulo: leva a equipe inteira para o seguinte.
+local docNext = button(documentPanel, "Proximo", UDim2.new(0.08, 0, 0.8, 0), UDim2.new(0.5, 0, 0.14, 0), "PRÓXIMO CAPÍTULO  →", true)
+docNext.ZIndex = 82
+docNext.Active = true
+docNext.Selectable = true
+docNext.Visible = false
 
+
+-- Sons: só arquivos que já vêm instalados com o Roblox, tocados em tons diferentes.
+local SoundService = game:GetService("SoundService")
+local SOUNDS = {
+	click = { id = "rbxasset://sounds/volume_slider.ogg", volume = 0.45, speed = 1 },
+	pickup = { id = "rbxasset://sounds/volume_slider.ogg", volume = 0.6, speed = 1.4 },
+	deny = { id = "rbxasset://sounds/volume_slider.ogg", volume = 0.5, speed = 0.55 },
+	paper = { id = "rbxasset://sounds/action_get_up.mp3", volume = 0.3, speed = 1.5 },
+	scare = { id = "rbxasset://sounds/impact_explosion_03.mp3", volume = 0.4, speed = 0.4 },
+	caught = { id = "rbxasset://sounds/impact_explosion_03.mp3", volume = 0.75, speed = 0.7 },
+	heart = { id = "rbxasset://sounds/action_jump_land.mp3", volume = 0.5, speed = 0.45 },
+}
+local soundCache = {}
+local function playSound(name)
+	local spec = SOUNDS[name]
+	if not spec then
+		return
+	end
+	local sound = soundCache[name]
+	if not sound then
+		sound = Instance.new("Sound")
+		sound.Name = "Linha11_" .. name
+		sound.SoundId = spec.id
+		sound.Volume = spec.volume
+		sound.PlaybackSpeed = spec.speed
+		sound.Parent = SoundService
+		soundCache[name] = sound
+	end
+	sound:Play()
+end
+
+-- Escurecimento nas bordas quando o Ouvinte está perto, e clarão quando ele pega o jogador.
+local dangerFrame = Instance.new("Frame")
+dangerFrame.Name = "Perigo"
+dangerFrame.Size = UDim2.fromScale(1, 1)
+dangerFrame.BackgroundColor3 = Color3.fromRGB(46, 6, 6)
+dangerFrame.BackgroundTransparency = 1
+dangerFrame.BorderSizePixel = 0
+dangerFrame.Active = false
+dangerFrame.Visible = false
+dangerFrame.ZIndex = 1
+dangerFrame.Parent = gui
+local flashFrame = Instance.new("Frame")
+flashFrame.Name = "Apagao"
+flashFrame.Size = UDim2.fromScale(1, 1)
+flashFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+flashFrame.BackgroundTransparency = 1
+flashFrame.BorderSizePixel = 0
+flashFrame.Active = false
+flashFrame.Visible = false
+flashFrame.ZIndex = 60
+flashFrame.Parent = gui
+local function flashCaught()
+	flashFrame.BackgroundTransparency = 0
+	flashFrame.Visible = true
+	local fade = TweenService:Create(flashFrame, TweenInfo.new(1.6, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { BackgroundTransparency = 1 })
+	fade:Play()
+	task.delay(1.7, function()
+		if flashFrame.BackgroundTransparency >= 0.99 then
+			flashFrame.Visible = false
+		end
+	end)
+end
+
+-- O botão principal vira "continuar" para quem já concluiu algum capítulo.
+local function nextChapterToPlay()
+	local progress = player:GetAttribute("Linha11Progress")
+	if typeof(progress) ~= "number" or progress < 1 or progress >= #Campaign.Chapters then
+		return 1
+	end
+	return progress + 1
+end
+local function refreshStartButton()
+	local chapterId = nextChapterToPlay()
+	if chapterId > 1 then
+		startButton.Text = string.format("CONTINUAR  •  CAPÍTULO %d", chapterId)
+	else
+		startButton.Text = "INICIAR INVESTIGAÇÃO"
+	end
+end
+player:GetAttributeChangedSignal("Linha11Progress"):Connect(refreshStartButton)
+refreshStartButton()
 local keypadPanel = panel("Teclado", UDim2.new(0.37, 0, 0.69, 0), UDim2.new(0.315, 0, 0.155, 0))
 label(keypadPanel, "Titulo", UDim2.new(0.08, 0, 0.035, 0), UDim2.new(0.84, 0, 0.09, 0), "ARQUIVO 303", Enum.Font.Garamond, 24, COLORS.gold, Enum.TextXAlignment.Center)
 local codeDisplay = label(keypadPanel, "Codigo", UDim2.new(0.1, 0, 0.13, 0), UDim2.new(0.8, 0, 0.1, 0), "— — — —", Enum.Font.GothamMedium, 25, COLORS.text, Enum.TextXAlignment.Center)
@@ -479,25 +566,42 @@ local function closeDocument()
 		return
 	end
 	documentPanel.Visible = false
+	docNext.Visible = false
 	if finalShown then
+		-- Fim de capítulo: fechar aqui devolve o jogador ao menu e avisa o servidor.
 		finalShown = false
 		playing = false
 		hud.Visible = false
 		shopHudButton.Visible = false
+		dangerFrame.Visible = false
 		overlay.Visible = true
 		menu.Visible = true
 		menuActive = true
-		docClose.Text = "FECHAR"
+		docClose.Text = "FECHAR  ×"
 		player.CameraMode = Enum.CameraMode.Classic
 		UserInputService.MouseBehavior = Enum.MouseBehavior.Default
 		UserInputService.MouseIconEnabled = true
+		modalActive = true
+		remote:FireServer("Leave")
+		refreshStartButton()
 		showMenuCamera()
 	elseif playing then
 		setCapture(true)
 	end
 end
 
-docClose.Activated:Connect(closeDocument)
+docClose.Activated:Connect(function()
+	playSound("click")
+	closeDocument()
+end)
+docNext.Activated:Connect(function()
+	if not finalShown then
+		return
+	end
+	playSound("click")
+	docNext.Visible = false
+	remote:FireServer("NextChapter")
+end)
 UserInputService.InputBegan:Connect(function(input)
 	if input.KeyCode == Enum.KeyCode.Escape and documentPanel.Visible then
 		closeDocument()
@@ -638,7 +742,22 @@ end
 
 remote.OnClientEvent:Connect(function(eventName, data)
 	if eventName == "StartGame" then
+		-- Também chega quando a equipe avança de capítulo: fecha o texto final que estiver aberto.
+		finalShown = false
+		documentPanel.Visible = false
+		docNext.Visible = false
+		keypadPanel.Visible = false
+		local oldEnding = gui:FindFirstChild("Finais")
+		if oldEnding then
+			oldEnding.Visible = false
+		end
+		setCapture(false)
+		dangerFrame.Visible = false
 		hudTitle.Text = data.chapterTitle or "DISTRITO 11  /  ANDAR 3"
+		introHeader.Text = data.chapterTitle or "ORDEM DE SERVIÇO  •  02:41"
+		if data.state then
+			updateState(data.state)
+		end
 		chapterPanel.Visible = false
 		overlay.Visible = false
 		menu.Visible = false
@@ -654,7 +773,15 @@ remote.OnClientEvent:Connect(function(eventName, data)
 		updateState(data)
 	elseif eventName == "Message" then
 		showToast(data.text or "", data.kind)
+		if data.kind == "scare" then
+			playSound("scare")
+		elseif data.kind == "success" then
+			playSound("pickup")
+		elseif data.kind == "error" then
+			playSound("deny")
+		end
 	elseif eventName == "Document" then
+		playSound("paper")
 		showDocument(data)
 	elseif eventName == "OpenKeypad" then
 		openKeypad()
@@ -668,10 +795,19 @@ remote.OnClientEvent:Connect(function(eventName, data)
 		documentPanel.Visible = true
 		docTitle.Text = data.title or "FIM"
 		docText.Text = data.text or ""
-		docClose.Text = eventName == "ChapterComplete" and "VOLTAR AO MENU  ×" or "ENCERRAR TURNO  ×"
+		docClose.Text = "MENU  ×"
+		if data.nextChapterId then
+			docNext.Text = string.format("CAPÍTULO %d  •  %s  →", data.nextChapterId, data.nextTitle or "")
+			docNext.Visible = true
+		else
+			docNext.Visible = false
+		end
+		playSound("scare")
 		setCapture(false)
 	elseif eventName == "Caught" then
 		showToast(data.text or "O Ouvinte encontrou você.", "error")
+		playSound("caught")
+		flashCaught()
 	end
 end)
 
@@ -697,7 +833,8 @@ shopMenuButton.Activated:Connect(shopFunction)
 shopHudButton.Activated:Connect(shopFunction)
 
 startButton.Activated:Connect(function()
-	remote:FireServer("Start", 1)
+	playSound("click")
+	remote:FireServer("Start", nextChapterToPlay())
 end)
 
 local function toggleFlashlight(_, inputState)
@@ -767,6 +904,50 @@ task.defer(function()
 	end
 end)
 
+
+-- Aviso de proximidade: quanto mais perto o Ouvinte, mais escuras as bordas e mais rápido o batimento.
+local DANGER_RANGE = 62
+local function listenerDistance()
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return math.huge
+	end
+	local best = math.huge
+	for _, area in ipairs(workspace:GetChildren()) do
+		if string.sub(area.Name, 1, 7) == "Linha11" then
+			local creature = area:FindFirstChild("Ouvinte")
+			if creature and creature:GetAttribute("Awake") then
+				local distance = (creature:GetPivot().Position - root.Position).Magnitude
+				if distance < best then
+					best = distance
+				end
+			end
+		end
+	end
+	return best
+end
+
+task.spawn(function()
+	local nextBeat = 0
+	while true do
+		task.wait(0.25)
+		local distance = playing and listenerDistance() or math.huge
+		if distance < DANGER_RANGE then
+			local intensity = 1 - distance / DANGER_RANGE
+			dangerFrame.Visible = true
+			dangerFrame.BackgroundTransparency = 1 - intensity * 0.42
+			local now = os.clock()
+			if now >= nextBeat then
+				nextBeat = now + 1.15 - intensity * 0.8
+				playSound("heart")
+			end
+		elseif dangerFrame.Visible then
+			dangerFrame.Visible = false
+			dangerFrame.BackgroundTransparency = 1
+		end
+	end
+end)
 local characterAudioConnection
 
 local function softenDefaultFootsteps(character)

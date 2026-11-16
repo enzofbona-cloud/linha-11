@@ -83,31 +83,31 @@ return Chapter2Story
 Chapter3Story.Title = "Sem Sinal"
 Chapter3Story.Prologue = {
 	"A escadaria B cheira a concreto molhado e fio queimado.",
-	"O telefone do patamar tocou antes de voces chegarem.",
-	"A derivacao do 304 desce para o elevador de servico.",
+	"O telefone do patamar tocou antes de vocês chegarem.",
+	"A derivação do 304 desce para o elevador de serviço.",
 	"Reconstruam o circuito. Se ouvirem passos, parem de correr.",
 }
 Chapter3Story.Objectives = {
 	[0] = "Atenda ao telefone no patamar da escadaria B.",
-	[1] = "Compare o livro do elevador e o aviso de rota; depois procure a chave tecnica.",
-	[2] = "Na sala tecnica, fechem os dois disjuntores em ate 12 segundos.",
-	[3] = "Abra o elevador de servico e recupere o gravador.",
+	[1] = "Compare o livro do elevador e o aviso de rota; depois procure a chave técnica.",
+	[2] = "Na sala técnica, fechem os dois disjuntores em até 12 segundos.",
+	[3] = "Abra o elevador de serviço e recupere o gravador.",
 	[4] = "Volte ao patamar e registre o que o gravador revelou.",
-	[5] = "Capitulo concluido. A gravacao aponta para a cabine de emergencia na rua.",
+	[5] = "Capítulo concluído. A gravação aponta para a cabine de emergência na rua.",
 }
 function Chapter3Story.GetObjective(stage: number): string
 	return Chapter3Story.Objectives[stage] or Chapter3Story.Objectives[5]
 end
 Chapter3Story.Clues = {
-	Phone = { title="TELEFONE DE SERVICO • 02:41", text="A chamada vem do ramal 11, embora o cabo termine numa caixa vazia. Uma pessoa pede para abrir a escadaria; outra responde que a equipe ainda nao chegou." },
-	Log = { title="LIVRO DO ELEVADOR", text="O elevador foi isolado na noite da evacuacao. Mesmo assim, o contador registrou uma viagem as 03:17 para um nivel inexistente. A ordem de manutencao: 11-B." },
-	Route = { title="AVISO DE MANUTENCAO", text="Fechar os disjuntores A e B com no maximo doze segundos de intervalo. O retorno precisa de duas pessoas nos dois lados do quadro." },
-	Key = { title="ETIQUETA DA CHAVE", text="A chave abre a sala tecnica. Se o telefone tocar, nao responda com o seu nome." },
-	Recorder = { title="GRAVADOR DO ELEVADOR", text="Uma voz conta dois tecnicos entrando no predio. A outra diz: Ainda nao. Primeiro eles precisam atender. A fita termina com tres toques." },
+	Phone = { title="TELEFONE DE SERVIÇO • 02:41", text="A chamada vem do ramal 11, embora o cabo termine numa caixa vazia. Uma pessoa pede para abrir a escadaria; outra responde que a equipe ainda não chegou." },
+	Log = { title="LIVRO DO ELEVADOR", text="O elevador foi isolado na noite da evacuação. Mesmo assim, o contador registrou uma viagem às 03:17 para um nível inexistente. A ordem de manutenção: 11-B." },
+	Route = { title="AVISO DE MANUTENÇÃO", text="Fechar os disjuntores A e B com no máximo doze segundos de intervalo. O retorno precisa de duas pessoas nos dois lados do quadro." },
+	Key = { title="ETIQUETA DA CHAVE", text="A chave abre a sala técnica. Se o telefone tocar, não responda com o seu nome." },
+	Recorder = { title="GRAVADOR DO ELEVADOR", text="Uma voz conta dois técnicos entrando no prédio. A outra diz: Ainda não. Primeiro eles precisam atender. A fita termina com três toques." },
 }
 Chapter3Story.Completion = {
-	title="CAPITULO 3 • SEM SINAL",
-	text="O gravador descreve a chegada da equipe antes de ela acontecer. No verso, alguem anotou a cabine de emergencia da Avenida Norte. Quando o telefone toca de novo, a voz usa o indicativo de voces.",
+	title="CAPÍTULO 3 • SEM SINAL",
+	text="O gravador descreve a chegada da equipe antes de ela acontecer. No verso, alguém anotou a cabine de emergência da Avenida Norte. Quando o telefone toca de novo, a voz usa o indicativo de vocês.",
 }
 return Chapter3Story</string>
         </Properties>
@@ -120,124 +120,124 @@ return Chapter3Story</string>
 LaterChapterStory.Chapters = {
 	[4] = {
 		Title="A Cidade Vazia", Theme="street", Location="Avenida Norte",
-		Prologue={"A cabine da Avenida Norte ainda recebe energia do ramal 11.","A lista oficial diz que todos os moradores embarcaram.","As marcas no meio-fio contam outra historia: nenhum onibus parou aqui."},
-		Objectives={[0]="Atenda a cabine de emergencia.",[1]="Recolha o livro de transporte e o registro da cabine.",[2]="Roteie a chamada pela sequencia indicada nos tres avisos.",[3]="Registre o destino real dos onibus no posto de evacuacao.",[4]="A chamada aponta para a antiga Central Municipal.",[5]="Capitulo concluido."},
+		Prologue={"A cabine da Avenida Norte ainda recebe energia do ramal 11.","A lista oficial diz que todos os moradores embarcaram.","As marcas no meio-fio contam outra história: nenhum ônibus parou aqui."},
+		Objectives={[0]="Atenda a cabine de emergência.",[1]="Recolha o livro de transporte e o registro da cabine.",[2]="Roteie a chamada pela sequência indicada nos três avisos.",[3]="Registre o destino real dos ônibus no posto de evacuação.",[4]="A chamada aponta para a antiga Central Municipal.",[5]="Capítulo concluído."},
 		Clues={
-			{title="QUADRO DE LINHAS",text="A linha 11 foi desviada para a Avenida Norte as 02:41. O campo de passageiros foi preenchido antes da chegada do primeiro onibus."},
-			{title="REGISTRO DA CABINE",text="A cabine recebeu uma chamada as 03:17. A voz do atendente pede para confirmar tres pontos da rota: terminal, retorno, garagem."},
-			{title="TALAO DE EMBARQUE",text="Onze bilhetes foram impressos, mas nenhum foi validado. No verso, a mesma letra escreveu: 'Nao houve embarque. A ordem veio da Central.'"},
+			{title="QUADRO DE LINHAS",text="A linha 11 foi desviada para a Avenida Norte às 02:41. O campo de passageiros foi preenchido antes da chegada do primeiro ônibus."},
+			{title="REGISTRO DA CABINE",text="A cabine recebeu uma chamada às 03:17. A voz do atendente pede para confirmar três pontos da rota: terminal, retorno, garagem."},
+			{title="TALÃO DE EMBARQUE",text="Onze bilhetes foram impressos, mas nenhum foi validado. No verso, a mesma letra escreveu: 'Não houve embarque. A ordem veio da Central.'"},
 		},
 		PuzzleOrder={"A","B","C"}, CoopStep=2,
 		StepLabels={A={Action="Terminal",Object="Rota 1"},B={Action="Retorno",Object="Rota 2"},C={Action="Garagem",Object="Rota 3"}},
-		Completion={title="CAPITULO 4 • A CIDADE VAZIA",text="Os bilhetes nunca foram usados. A ordem de marcar a evacuacao veio da Central Municipal antes de qualquer onibus chegar. A linha registrada no talão aponta para a sala de despacho."},
+		Completion={title="CAPÍTULO 4 • A CIDADE VAZIA",text="Os bilhetes nunca foram usados. A ordem de marcar a evacuação veio da Central Municipal antes de qualquer ônibus chegar. A linha registrada no talão aponta para a sala de despacho."},
 	},
 	[5] = {
 		Title="Central de Chamadas", Theme="callcenter", Location="Central Municipal",
-		Prologue={"A Central foi lacrada depois da evacuacao.","Onze chamadas continuam na mesa, cada uma com um horario diferente.","A gravacao mais recente tem a voz de um operador que afirma estar sozinho."},
-		Objectives={[0]="Examine os rolos e o quadro de despacho.",[1]="Encontre as tres fichas que ainda tem horario legivel.",[2]="Reordene as chamadas na mesa de gravacao.",[3]="Reproduza a fita integral e registre a origem do despacho.",[4]="A ordem da evacuacao foi emitida daqui, antes do primeiro chamado.",[5]="Capitulo concluido."},
+		Prologue={"A Central foi lacrada depois da evacuação.","Onze chamadas continuam na mesa, cada uma com um horário diferente.","A gravação mais recente tem a voz de um operador que afirma estar sozinho."},
+		Objectives={[0]="Examine os rolos e o quadro de despacho.",[1]="Encontre as três fichas que ainda têm horário legível.",[2]="Reordene as chamadas na mesa de gravação.",[3]="Reproduza a fita integral e registre a origem do despacho.",[4]="A ordem da evacuação foi emitida daqui, antes do primeiro chamado.",[5]="Capítulo concluído."},
 		Clues={
-			{title="FICHA DE DESPACHO A",text="02:41 — ramal 11 — solicitada ambulancia para o Distrito 11. A linha estava muda durante 19 segundos antes da resposta."},
-			{title="FICHA DE DESPACHO B",text="03:02 — ordem interna: preparar retirada total. Campo de autorizacao sem assinatura; carimbo aplicado 15 minutos depois."},
-			{title="FICHA DE DESPACHO C",text="03:17 — chamada recebida da sala de operacao, que estava vazia segundo o controle de acesso."},
+			{title="FICHA DE DESPACHO A",text="02:41 — ramal 11 — solicitada ambulância para o Distrito 11. A linha estava muda durante 19 segundos antes da resposta."},
+			{title="FICHA DE DESPACHO B",text="03:02 — ordem interna: preparar retirada total. Campo de autorização sem assinatura; carimbo aplicado 15 minutos depois."},
+			{title="FICHA DE DESPACHO C",text="03:17 — chamada recebida da sala de operação, que estava vazia segundo o controle de acesso."},
 		},
 		PuzzleOrder={"A","C","B"}, CoopStep=0,
 		StepLabels={A={Action="02:41",Object="Rolo 1"},B={Action="03:02",Object="Rolo 2"},C={Action="03:17",Object="Rolo 3"}},
-		Completion={title="CAPITULO 5 • CENTRAL DE CHAMADAS",text="A ordem de retirada foi registrada antes de qualquer pedido de ajuda. A fita original foi levada ao Arquivo Municipal; a copia da Central foi editada. O numero de custodia termina em 0317."},
+		Completion={title="CAPÍTULO 5 • CENTRAL DE CHAMADAS",text="A ordem de retirada foi registrada antes de qualquer pedido de ajuda. A fita original foi levada ao Arquivo Municipal; a cópia da Central foi editada. O número de custódia termina em 0317."},
 	},
 	[6] = {
 		Title="Arquivo 03:17", Theme="archive", Location="Arquivo Municipal",
-		Prologue={"O arquivo guarda o original que a Central diz ter destruido.","As estantes foram reorganizadas depois do fechamento.","Algumas caixas tem poeira por cima e marcas recentes por baixo."},
-		Objectives={[0]="Localize a sala de consulta e procure o registro de custodia.",[1]="Leia a folha de saida, o carimbo e a ficha de transferencia.",[2]="Classifique os documentos pela ordem correta.",[3]="Abra o armario de custodia e recolha a fita original.",[4]="O manifesto nao confirma a evacuacao; ele registra uma transferencia sem destino.",[5]="Capitulo concluido."},
+		Prologue={"O arquivo guarda o original que a Central diz ter destruído.","As estantes foram reorganizadas depois do fechamento.","Algumas caixas têm poeira por cima e marcas recentes por baixo."},
+		Objectives={[0]="Localize a sala de consulta e procure o registro de custódia.",[1]="Leia a folha de saída, o carimbo e a ficha de transferência.",[2]="Classifique os documentos pela ordem correta.",[3]="Abra o armário de custódia e recolha a fita original.",[4]="O manifesto não confirma a evacuação; ele registra uma transferência sem destino.",[5]="Capítulo concluído."},
 		Clues={
-			{title="FOLHA DE SAIDA",text="A lista foi impressa as 03:17. O campo 'saida confirmada' esta marcado, mas o livro de portaria nao registra veiculos no perimetro."},
-			{title="CARIMBO DE CUSTODIA",text="A matriz do carimbo foi usada antes da folha existir. O lote do carimbo pertence ao turno seguinte."},
-			{title="FICHA DE TRANSFERENCIA",text="Destino apagado. Quantidade: onze volumes. Responsavel: R. Vale. Um segundo carimbo aponta para a Linha de Servico."},
+			{title="FOLHA DE SAÍDA",text="A lista foi impressa às 03:17. O campo 'saída confirmada' está marcado, mas o livro de portaria não registra veículos no perímetro."},
+			{title="CARIMBO DE CUSTÓDIA",text="A matriz do carimbo foi usada antes da folha existir. O lote do carimbo pertence ao turno seguinte."},
+			{title="FICHA DE TRANSFERÊNCIA",text="Destino apagado. Quantidade: onze volumes. Responsável: R. Vale. Um segundo carimbo aponta para a Linha de Serviço."},
 		},
 		PuzzleOrder={"B","C","A"}, CoopStep=0,
 		StepLabels={A={Action="Impressao",Object="Etapa 1"},B={Action="Carimbo",Object="Etapa 2"},C={Action="Custodia",Object="Etapa 3"}},
-		Completion={title="CAPITULO 6 • ARQUIVO 03:17",text="A fita original nao contem uma lista de passageiros. Contem onze ramais ativos e um pedido para manter a Linha de Servico ligada. O nome R. Vale aparece novamente na subestacao."},
+		Completion={title="CAPÍTULO 6 • ARQUIVO 03:17",text="A fita original não contém uma lista de passageiros. Contém onze ramais ativos e um pedido para manter a Linha de Serviço ligada. O nome R. Vale aparece novamente na subestação."},
 	},
 	[7] = {
-		Title="Linha de Servico", Theme="tunnel", Location="Subestacao Auxiliar",
-		Prologue={"A Linha de Servico passa por baixo do perimetro evacuado.","A bateria de emergencia foi removida do suporte e deixada no tunel.","A porta atras de voces nao vai continuar aberta por muito tempo."},
-		Objectives={[0]="Encontre o suporte e as duas alcas da bateria pesada.",[1]="Levante a bateria em dupla e leve-a ao receptaculo.",[2]="Restaure os tres trechos do circuito na ordem do diagrama.",[3]="Abra a passagem de retorno e recupere o registro da subestacao.",[4]="O consumo da linha coincide com a ala de triagem.",[5]="Capitulo concluido."},
+		Title="Linha de Serviço", Theme="tunnel", Location="Subestação Auxiliar",
+		Prologue={"A Linha de Serviço passa por baixo do perímetro evacuado.","A bateria de emergência foi removida do suporte e deixada no túnel.","A porta atrás de vocês não vai continuar aberta por muito tempo."},
+		Objectives={[0]="Encontre o suporte e as duas alças da bateria pesada.",[1]="Levante a bateria em dupla e leve-a ao receptáculo.",[2]="Restaure os três trechos do circuito na ordem do diagrama.",[3]="Abra a passagem de retorno e recupere o registro da subestação.",[4]="O consumo da linha coincide com a ala de triagem.",[5]="Capítulo concluído."},
 		Clues={
-			{title="DIAGRAMA DE CABOS",text="Trecho 1 alimenta a ala de triagem. Trecho 2 retorna ao repetidor. Trecho 3 foi ligado depois da evacuacao por alguem que conhecia o circuito."},
-			{title="ETIQUETA DA BATERIA",text="Bateria de chumbo, 86 kg. Transporte com duas pessoas. A alca esquerda esta travada."},
-			{title="ORDEM DA SUBESTACAO",text="Manter ativo ate receber confirmacao da triagem. Assinatura: R. Vale. A hora foi escrita por cima: 03:17."},
+			{title="DIAGRAMA DE CABOS",text="Trecho 1 alimenta a ala de triagem. Trecho 2 retorna ao repetidor. Trecho 3 foi ligado depois da evacuação por alguém que conhecia o circuito."},
+			{title="ETIQUETA DA BATERIA",text="Bateria de chumbo, 86 kg. Transporte com duas pessoas. A alça esquerda está travada."},
+			{title="ORDEM DA SUBESTAÇÃO",text="Manter ativo até receber confirmação da triagem. Assinatura: R. Vale. A hora foi escrita por cima: 03:17."},
 		},
 		PuzzleOrder={"A","C","B"}, CoopStep=2, RequiresBattery=true,
 		StepLabels={A={Action="TRECHO 1",Object="Distribuicao"},B={Action="TRECHO 2",Object="Retorno"},C={Action="TRECHO 3",Object="Repetidor"}},
-		Completion={title="CAPITULO 7 • LINHA DE SERVICO",text="A bateria manteve um circuito vivo sob o bairro. O ramal vai para o abrigo de triagem. A ultima mensagem da subestacao pede para conferir as pulseiras antes de desligar qualquer coisa."},
+		Completion={title="CAPÍTULO 7 • LINHA DE SERVIÇO",text="A bateria manteve um circuito vivo sob o bairro. O ramal vai para o abrigo de triagem. A última mensagem da subestação pede para conferir as pulseiras antes de desligar qualquer coisa."},
 	},
 	[8] = {
-		Title="Ala de Triagem", Theme="triage", Location="Ginasio Aurora",
-		Prologue={"O ginasio foi convertido em abrigo na noite da evacuacao.","As camas estao arrumadas, mas nenhuma tem marcas de uso.","No balcao, as pulseiras foram contadas onze vezes."},
-		Objectives={[0]="Compare o mapa das camas com as pulseiras.",[1]="Procure a ficha da enfermaria e a lista de entrada.",[2]="Ligue a luz da ala e confira as tres estacoes de suprimentos.",[3]="Registre quem foi atendido e quem nunca chegou.",[4]="O endereco de transferencia leva ao Bloco 11.",[5]="Capitulo concluido."},
+		Title="Ala de Triagem", Theme="triage", Location="Ginásio Aurora",
+		Prologue={"O ginásio foi convertido em abrigo na noite da evacuação.","As camas estão arrumadas, mas nenhuma tem marcas de uso.","No balcão, as pulseiras foram contadas onze vezes."},
+		Objectives={[0]="Compare o mapa das camas com as pulseiras.",[1]="Procure a ficha da enfermaria e a lista de entrada.",[2]="Ligue a luz da ala e confira as três estações de suprimentos.",[3]="Registre quem foi atendido e quem nunca chegou.",[4]="O endereço de transferência leva ao Bloco 11.",[5]="Capítulo concluído."},
 		Clues={
 			{title="MAPA DAS CAMAS",text="Onze camas foram reservadas. A equipe marcou os leitos como ocupados, mas a contagem de cobertores permaneceu zero."},
-			{title="FICHA DA ENFERMARIA",text="Nenhum paciente registrado. A linha de observacao foi preenchida com a mesma frase: 'aguardando transporte'."},
-			{title="LISTA DE ENTRADA",text="A lista tem onze nomes, todos recebidos as 03:17. A assinatura do recebedor e R. Vale; o endereco e Bloco 11, apartamento 11."},
+			{title="FICHA DA ENFERMARIA",text="Nenhum paciente registrado. A linha de observação foi preenchida com a mesma frase: 'aguardando transporte'."},
+			{title="LISTA DE ENTRADA",text="A lista tem onze nomes, todos recebidos às 03:17. A assinatura do recebedor é R. Vale; o endereço é Bloco 11, apartamento 11."},
 		},
 		PuzzleOrder={"B","A","C"}, CoopStep=2,
-		StepLabels={A={Action="PULSEIRAS",Object="Estacao 1"},B={Action="FICHAS",Object="Estacao 2"},C={Action="SUPRIMENTOS",Object="Estacao 3"}},
-		Completion={title="CAPITULO 8 • ALA DE TRIAGEM",text="Nenhum morador chegou ao abrigo. A lista foi preenchida como se o grupo tivesse sido recebido e transferido. O proximo endereco e um bloco residencial sem registro de ocupacao."},
+		StepLabels={A={Action="PULSEIRAS",Object="Estação 1"},B={Action="FICHAS",Object="Estação 2"},C={Action="SUPRIMENTOS",Object="Estação 3"}},
+		Completion={title="CAPÍTULO 8 • ALA DE TRIAGEM",text="Nenhum morador chegou ao abrigo. A lista foi preenchida como se o grupo tivesse sido recebido e transferido. O próximo endereço e um bloco residencial sem registro de ocupação."},
 	},
 	[9] = {
-		Title="Bloco de Transferencia", Theme="apartments", Location="Bloco 11",
-		Prologue={"O Bloco 11 consta como destino da transferencia.","Os apartamentos estao mobiliados; as caixas tem etiquetas com nomes diferentes.","Todas as fechaduras foram trocadas na mesma noite."},
-		Objectives={[0]="Investigue os tres apartamentos com etiquetas de transferencia.",[1]="Combine as fichas de morador com os objetos deixados para tras.",[2]="Abra a fechadura cooperativa da sala de recebimento.",[3]="Examine o livro de entrada e registre a divergencia.",[4]="O Bloco nunca recebeu moradores; as caixas foram preparadas como cenario.",[5]="Capitulo concluido."},
+		Title="Bloco de Transferência", Theme="apartments", Location="Bloco 11",
+		Prologue={"O Bloco 11 consta como destino da transferência.","Os apartamentos estão mobiliados; as caixas têm etiquetas com nomes diferentes.","Todas as fechaduras foram trocadas na mesma noite."},
+		Objectives={[0]="Investigue os três apartamentos com etiquetas de transferência.",[1]="Combine as fichas de morador com os objetos deixados para trás.",[2]="Abra a fechadura cooperativa da sala de recebimento.",[3]="Examine o livro de entrada e registre a divergência.",[4]="O Bloco nunca recebeu moradores; as caixas foram preparadas como cenário.",[5]="Capítulo concluído."},
 		Clues={
-			{title="ETIQUETA 11-A",text="Nome: Elisa Moura. Conteudo: uma chave de casa, duas fotografias e um cartao de onibus sem validacao."},
-			{title="ETIQUETA 11-B",text="Nome: Davi Nunes. Conteudo: um relogio parado as 03:17 e uma ficha de abrigo em branco."},
-			{title="LIVRO DE ENTRADA",text="Nenhuma chave foi entregue. Todos os apartamentos aparecem ocupados antes da data oficial de transferencia."},
+			{title="ETIQUETA 11-A",text="Nome: Elisa Moura. Conteúdo: uma chave de casa, duas fotografias e um cartão de ônibus sem validação."},
+			{title="ETIQUETA 11-B",text="Nome: Davi Nunes. Conteúdo: um relógio parado às 03:17 e uma ficha de abrigo em branco."},
+			{title="LIVRO DE ENTRADA",text="Nenhuma chave foi entregue. Todos os apartamentos aparecem ocupados antes da data oficial de transferência."},
 		},
 		PuzzleOrder={"C","B","A"}, CoopStep=1,
-		StepLabels={A={Action="11-A",Object="Fechadura"},B={Action="11-B",Object="Trava"},C={Action="RECEPCAO",Object="Registro"}},
-		Completion={title="CAPITULO 9 • BLOCO DE TRANSFERENCIA",text="As caixas nunca foram entregues a moradores. Os nomes foram retirados de uma lista de chamadas, nao de um cadastro habitacional. O mesmo endereco aparece no relatorio do repetidor principal."},
+		StepLabels={A={Action="11-A",Object="Fechadura"},B={Action="11-B",Object="Trava"},C={Action="RECEPÇÃO",Object="Registro"}},
+		Completion={title="CAPÍTULO 9 • BLOCO DE TRANSFERÊNCIA",text="As caixas nunca foram entregues a moradores. Os nomes foram retirados de uma lista de chamadas, não de um cadastro habitacional. O mesmo endereço aparece no relatório do repetidor principal."},
 	},
 	[10] = {
-		Title="03:17", Theme="relay", Location="Camara do Repetidor",
-		Prologue={"A camara esta ligada desde a noite da evacuacao.","Tres valvulas controlam o retorno, mas uma delas esta quente.","O gravador recomenda uma sequencia diferente a cada repeticao."},
-		Objectives={[0]="Inspecione valvulas, relés e o gravador central.",[1]="Reconstitua a sequencia anotada no registro de manutencao.",[2]="Acione os tres controles na ordem: distribuicao, retorno, sincronismo.",[3]="Recupere a transmissao que atravessou a evacuacao.",[4]="A voz pede que alguem mantenha a linha aberta para servir de testemunha.",[5]="Capitulo concluido."},
+		Title="03:17", Theme="relay", Location="Câmara do Repetidor",
+		Prologue={"A câmara está ligada desde a noite da evacuação.","Três válvulas controlam o retorno, mas uma delas está quente.","O gravador recomenda uma sequência diferente a cada repetição."},
+		Objectives={[0]="Inspecione válvulas, relés e o gravador central.",[1]="Reconstitua a sequência anotada no registro de manutenção.",[2]="Acione os três controles na ordem: distribuição, retorno, sincronismo.",[3]="Recupere a transmissão que atravessou a evacuação.",[4]="A voz pede que alguém mantenha a linha aberta para servir de testemunha.",[5]="Capítulo concluído."},
 		Clues={
-			{title="REGISTRO DAS VALVULAS",text="Distribuicao primeiro. Retorno segundo. Sincronismo por ultimo. Se o retorno fechar antes da distribuicao, o circuito grava o som do proprio operador."},
-			{title="RELE 03",text="O rele foi trocado no dia seguinte ao fechamento do distrito. A peca retirada tem uma etiqueta com a data de hoje."},
-			{title="FITA DE SINCRONISMO",text="A mesma chamada aparece em onze ramais. Em cada copia, a voz esta mais perto do microfone, embora os aparelhos estejam em locais diferentes."},
+			{title="REGISTRO DAS VÁLVULAS",text="Distribuição primeiro. Retorno segundo. Sincronismo por último. Se o retorno fechar antes da distribuição, o circuito grava o som do próprio operador."},
+			{title="RELÉ 03",text="O relé foi trocado no dia seguinte ao fechamento do distrito. A peça retirada tem uma etiqueta com a data de hoje."},
+			{title="FITA DE SINCRONISMO",text="A mesma chamada aparece em onze ramais. Em cada cópia, a voz está mais perto do microfone, embora os aparelhos estejam em locais diferentes."},
 		},
 		PuzzleOrder={"A","B","C"}, CoopStep=2,
-		StepLabels={A={Action="DISTRIBUICAO",Object="Valvula 1"},B={Action="RETORNO",Object="Valvula 2"},C={Action="SINCRONISMO",Object="Valvula 3"}},
-		Completion={title="CAPITULO 10 • 03:17",text="O circuito repete chamadas, mas nao as cria. A origem esta no transmissor municipal. A pessoa que alterou os registros conhece a voz que aparece nas fitas."},
+		StepLabels={A={Action="DISTRIBUIÇÃO",Object="Válvula 1"},B={Action="RETORNO",Object="Válvula 2"},C={Action="SINCRONISMO",Object="Válvula 3"}},
+		Completion={title="CAPÍTULO 10 • 03:17",text="O circuito repete chamadas, mas não as cria. A origem está no transmissor municipal. A pessoa que alterou os registros conhece a voz que aparece nas fitas."},
 	},
 	[11] = {
 		Title="A Testemunha", Theme="radio", Location="Torre Municipal",
-		Prologue={"A torre foi desativada, mas a antena ainda transmite.","A sala de gravacao guarda o rolo integral e um microfone ligado.","Uma pessoa responde pelo radio usando o nome R. Vale."},
-		Objectives={[0]="Encontre o rolo integral e o painel de transmissao.",[1]="Compare a fita fisica com o sinal ao vivo.",[2]="Sincronize o gravador e mantenha a transmissao protegida em dupla.",[3]="Ouça o depoimento completo e registre a identidade da testemunha.",[4]="R. Vale afirma que recebeu uma chamada de dentro do distrito.",[5]="Capitulo concluido."},
+		Prologue={"A torre foi desativada, mas a antena ainda transmite.","A sala de gravação guarda o rolo integral e um microfone ligado.","Uma pessoa responde pelo rádio usando o nome R. Vale."},
+		Objectives={[0]="Encontre o rolo integral e o painel de transmissão.",[1]="Compare a fita física com o sinal ao vivo.",[2]="Sincronize o gravador e mantenha a transmissão protegida em dupla.",[3]="Ouça o depoimento completo e registre a identidade da testemunha.",[4]="R. Vale afirma que recebeu uma chamada de dentro do distrito.",[5]="Capítulo concluído."},
 		Clues={
-			{title="ROLO INTEGRAL",text="A fita tem onze canais separados. O canal 11 contem uma pessoa pedindo ajuda; os outros dez repetem a resposta do operador."},
-			{title="SINAL AO VIVO",text="A voz identifica R. Vale como operadora da noite da evacuacao. Ela diz que a ordem chegou pelo canal de emergencia, sem origem registrada."},
-			{title="ANOTACAO DA TESTEMUNHA",text="A operadora escreveu: 'Eu mudei o relatorio porque a voz usou meu nome. Nao sei se veio da linha ou de dentro da sala.'"},
+			{title="ROLO INTEGRAL",text="A fita tem onze canais separados. O canal 11 contém uma pessoa pedindo ajuda; os outros dez repetem a resposta do operador."},
+			{title="SINAL AO VIVO",text="A voz identifica R. Vale como operadora da noite da evacuação. Ela diz que a ordem chegou pelo canal de emergência, sem origem registrada."},
+			{title="ANOTAÇÃO DA TESTEMUNHA",text="A operadora escreveu: 'Eu mudei o relatório porque a voz usou meu nome. Não sei se veio da linha ou de dentro da sala.'"},
 		},
 		PuzzleOrder={"B","C","A"}, CoopStep=2,
 		StepLabels={A={Action="FITA",Object="Gravador"},B={Action="ANTENA",Object="Sinal ao vivo"},C={Action="MESA",Object="Transmissao"}},
-		Completion={title="CAPITULO 11 • A TESTEMUNHA",text="R. Vale confirma que adulterou a ordem de saida, mas nega ter criado a chamada. A fita original registra um detalhe que ela nao contou: uma segunda respiração no microfone, antes de qualquer voz."},
+		Completion={title="CAPÍTULO 11 • A TESTEMUNHA",text="R. Vale confirma que adulterou a ordem de saída, mas nega ter criado a chamada. A fita original registra um detalhe que ela não contou: uma segunda respiração no microfone, antes de qualquer voz."},
 	},
 	[12] = {
-		Title="A Ultima Chamada", Theme="aurora", Location="Edificio Aurora",
-		Prologue={"A equipe retorna ao Aurora, onde tudo comecou.","O repetidor principal espera no antigo quarto de manutencao.","A chamada pede dois nomes; a testemunha diz para nao responder."},
-		Objectives={[0]="Volte ao corredor do 304 e localize a caixa do repetidor.",[1]="Use as provas reunidas para abrir o painel final.",[2]="Feche o circuito em dupla enquanto o Ouvinte percorre o andar.",[3]="Escolha: transmita a prova ou corte a linha.",[4]="A decisao altera o destino da chamada e o epilogo.",[5]="Campanha concluida."},
+		Title="A Última Chamada", Theme="aurora", Location="Edifício Aurora",
+		Prologue={"A equipe retorna ao Aurora, onde tudo começou.","O repetidor principal espera no antigo quarto de manutenção.","A chamada pede dois nomes; a testemunha diz para não responder."},
+		Objectives={[0]="Volte ao corredor do 304 e localize a caixa do repetidor.",[1]="Use as provas reunidas para abrir o painel final.",[2]="Feche o circuito em dupla enquanto o Ouvinte percorre o andar.",[3]="Escolha: transmita a prova ou corte a linha.",[4]="A decisão altera o destino da chamada e o epílogo.",[5]="Campanha concluída."},
 		Clues={
-			{title="FIO DO 304",text="O fio novo atras do espelho nao alimentava o apartamento. Ele levava a uma caixa instalada no dia da evacuacao."},
-			{title="REGISTRO DE R. VALE",text="A testemunha escreveu que a chamada pedia dois nomes. O formulario de despacho foi alterado depois que ela respondeu."},
-			{title="ULTIMA TRANSCRICAO",text="A fita contem o primeiro chamado e o ultimo ao mesmo tempo. A voz do outro lado diz: 'Nao desliguem. Ainda falta alguem atender.'"},
+			{title="FIO DO 304",text="O fio novo atrás do espelho não alimentava o apartamento. Ele levava a uma caixa instalada no dia da evacuação."},
+			{title="REGISTRO DE R. VALE",text="A testemunha escreveu que a chamada pedia dois nomes. O formulário de despacho foi alterado depois que ela respondeu."},
+			{title="ÚLTIMA TRANSCRIÇÃO",text="A fita contém o primeiro chamado e o último ao mesmo tempo. A voz do outro lado diz: 'Não desliguem. Ainda falta alguém atender.'"},
 		},
 		PuzzleOrder={"C","A","B"}, CoopStep=2, FinalChoice=true,
 		StepLabels={A={Action="ABRIR PAINEL",Object="Repetidor"},B={Action="RETORNO",Object="Circuito"},C={Action="SINCRONIZAR",Object="Linha"}},
 		Endings={
-			Transmit={title="FINAL • A PROVA",text="A equipe transmite a fita integral para os canais de emergencia. O Distrito 11 deixa de ser um rumor: onze chamadas, onze registros falsos e uma voz que ainda responde. A ultima transmissao termina com o indicativo de voces."},
-			Cut={title="FINAL • LINHA CORTADA",text="A equipe corta o repetidor e interrompe o retorno. O silencio dura ate o amanhecer. No relatorio, os nomes dos tecnicos aparecem como a ultima chamada recebida, mas sem horario de encerramento."},
+			Transmit={title="FINAL • A PROVA",text="A equipe transmite a fita integral para os canais de emergência. O Distrito 11 deixa de ser um rumor: onze chamadas, onze registros falsos e uma voz que ainda responde. A última transmissão termina com o indicativo de vocês."},
+			Cut={title="FINAL • LINHA CORTADA",text="A equipe corta o repetidor e interrompe o retorno. O silêncio dura até o amanhecer. No relatório, os nomes dos técnicos aparecem como a última chamada recebida, mas sem horário de encerramento."},
 		},
-		Completion={title="CAMPANHA CONCLUIDA",text="A ultima chamada foi atendida. O que aconteceu com o Distrito 11 agora depende da decisao da equipe."},
+		Completion={title="CAMPANHA CONCLUÍDA",text="A última chamada foi atendida. O que aconteceu com o Distrito 11 agora depende da decisão da equipe."},
 	},
 }
 
@@ -280,7 +280,7 @@ return MonetizationConfig
           <string name="Source"><![CDATA[local Story = {}
 
 Story.Title = "LINHA 11 — A ÚLTIMA CHAMADA"
-Story.Version = "Roblox Prototype 0.1.0"
+Story.Version = "1.0"
 Story.Code = "0317"
 
 Story.Prologue = {
@@ -328,7 +328,7 @@ Story.Objectives = {
 	[2] = "Use a chave para abrir a gaveta de fusíveis no apartamento 301.",
 	[3] = "Recolha os três fragmentos da senha nos apartamentos 301, 302 e 305.",
 	[4] = "Instale o fusível no quadro do corredor.",
-	[5] = "Digite 0317 no teclado do arquivo 303.",
+	[5] = "Junte os três fragmentos e digite a senha no teclado do arquivo 303.",
 	[6] = "Recupere a fita e verifique o telefone do apartamento 304.",
 	[7] = "Encontre o pé de cabra no 304 e abra a sala do repetidor.",
 	[8] = "Ative as duas alavancas do repetidor. Fiquem juntos e em silêncio.",
@@ -759,6 +759,9 @@ local function build()
 	-- Corredor com aberturas para escada, elevador e sala eletrica.
 	wall(world,"Parede_Norte_A",2.5,-6.8,5,.55); wall(world,"Parede_Norte_B",44,-6.8,48,.55); wall(world,"Parede_Norte_C",99,-6.8,18,.55)
 	wall(world,"Parede_Sul_A",19,6.8,38,.55); wall(world,"Parede_Sul_B",79,6.8,58,.55)
+	-- Fecha os vãos ao lado das portas do elevador: só se entra na cabine abrindo as portas.
+	wall(world,"Batente_Elevador_A",39.5,6.8,3,.55); wall(world,"Batente_Elevador_B",48.5,6.8,3,.55)
+	part(world,"Verga_Elevador",Vector3.new(6,4.7,.55),v(44,9.35,6.8),Color3.fromRGB(98,92,81),Enum.Material.Plaster)
 	techDoor=part(world,"Porta_Sala_Tecnica",Vector3.new(20,9.4,.35),v(79,4.7,-6.8),Color3.fromRGB(62,68,68),Enum.Material.Metal)
 	techDoorClosed=techDoor.CFrame
 	for _,x in ipairs({8,31,55,82,101}) do lamp(world,"Luminaria_"..x,x,0) end
@@ -777,10 +780,10 @@ local function build()
 	doorA=part(world,"Porta_Elevador_A",Vector3.new(3,7,.28),v(42.5,3.5,6.6),Color3.fromRGB(76,78,75),Enum.Material.Metal)
 	doorB=part(world,"Porta_Elevador_B",Vector3.new(3,7,.28),v(45.5,3.5,6.6),Color3.fromRGB(76,78,75),Enum.Material.Metal)
 	closedA,closedB=doorA.CFrame,doorB.CFrame
-	act(world,"Painel_Elevador",44,2.6,5.3,"C3_ElevatorCall","Abrir","Elevador de servico",.5)
+	act(world,"Painel_Elevador",44,2.6,5.3,"C3_ElevatorCall","Abrir","Elevador de serviço",.5)
 	act(world,"Gravador",44,2.2,17,"C3_Recorder","Examinar","Gravador no piso",.55)
 	part(world,"Gravador_Fita",Vector3.new(1.8,.4,1.2),v(44,.42,17),Color3.fromRGB(31,32,31),Enum.Material.Metal,0,false)
-	sign(world,"Placa_Elevador",44,8,6.4,"ELEVADOR / SERVICO",Vector3.new(5,.8,.15))
+	sign(world,"Placa_Elevador",44,8,6.4,"ELEVADOR / SERVIÇO",Vector3.new(5,.8,.15))
 	-- Sala tecnica com dois pontos do circuito separados para a dupla.
 	part(world,"Piso_Sala_Tecnica",Vector3.new(31,.45,19),v(78,-.05,-17),Color3.fromRGB(55,52,47),Enum.Material.Concrete)
 	part(world,"Teto_Sala_Tecnica",Vector3.new(31,.5,19),v(78,11.3,-17),Color3.fromRGB(31,32,31),Enum.Material.Concrete)
@@ -799,13 +802,13 @@ local function build()
 	-- Telefone, armario e documentos da investigacao.
 	part(world,"Mesa_Telefone",Vector3.new(3.2,.22,1.8),v(8,2.2,2.8),Color3.fromRGB(79,61,45),Enum.Material.WoodPlanks)
 	part(world,"Telefone",Vector3.new(1.4,.48,1),v(8,2.55,2.8),Color3.fromRGB(31,32,31),Enum.Material.Metal)
-	act(world,"Atender_Telefone",8,3.2,2.8,"C3_Phone","Atender","Telefone de servico",.6)
+	act(world,"Atender_Telefone",8,3.2,2.8,"C3_Phone","Atender","Telefone de serviço",.6)
 	act(world,"Registrar",14,2.3,4.5,"C3_Report","Registrar","Caderno de campo",.5)
 	part(world,"Armario_Ferramentas",Vector3.new(2.5,5,1.7),v(25,2.5,3.9),Color3.fromRGB(71,77,75),Enum.Material.Metal)
-	act(world,"Chave_Tecnica",25,3.3,2.6,"C3_Key","Abrir armario","Armario de manutencao",.75)
+	act(world,"Chave_Tecnica",25,3.3,2.6,"C3_Key","Abrir armário","Armário de manutenção",.75)
 	part(world,"Balcao_Livro",Vector3.new(3.4,.3,2.1),v(31,2.1,-2.7),Color3.fromRGB(79,61,45),Enum.Material.WoodPlanks)
 	doc(world,"Livro_Elevador",31,2.48,-2.7,"LIVRO DO ELEVADOR","ORDEM 11-B","C3_Log")
-	doc(world,"Aviso_Rota",17,2.55,-2.5,"AVISO DE MANUTENCAO","RETORNO A + B","C3_Route")
+	doc(world,"Aviso_Rota",17,2.55,-2.5,"AVISO DE MANUTENÇÃO","RETORNO A + B","C3_Route")
 	local s=Instance.new("SpawnLocation"); s.Name="InicioCapitulo03"; s.Size=Vector3.new(4,.6,4); s.Position=v(4,.1,0)
 	s.Anchored=true; s.Transparency=1; s.CanCollide=false; s.Neutral=true; s.Duration=0; s.Parent=world; spawn=s
 	M.SetPower(false); M.SetElevatorOpen(false); M.SetTechDoorOpen(false); return world,spawn
@@ -849,6 +852,7 @@ return M
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MarketplaceService = game:GetService("MarketplaceService")
 local RunService = game:GetService("RunService")
+local DataStoreService = game:GetService("DataStoreService")
 
 local Story = require(ReplicatedStorage.Shared.Story)
 local Chapter2Story = require(ReplicatedStorage.Shared.Chapter2Story)
@@ -874,44 +878,64 @@ local chapter2World, chapter2Spawn = Chapter2Map.Build()
 local chapter3World, chapter3Spawn = Chapter3Map.Build()
 local laterWorlds, laterSpawns, laterPrompts = LaterChapterMap.BuildAll()
 
-local mission = {
-	started = false,
-	key = false,
-	fuse = false,
-	power = false,
-	clues = { Clue03 = false, Clue1 = false, Clue7 = false },
-	archiveOpen = false,
-	tape = false,
-	phone = false,
-	crowbar = false,
-	relayOpen = false,
-	relay = { A = nil, B = nil },
-	ending = nil,
-	stage = 0,
-}
-local chapter2Mission = {
-	started = false,
-	phone = false,
-	photo = false,
-	serviceKey = false,
-	wiring = false,
-	power = false,
-	jacks = { A = nil, B = nil },
-	jacksConnected = false,
-	traced = false,
-	complete = false,
-	stage = 0,
-}
-local chapter3Mission = {
-	started=false, phone=false, log=false, route=false, controlKey=false,
-	switches={A=nil,B=nil}, power=false, elevatorOpened=false, recorder=false, complete=false, stage=0,
-}
+-- Estado de cada capítulo. As funções "novo..." devolvem o estado zerado, usado
+-- no começo e toda vez que um capítulo é reiniciado para outra equipe.
+local function newMission()
+	return {
+		started = false,
+		key = false,
+		fuse = false,
+		power = false,
+		clues = { Clue03 = false, Clue1 = false, Clue7 = false },
+		archiveOpen = false,
+		tape = false,
+		phone = false,
+		crowbar = false,
+		relayOpen = false,
+		relay = { A = nil, B = nil },
+		ending = nil,
+		stage = 0,
+	}
+end
+local function newChapter2Mission()
+	return {
+		started = false,
+		phone = false,
+		photo = false,
+		serviceKey = false,
+		wiring = false,
+		power = false,
+		jacks = { A = nil, B = nil },
+		jacksConnected = false,
+		traced = false,
+		complete = false,
+		stage = 0,
+	}
+end
+local function newChapter3Mission()
+	return {
+		started=false, phone=false, log=false, route=false, controlKey=false,
+		switches={A=nil,B=nil}, power=false, elevatorOpened=false, recorder=false, complete=false, stage=0,
+	}
+end
+local function newLaterMission()
+	return {started=false,found={},puzzleStep=0,lastPuzzlePlayer=nil,puzzleComplete=false,complete=false,choice=nil,batteryLift={A=nil,B=nil},batteryRaised=false,batteryMoved=false,stage=0}
+end
+local mission = newMission()
+local chapter2Mission = newChapter2Mission()
+local chapter3Mission = newChapter3Mission()
 local laterMissions, laterAis = {}, {}
 for chapterId=4,12 do
-	laterMissions[chapterId]={started=false,found={},puzzleStep=0,lastPuzzlePlayer=nil,puzzleComplete=false,complete=false,choice=nil,batteryLift={A=nil,B=nil},batteryRaised=false,batteryMoved=false}
+	laterMissions[chapterId]=newLaterMission()
 end
 local ensureLaterAI
+local connectPromptList
+local LAST_CHAPTER = 12
+-- Capítulo em andamento neste servidor (nil = ninguém jogando).
 local activeChapterId = nil
+-- Capítulos que já foram jogados neste servidor e precisam ser remontados antes de recomeçar.
+local usedChapters = {}
+local progressCache = {}
 local remoteCooldowns = {}
 local noiseCooldowns = {}
 local purchaseCooldowns = {}
@@ -926,21 +950,40 @@ local function startedPlayers()
 	return result
 end
 
+-- Texto do objetivo dos capítulos 4 a 12, conforme o que a equipe já fez.
+local function laterObjective(chapterId, m, foundCount)
+	local info = LaterChapterStory.Get(chapterId)
+	local objectives = info.Objectives
+	if m.complete then
+		return objectives[5]
+	elseif m.puzzleComplete then
+		return info.FinalChoice and objectives[3] or "Registrem a descoberta no caderno de campo, no fim da área."
+	elseif foundCount >= 3 then
+		if info.RequiresBattery and not m.batteryMoved then
+			return objectives[1]
+		end
+		return objectives[2]
+	elseif foundCount == 0 then
+		return "Examinem os três registros deixados nas mesas."
+	end
+	return string.format("Examinem os registros das mesas (%d de 3).", foundCount)
+end
+
 local function makeSnapshot()
 	if activeChapterId and activeChapterId >= 4 then
 		local m=laterMissions[activeChapterId]
 		local foundCount=0
 		for _,found in pairs(m.found) do if found then foundCount+=1 end end
-		return {chapterId=activeChapterId,stage=m.stage,objective=LaterChapterStory.Get(activeChapterId).Objectives[m.stage],foundCount=foundCount,puzzleStep=m.puzzleStep,puzzleComplete=m.puzzleComplete,batteryRaised=m.batteryRaised,batteryMoved=m.batteryMoved,choice=m.choice,complete=m.complete}
+		return {chapterId=activeChapterId,stage=m.stage,objective=laterObjective(activeChapterId,m,foundCount),foundCount=foundCount,puzzleStep=m.puzzleStep,puzzleComplete=m.puzzleComplete,batteryRaised=m.batteryRaised,batteryMoved=m.batteryMoved,choice=m.choice,complete=m.complete}
 	end
 	if activeChapterId == 3 then
-		return {chapterId=3,stage=chapter3Mission.stage,objective=Chapter3Story.GetObjective(chapter3Mission.stage),phone=chapter3Mission.phone,log=chapter3Mission.log,route=chapter3Mission.route,controlKey=chapter3Mission.controlKey,breakerA=chapter3Mission.switches.A~=nil,breakerB=chapter3Mission.switches.B~=nil,power=chapter3Mission.power,elevatorOpened=chapter3Mission.elevatorOpened,recorder=chapter3Mission.recorder,complete=chapter3Mission.complete}
+		return {chapterId=3,stage=chapter3Mission.stage,objective=Chapter3Story.GetObjective(math.max(chapter3Mission.stage-1,0)),phone=chapter3Mission.phone,log=chapter3Mission.log,route=chapter3Mission.route,controlKey=chapter3Mission.controlKey,breakerA=chapter3Mission.switches.A~=nil,breakerB=chapter3Mission.switches.B~=nil,power=chapter3Mission.power,elevatorOpened=chapter3Mission.elevatorOpened,recorder=chapter3Mission.recorder,complete=chapter3Mission.complete}
 	end
 	if activeChapterId == 2 then
 		return {
 			chapterId = 2,
 			stage = chapter2Mission.stage,
-			objective = Chapter2Story.GetObjective(chapter2Mission.stage),
+			objective = Chapter2Story.GetObjective(math.max(chapter2Mission.stage - 1, 0)),
 			phone = chapter2Mission.phone,
 			photo = chapter2Mission.photo,
 			serviceKey = chapter2Mission.serviceKey,
@@ -1097,46 +1140,6 @@ local function teleportToStart(player, requestedSpawn)
 	end
 end
 
-local function startPlayer(player, requestedChapterId)
-	local chapterId = typeof(requestedChapterId) == "number" and math.floor(requestedChapterId) or 1
-	if chapterId < 1 or chapterId > 12 then
-		tell(player, "Esse capítulo ainda está em desenvolvimento.", "info")
-		return
-	end
-	if activeChapterId and activeChapterId ~= chapterId then
-		tell(player, "A sessão já começou em outro capítulo. Escolham o mesmo capítulo para jogar juntos.", "error")
-		return
-	end
-	activeChapterId = chapterId
-	if chapterId>=4 then ensureLaterAI(chapterId); laterMissions[chapterId].started=true
-	elseif chapterId==2 then chapter2Mission.started=true
-	elseif chapterId==3 then chapter3Mission.started=true
-	else mission.started=true end
-	player:SetAttribute("Linha11Chapter", chapterId)
-	player:SetAttribute("Linha11Started", true)
-	player:SetAttribute("Linha11Hidden", false)
-	player:SetAttribute("Linha11IntroPending", true)
-	updateStage()
-	local character = player.Character
-	if character then
-		local laterSpawn=chapterId>=4 and laterSpawns[chapterId] or nil
-		local chapterSpawn=chapterId==2 and chapter2Spawn or (chapterId==3 and chapter3Spawn or (laterSpawn or spawnPoint))
-		teleportToStart(player,chapterSpawn)
-		local humanoid = character:FindFirstChildOfClass("Humanoid")
-		if humanoid then
-			humanoid.WalkSpeed = 0
-			humanoid.JumpPower = 0
-		end
-	end
-	send(player, "StartGame", {
-		chapterId = chapterId,
-		chapterTitle=chapterId==2 and Chapter2Story.Title or (chapterId==3 and Chapter3Story.Title or (chapterId>=4 and LaterChapterStory.Get(chapterId).Title or "Distrito 11 • Andar 3")),
-		prologue=chapterId==2 and Chapter2Story.Prologue or (chapterId==3 and Chapter3Story.Prologue or (chapterId>=4 and LaterChapterStory.Get(chapterId).Prologue or Story.Prologue)),
-		state = makeSnapshot(),
-	})
-	broadcast("MissionState", makeSnapshot())
-end
-
 local function setCharacterVisibility(character, hidden)
 	for _, item in ipairs(character:GetDescendants()) do
 		if item:IsA("BasePart") and item.Name ~= "HumanoidRootPart" then
@@ -1167,26 +1170,275 @@ local function handleCatch(player)
 	send(player, "Caught", { text = "O Ouvinte encontrou você. A equipe recuou para a entrada; a investigação continua." })
 end
 
-local ai = ListenerAI.new(world, function()
+local function allPlayers()
 	return Players:GetPlayers()
-end, handleCatch)
-local ai2 = ListenerAI.new(chapter2World, function()
-	return Players:GetPlayers()
-end, handleCatch, {
-	minX = 162,
-	maxX = 268,
-	pingMinX = 154,
-	pingMaxX = 276,
-	startX = 164,
-	z = 0,
-})
-local ai3=ListenerAI.new(chapter3World,function() return Players:GetPlayers() end,handleCatch,
-	{minX=303,maxX=404,pingMinX=292,pingMaxX=410,startX=397,z=0})
+end
+local AI2_CONFIG = { minX = 162, maxX = 268, pingMinX = 154, pingMaxX = 276, startX = 164, z = 0 }
+local AI3_CONFIG = { minX = 303, maxX = 404, pingMinX = 292, pingMaxX = 410, startX = 397, z = 0 }
+local ai = ListenerAI.new(world, allPlayers, handleCatch)
+local ai2 = ListenerAI.new(chapter2World, allPlayers, handleCatch, AI2_CONFIG)
+local ai3 = ListenerAI.new(chapter3World, allPlayers, handleCatch, AI3_CONFIG)
 ensureLaterAI=function(chapterId)
 	if not laterAis[chapterId] then
-		laterAis[chapterId]=ListenerAI.new(laterWorlds[chapterId],function() return Players:GetPlayers() end,handleCatch,LaterChapterMap.GetAIConfig(chapterId))
+		laterAis[chapterId]=ListenerAI.new(laterWorlds[chapterId],allPlayers,handleCatch,LaterChapterMap.GetAIConfig(chapterId))
 	end
 	return laterAis[chapterId]
+end
+
+-- Remonta um capítulo do zero: mapa, portas, luzes, criatura e progresso.
+local function resetChapter(chapterId)
+	if chapterId == 1 then
+		ai:Destroy()
+		world, spawnPoint = MapBuilder.Build()
+		MapBuilder.SetPower(false)
+		mission = newMission()
+		ai = ListenerAI.new(world, allPlayers, handleCatch)
+		connectPromptList(MapBuilder.GetPrompts())
+	elseif chapterId == 2 then
+		ai2:Destroy()
+		chapter2World, chapter2Spawn = Chapter2Map.Build()
+		chapter2Mission = newChapter2Mission()
+		ai2 = ListenerAI.new(chapter2World, allPlayers, handleCatch, AI2_CONFIG)
+		connectPromptList(Chapter2Map.GetPrompts())
+	elseif chapterId == 3 then
+		ai3:Destroy()
+		chapter3World, chapter3Spawn = Chapter3Map.Build()
+		chapter3Mission = newChapter3Mission()
+		ai3 = ListenerAI.new(chapter3World, allPlayers, handleCatch, AI3_CONFIG)
+		connectPromptList(Chapter3Map.GetPrompts())
+	else
+		if laterAis[chapterId] then
+			laterAis[chapterId]:Destroy()
+			laterAis[chapterId] = nil
+		end
+		local newWorld, newSpawn, newPrompts = LaterChapterMap.Rebuild(chapterId)
+		laterWorlds[chapterId] = newWorld
+		laterSpawns[chapterId] = newSpawn
+		laterMissions[chapterId] = newLaterMission()
+		connectPromptList(newPrompts)
+	end
+	usedChapters[chapterId] = nil
+end
+
+local function chapterSpawn(chapterId)
+	if chapterId == 2 then return chapter2Spawn end
+	if chapterId == 3 then return chapter3Spawn end
+	if chapterId >= 4 then return laterSpawns[chapterId] or spawnPoint end
+	return spawnPoint
+end
+
+local function chapterTitle(chapterId)
+	if chapterId == 2 then return Chapter2Story.Title end
+	if chapterId == 3 then return Chapter3Story.Title end
+	if chapterId >= 4 then return LaterChapterStory.Get(chapterId).Title end
+	return "O Primeiro Chamado"
+end
+
+local function chapterPrologue(chapterId)
+	if chapterId == 2 then return Chapter2Story.Prologue end
+	if chapterId == 3 then return Chapter3Story.Prologue end
+	if chapterId >= 4 then return LaterChapterStory.Get(chapterId).Prologue end
+	return Story.Prologue
+end
+
+local function isChapterComplete(chapterId)
+	if chapterId == 1 then return mission.ending ~= nil end
+	if chapterId == 2 then return chapter2Mission.complete end
+	if chapterId == 3 then return chapter3Mission.complete end
+	return laterMissions[chapterId] ~= nil and laterMissions[chapterId].complete
+end
+
+-- Tira o jogador do esconderijo sem depender do guarda-roupa (troca de capítulo, saída, renascimento).
+local function unhide(player)
+	if not player:GetAttribute("Linha11Hidden") then
+		return
+	end
+	player:SetAttribute("Linha11Hidden", false)
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if root then
+		root.Anchored = false
+	end
+	if character then
+		setCharacterVisibility(character, false)
+	end
+end
+
+local function startPlayer(player, requestedChapterId)
+	local chapterId = typeof(requestedChapterId) == "number" and math.floor(requestedChapterId) or 1
+	if chapterId < 1 or chapterId > LAST_CHAPTER then
+		tell(player, "Esse capítulo não existe.", "info")
+		return
+	end
+	if activeChapterId and #startedPlayers() == 0 then
+		activeChapterId = nil
+	end
+	if activeChapterId and activeChapterId ~= chapterId then
+		-- Já existe uma equipe jogando neste servidor: o jogador entra no capítulo dela.
+		chapterId = activeChapterId
+		tell(player, "Sua equipe já está no capítulo " .. chapterId .. ". Você entrou junto com ela.", "info")
+	end
+	if not activeChapterId then
+		if usedChapters[chapterId] then
+			resetChapter(chapterId)
+		end
+		usedChapters[chapterId] = true
+		activeChapterId = chapterId
+	end
+	if chapterId>=4 then ensureLaterAI(chapterId); laterMissions[chapterId].started=true
+	elseif chapterId==2 then chapter2Mission.started=true
+	elseif chapterId==3 then chapter3Mission.started=true
+	else mission.started=true end
+	unhide(player)
+	player:SetAttribute("Linha11Chapter", chapterId)
+	player:SetAttribute("Linha11Started", true)
+	player:SetAttribute("Linha11IntroPending", true)
+	updateStage()
+	local character = player.Character
+	if character then
+		teleportToStart(player, chapterSpawn(chapterId))
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.WalkSpeed = 0
+			humanoid.JumpPower = 0
+		end
+	end
+	send(player, "StartGame", {
+		chapterId = chapterId,
+		chapterTitle = string.format("CAPÍTULO %d  •  %s", chapterId, chapterTitle(chapterId)),
+		prologue = chapterPrologue(chapterId),
+		state = makeSnapshot(),
+	})
+	broadcast("MissionState", makeSnapshot())
+end
+
+-- O jogador volta ao menu. Se era o último da equipe, o servidor fica livre para outro capítulo.
+local function leaveSession(player)
+	if not player:GetAttribute("Linha11Started") then
+		return
+	end
+	unhide(player)
+	player:SetAttribute("Linha11Started", false)
+	player:SetAttribute("Linha11IntroPending", false)
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		humanoid.WalkSpeed = 16
+		humanoid.JumpPower = 42
+	end
+	if #startedPlayers() == 0 then
+		activeChapterId = nil
+	end
+end
+
+-- Leva a equipe inteira para o capítulo seguinte, depois de concluir o atual.
+local function advanceChapter(player)
+	local current = activeChapterId
+	if not current or not player:GetAttribute("Linha11Started") then
+		return
+	end
+	if not isChapterComplete(current) then
+		tell(player, "Concluam o capítulo atual antes de avançar.", "objective")
+		return
+	end
+	if current >= LAST_CHAPTER then
+		leaveSession(player)
+		return
+	end
+	local team = startedPlayers()
+	for _, member in ipairs(team) do
+		member:SetAttribute("Linha11Started", false)
+	end
+	activeChapterId = nil
+	for _, member in ipairs(team) do
+		startPlayer(member, current + 1)
+	end
+end
+
+-- Quem a equipe deve esperar numa etapa de dupla: outro jogador da sessão que esteja por perto.
+-- Assim um parceiro parado longe (ou que saiu do teclado) não trava quem está jogando.
+local function partnerNearby(player)
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return false
+	end
+	for _, other in ipairs(startedPlayers()) do
+		if other ~= player then
+			local otherRoot = other.Character and other.Character:FindFirstChild("HumanoidRootPart")
+			if otherRoot and (otherRoot.Position - root.Position).Magnitude <= 70 then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+-- Progresso salvo: o maior capítulo que o jogador já concluiu.
+local progressStore = nil
+do
+	local ok, store = pcall(function()
+		return DataStoreService:GetDataStore("Linha11Progresso_v1")
+	end)
+	if ok then
+		progressStore = store
+	end
+end
+
+local function loadProgress(player)
+	player:SetAttribute("Linha11Progress", 0)
+	if not progressStore then
+		return
+	end
+	task.spawn(function()
+		local ok, value = pcall(function()
+			return progressStore:GetAsync("u_" .. player.UserId)
+		end)
+		if ok and typeof(value) == "number" and player.Parent == Players then
+			local known = player:GetAttribute("Linha11Progress") or 0
+			player:SetAttribute("Linha11Progress", math.clamp(math.max(known, math.floor(value)), 0, LAST_CHAPTER))
+		end
+	end)
+end
+
+local function saveProgress(player, chapterId)
+	local known = player:GetAttribute("Linha11Progress") or 0
+	if chapterId <= known then
+		return
+	end
+	player:SetAttribute("Linha11Progress", chapterId)
+	if not progressStore then
+		return
+	end
+	local userId = player.UserId
+	task.spawn(function()
+		local ok, err = pcall(function()
+			progressStore:UpdateAsync("u_" .. userId, function(old)
+				if typeof(old) == "number" and old >= chapterId then
+					return nil
+				end
+				return chapterId
+			end)
+		end)
+		if not ok then
+			warn("Linha 11: não foi possível salvar o progresso:", err)
+		end
+	end)
+end
+
+-- Encerra o capítulo para a equipe: mostra o texto final, salva o progresso e
+-- informa qual é o próximo capítulo (se houver).
+local function finishChapter(chapterId, content, eventName)
+	local hasNext = chapterId < LAST_CHAPTER
+	local payload = {
+		title = content.title,
+		text = content.text,
+		chapterId = chapterId,
+		nextChapterId = hasNext and chapterId + 1 or nil,
+		nextTitle = hasNext and chapterTitle(chapterId + 1) or nil,
+	}
+	for _, member in ipairs(startedPlayers()) do
+		saveProgress(member, chapterId)
+	end
+	broadcast(eventName or "ChapterComplete", payload)
 end
 
 local function setPlayerPass(player, passKey, owned)
@@ -1262,9 +1514,12 @@ local function setupPlayer(player)
 	player:SetAttribute("Linha11Hidden", false)
 	player:SetAttribute("Linha11IntroPending", false)
 	loadPassOwnership(player)
+	loadProgress(player)
 	player.CharacterAdded:Connect(function(character)
 		character:WaitForChild("HumanoidRootPart", 8)
 		task.wait(0.15)
+		-- quem morreu escondido volta visível e solto
+		player:SetAttribute("Linha11Hidden", false)
 		if player:GetAttribute("Linha11Started") then
 			teleportToStart(player)
 			if player:GetAttribute("Linha11IntroPending") then
@@ -1341,7 +1596,20 @@ remote.OnServerEvent:Connect(function(player, action, value)
 	remoteCooldowns[player] = now
 
 	if action == "Start" then
+		if player:GetAttribute("Linha11Started") then
+			return
+		end
 		startPlayer(player, value)
+		return
+	end
+
+	if action == "NextChapter" then
+		advanceChapter(player)
+		return
+	end
+
+	if action == "Leave" then
+		leaveSession(player)
 		return
 	end
 
@@ -1431,7 +1699,7 @@ remote.OnServerEvent:Connect(function(player, action, value)
 		end
 		mission.ending = value
 		local ending = Story.Endings[value]
-		broadcast("Ending", ending)
+		finishChapter(1, ending, "Ending")
 		publishState()
 	end
 end)
@@ -1523,8 +1791,7 @@ local function handleChapter2Prompt(player, prompt, id)
 			tell(player, "Esse ponto já está conectado. Ativem o outro lado.", "info")
 			return
 		end
-		local activeCount = #startedPlayers()
-		if activeCount >= 2 and otherJack and otherJack.player == player then
+		if partnerNearby(player) and otherJack and otherJack.player == player then
 			tell(player, "O outro ponto precisa ser acionado pelo parceiro.", "objective")
 			return
 		end
@@ -1554,7 +1821,7 @@ local function handleChapter2Prompt(player, prompt, id)
 		elseif not chapter2Mission.complete then
 			chapter2Mission.complete = true
 			publishState()
-			broadcast("ChapterComplete", Chapter2Story.Completion)
+			finishChapter(2, Chapter2Story.Completion)
 		else
 			tell(player, "O registro já foi confirmado.", "info")
 		end
@@ -1570,38 +1837,39 @@ local function handleChapter3Prompt(player,prompt,id)
 	local now=os.clock()
 	if id=="C3_Phone" then
 		chapter3Mission.phone=true; showChapter3Document(player,"Phone")
-		tellAll("O ramal toca sem cabo. No corredor, alguma coisa responde com tres batidas.","scare")
+		tellAll("O ramal toca sem cabo. No corredor, alguma coisa responde com três batidas.","scare")
 	elseif id=="C3_Log" then chapter3Mission.log=true; showChapter3Document(player,"Log")
 	elseif id=="C3_Route" then chapter3Mission.route=true; showChapter3Document(player,"Route")
 	elseif id=="C3_Key" then
-		if not(chapter3Mission.log and chapter3Mission.route) then tell(player,"Compare o livro do elevador e o aviso de manutencao.","objective")
-		else chapter3Mission.controlKey=true; Chapter3Map.SetTechDoorOpen(true); showChapter3Document(player,"Key"); tellAll("A porta da sala tecnica sobe. Do elevador vem um unico toque.","success") end
+		if not(chapter3Mission.log and chapter3Mission.route) then tell(player,"Compare o livro do elevador e o aviso de manutenção.","objective")
+		else chapter3Mission.controlKey=true; Chapter3Map.SetTechDoorOpen(true); showChapter3Document(player,"Key"); tellAll("A porta da sala técnica sobe. Do elevador vem um único toque.","success") end
 	elseif id=="C3_BreakerA" or id=="C3_BreakerB" then
 		if not(chapter3Mission.log and chapter3Mission.route and chapter3Mission.controlKey) then tell(player,"Faltam a chave e os registros para identificar o retorno.","objective"); return end
-		if chapter3Mission.power then tell(player,"O retorno A/B ja esta fechado.","info"); return end
+		if chapter3Mission.power then tell(player,"O retorno A/B já está fechado.","info"); return end
 		local side=id=="C3_BreakerA" and "A" or "B"; local other=side=="A" and "B" or "A"
 		local otherSwitch=chapter3Mission.switches[other]
 		if otherSwitch and now-otherSwitch.time>12 then
 			chapter3Mission.switches.A=nil; chapter3Mission.switches.B=nil
 			Chapter3Map.SetBreaker("A",false); Chapter3Map.SetBreaker("B",false)
-			tellAll("O retorno caiu. Fechem os dois disjuntores com poucos segundos de diferenca.","error"); publishState(); return
+			tellAll("O retorno caiu. Fechem os dois disjuntores com poucos segundos de diferença.","error"); publishState(); return
 		end
-		if chapter3Mission.switches[side] then tell(player,"Esse disjuntor ja foi acionado.","info"); return end
-		if otherSwitch and #startedPlayers()>=2 and otherSwitch.player==player then tell(player,"O outro lado precisa do parceiro.","objective"); return end
+		if chapter3Mission.switches[side] then tell(player,"Esse disjuntor já foi acionado.","info"); return end
+		if otherSwitch and partnerNearby(player) and otherSwitch.player==player then tell(player,"O outro lado precisa do parceiro.","objective"); return end
 		chapter3Mission.switches[side]={player=player,time=now}; Chapter3Map.SetBreaker(side,true); ai3:Ping(prompt.Parent.Position,95)
 		if otherSwitch and now-otherSwitch.time<=12 then
 			chapter3Mission.power=true; Chapter3Map.SetPower(true); ai3:Wake(); ai3:Ping(prompt.Parent.Position,110)
 			tellAll("As luzes voltam. O elevador abre por dentro, embora o cabo ainda esteja solto.","scare")
-		else tellAll("Um disjuntor travou. O parceiro precisa fechar o outro em ate 12 segundos.","objective") end
+		else tellAll("Um disjuntor travou. O parceiro precisa fechar o outro em até 12 segundos.","objective") end
 	elseif id=="C3_ElevatorCall" then
-		if not chapter3Mission.power then tell(player,"O painel nao responde. Fechem juntos A e B.","objective")
-		else chapter3Mission.elevatorOpened=true; Chapter3Map.SetElevatorOpen(true); tellAll("A cabine esta vazia; um gravador continua girando no chao.","story") end
+		if not chapter3Mission.power then tell(player,"O painel não responde. Fechem juntos A e B.","objective")
+		else chapter3Mission.elevatorOpened=true; Chapter3Map.SetElevatorOpen(true); tellAll("A cabine está vazia; um gravador continua girando no chão.","story") end
 	elseif id=="C3_Recorder" then
-		if not chapter3Mission.elevatorOpened then tell(player,"O gravador esta alem das portas fechadas.","objective")
+		if not chapter3Mission.elevatorOpened then tell(player,"O gravador está além das portas fechadas.","objective")
 		else chapter3Mission.recorder=true; showChapter3Document(player,"Recorder"); tellAll("A fita repete o indicativo da equipe, gravado antes do despacho.","scare") end
 	elseif id=="C3_Report" then
 		if not chapter3Mission.recorder then tell(player,"Levem o gravador ao patamar e registrem a descoberta.","objective")
-		else chapter3Mission.complete=true; publishState(); broadcast("ChapterComplete",Chapter3Story.Completion) end
+		elseif not chapter3Mission.complete then chapter3Mission.complete=true; publishState(); finishChapter(3,Chapter3Story.Completion)
+		else tell(player,"O registro já foi confirmado.","info") end
 	end
 	publishState()
 end
@@ -1624,47 +1892,54 @@ local function handleLaterChapterPrompt(player,prompt,id)
 			if foundCount==0 then tellAll("A primeira pista liga o local ao ramal 11.","story") end
 		end
 	elseif chapterId==7 and (action=="LiftA" or action=="LiftB") then
-		if foundCount<3 then tell(player,"Leiam o diagrama, a etiqueta e a ordem da subestacao antes de mover a bateria.","objective")
-		elseif m.batteryRaised then tell(player,"A bateria ja foi levantada pela equipe.","info")
+		if foundCount<3 then tell(player,"Leiam o diagrama, a etiqueta e a ordem da subestação antes de mover a bateria.","objective")
+		elseif m.batteryRaised then tell(player,"A bateria já foi levantada pela equipe.","info")
 		else
 			local side=action=="LiftA" and "A" or "B"; local other=side=="A" and "B" or "A"
 			local otherLift=m.batteryLift[other]
-			if otherLift and now-otherLift.time>12 then m.batteryLift.A=nil; m.batteryLift.B=nil; tellAll("A bateria volta ao suporte. Tentem levantar as duas alcas juntas.","error")
-			elseif otherLift and #startedPlayers()>=2 and otherLift.player==player then tell(player,"A segunda alca precisa do parceiro.","objective")
+			if otherLift and now-otherLift.time>12 then m.batteryLift.A=nil; m.batteryLift.B=nil; tellAll("A bateria volta ao suporte. Tentem levantar as duas alças juntas.","error")
+			elseif otherLift and partnerNearby(player) and otherLift.player==player then tell(player,"A segunda alça precisa do parceiro.","objective")
 			else
 				m.batteryLift[side]={player=player,time=now}
 				if otherLift and now-otherLift.time<=12 then
 					m.batteryRaised=true; LaterChapterMap.MoveBattery(7)
-					tellAll("A equipe levanta a bateria pesada e a desliza ate o receptaculo. Um dos cabos se parte no tunel.","scare")
+					tellAll("A equipe levanta a bateria pesada e a desliza até o receptáculo. Um dos cabos se parte no túnel.","scare")
 					local monster=laterAis[7]; if monster then monster:Wake(); monster:Ping(prompt.Parent.Position,100) end
-				else tellAll("Uma alca esta presa. O parceiro precisa segurar a outra em ate 12 segundos.","objective") end
+				else tellAll("Uma alça está presa. O parceiro precisa segurar a outra em até 12 segundos.","objective") end
 			end
 		end
 	elseif chapterId==7 and action=="BatterySocket" then
-		if not m.batteryRaised then tell(player,"A bateria ainda esta presa ao suporte.","objective")
-		else m.batteryMoved=true; tellAll("A bateria encaixa no receptaculo. O painel dos tres trechos acende.","success") end
+		if not m.batteryRaised then tell(player,"A bateria ainda está presa ao suporte.","objective")
+		else m.batteryMoved=true; tellAll("A bateria encaixa no receptáculo. O painel dos três trechos acende.","success") end
 	elseif string.match(action,"^Step[A-C]$") then
-		if foundCount<3 then tell(player,"Encontrem as tres pistas antes de mexer nos controles.","objective")
-		elseif chapterId==7 and not m.batteryMoved then tell(player,"Levem a bateria ao receptaculo antes de fechar os trechos.","objective")
-		elseif m.puzzleComplete then tell(player,"A sequencia ja foi confirmada. Sigam para o registro final.","info")
+		if foundCount<3 then tell(player,"Encontrem as três pistas antes de mexer nos controles.","objective")
+		elseif chapterId==7 and not m.batteryMoved then tell(player,"Levem a bateria ao receptáculo antes de fechar os trechos.","objective")
+		elseif m.puzzleComplete then tell(player,"A sequência já foi confirmada. Sigam para o registro final.","info")
 		else
 			local step=string.sub(action,5)
 			local expected=info.PuzzleOrder[m.puzzleStep+1]
 			local nextIndex=m.puzzleStep+1
 			if step~=expected then
 				m.puzzleStep=0; m.lastPuzzlePlayer=nil
-				tellAll("O mecanismo rejeita a ordem. Leiam a sequencia nas pistas e recomecem.","error")
+				m.mistakes=(m.mistakes or 0)+1
+				if m.mistakes>=2 then
+					-- Depois de errar duas vezes a equipe ganha a dica do controle que faltava, para ninguém ficar preso.
+					local wanted=info.StepLabels[expected]
+					tellAll(string.format("O mecanismo rejeita a ordem e volta ao início. Dica: nesse ponto o controle certo era “%s”.",wanted.Action),"error")
+				else
+					tellAll("O mecanismo rejeita a ordem e volta ao início. Releiam as pistas e recomecem.","error")
+				end
 				local monster=laterAis[chapterId]; if monster then monster:Wake(); monster:Ping(prompt.Parent.Position,95) end
-			elseif info.CoopStep and info.CoopStep>0 and nextIndex==info.CoopStep and #startedPlayers()>=2 and m.lastPuzzlePlayer==player then
+			elseif info.CoopStep and info.CoopStep>0 and nextIndex==info.CoopStep and partnerNearby(player) and m.lastPuzzlePlayer==player then
 				tell(player,"Esta etapa exige que o parceiro assuma o outro controle.","objective")
 			else
 				m.puzzleStep=nextIndex; m.lastPuzzlePlayer=player
 				local monster=laterAis[chapterId]; if monster then monster:Wake(); monster:Ping(prompt.Parent.Position,85) end
 				if m.puzzleStep>=#info.PuzzleOrder then
 					m.puzzleComplete=true
-					tellAll("A sequencia fecha. Um sinal atravessa o ambiente e o registro final fica acessivel.","success")
+					tellAll("A sequência fecha. Um sinal atravessa o ambiente e o registro final fica acessível.","success")
 					if monster then monster:Ping(prompt.Parent.Position,110) end
-				else tellAll("Controle aceito. A proxima etapa do circuito esta ativa.","objective") end
+				else tellAll("Controle aceito. A próxima etapa do circuito está ativa.","objective") end
 			end
 		end
 	elseif action=="Report" then
@@ -1672,15 +1947,15 @@ local function handleLaterChapterPrompt(player,prompt,id)
 		elseif chapterId==12 then tell(player,"Escolham transmitir a prova ou cortar a linha nos controles do repetidor.","objective")
 		elseif not m.complete then
 			m.complete=true
-			broadcast("ChapterComplete",info.Completion)
-		else tell(player,"Este capitulo ja foi registrado.","info") end
+			finishChapter(chapterId,info.Completion)
+		else tell(player,"Este capítulo já foi registrado.","info") end
 	elseif chapterId==12 and (action=="Transmit" or action=="Cut") then
 		if not m.puzzleComplete then tell(player,"Fechem o circuito antes de decidir o destino da chamada.","objective")
 		elseif not m.complete then
 			local key=action=="Transmit" and "Transmit" or "Cut"
 			m.choice=key; m.complete=true
-			broadcast("ChapterComplete",info.Endings[key])
-		else tell(player,"A decisao da equipe ja foi tomada.","info") end
+			finishChapter(chapterId,info.Endings[key])
+		else tell(player,"A decisão da equipe já foi tomada.","info") end
 	end
 	publishState()
 end
@@ -1854,8 +2129,7 @@ local function handlePrompt(player, prompt)
 				publishState()
 				return
 			end
-			local activeCount = #startedPlayers()
-			if activeCount >= 2 and otherLever and otherLever.player == player then
+			if partnerNearby(player) and otherLever and otherLever.player == player then
 				tell(player, "A outra alavanca precisa ser ativada pelo parceiro.", "objective")
 				return
 			end
@@ -1885,7 +2159,7 @@ local function handlePrompt(player, prompt)
 	end
 end
 
-local function connectPromptList(list)
+connectPromptList = function(list)
 	for _,prompt in ipairs(list) do prompt.Triggered:Connect(function(player) handlePrompt(player,prompt) end) end
 end
 connectPromptList(MapBuilder.GetPrompts())
@@ -1918,6 +2192,11 @@ Players.PlayerRemoving:Connect(function(player)
 		if mission.relay[side] and mission.relay[side].player == player then
 			mission.relay[side] = nil
 		end
+	end
+	-- Se era o último da equipe, o servidor fica livre para a próxima começar do zero.
+	player:SetAttribute("Linha11Started", false)
+	if #startedPlayers() == 0 then
+		activeChapterId = nil
 	end
 end)
 
@@ -2009,9 +2288,9 @@ local function furniture(parent,id,theme)
 		for _,x in ipairs({15,35,55,75,95}) do part(parent,id,"Pilar_Tunel",Vector3.new(.5,10,18),pos(id,x,5,0),Color3.fromRGB(66,65,60),Enum.Material.Concrete) end
 		local battery=part(parent,id,"Bateria_Pesada",Vector3.new(4,3,3),pos(id,38,1.5,4),Color3.fromRGB(44,53,52),Enum.Material.Metal)
 		batteries[id]={part=battery,from=battery.CFrame,to=CFrame.new(pos(id,75,1.5,0))}
-		anchor(parent,id,"Alca_Bateria_A",36,2.5,2,"C7_LiftA","Segurar","Alca A",1)
-		anchor(parent,id,"Alca_Bateria_B",40,2.5,6,"C7_LiftB","Segurar","Alca B",1)
-		anchor(parent,id,"Receptaculo_Bateria",75,2,0,"C7_BatterySocket","Conectar","Suporte da subestacao",.7)
+		anchor(parent,id,"Alca_Bateria_A",36,2.5,2,"C7_LiftA","Segurar","Alça A",1)
+		anchor(parent,id,"Alca_Bateria_B",40,2.5,6,"C7_LiftB","Segurar","Alça B",1)
+		anchor(parent,id,"Receptaculo_Bateria",75,2,0,"C7_BatterySocket","Conectar","Suporte da subestação",.7)
 	elseif theme=="triage" then
 		for _,x in ipairs({15,36,57,78}) do
 			part(parent,id,"Maca_Triagem",Vector3.new(7,1.1,3),pos(id,x,1.2,-7),Color3.fromRGB(92,93,87),Enum.Material.Metal)
@@ -2092,8 +2371,24 @@ function Map.BuildAll()
 		local old=workspace:FindFirstChild("Linha11Chapter"..id.."World"); if old then old:Destroy() end
 		buildOne(id)
 	end
-	for _,world in pairs(worlds) do for _,item in ipairs(world:GetDescendants()) do if item:IsA("ProximityPrompt") then table.insert(prompts,item) end end end
+	-- As interações já entram na lista quando são criadas (função anchor).
 	return worlds,spawns,prompts
+end
+-- Remonta só um capítulo e devolve o mundo, o ponto de início e as interações novas.
+function Map.Rebuild(id)
+	local old=worlds[id] or workspace:FindFirstChild("Linha11Chapter"..id.."World")
+	if old then
+		for index=#prompts,1,-1 do
+			if prompts[index]:IsDescendantOf(old) then table.remove(prompts,index) end
+		end
+		old:Destroy()
+	end
+	batteries[id]=nil
+	local before=#prompts
+	buildOne(id)
+	local fresh={}
+	for index=before+1,#prompts do table.insert(fresh,prompts[index]) end
+	return worlds[id],spawns[id],fresh
 end
 function Map.GetAIConfig(id)
 	local b=base(id); return {minX=b+2,maxX=b+106,pingMinX=b-8,pingMaxX=b+112,startX=b+101,z=0}
@@ -2216,6 +2511,23 @@ function ListenerAI.new(parent, playerProvider, onCatch, config)
 		register(shard, CFrame.new(side * 0.72, 3.4, 0.55) * CFrame.Angles(0, 0, math.rad(side * -8)), side, 0.08)
 	end
 
+	-- Sons presos ao corpo: o jogador ouve de que lado ele vem e a que distância está.
+	local function voice(name, id, volume, speed, maxDistance)
+		local sound = Instance.new("Sound")
+		sound.Name = name
+		sound.SoundId = id
+		sound.Volume = volume
+		sound.PlaybackSpeed = speed
+		sound.RollOffMode = Enum.RollOffMode.Linear
+		sound.RollOffMinDistance = 6
+		sound.RollOffMaxDistance = maxDistance
+		sound.Parent = root
+		return sound
+	end
+	self.StepSound = voice("Passo", "rbxasset://sounds/action_jump_land.mp3", 1.4, 0.5, 95)
+	self.WakeSound = voice("Despertar", "rbxasset://sounds/impact_water.mp3", 1.6, 0.32, 140)
+	self.StepDistance = 0
+
 	self.AnimatedParts = animated
 	self.OriginalTransparency = {}
 	for _, part in ipairs(model:GetDescendants()) do
@@ -2245,6 +2557,9 @@ function ListenerAI:Wake()
 	end
 	table.clear(self.OriginalTransparency)
 	self.Model:SetAttribute("Awake", true)
+	if self.WakeSound then
+		self.WakeSound:Play()
+	end
 end
 
 function ListenerAI:Ping(position, strength)
@@ -2285,6 +2600,16 @@ function ListenerAI:Step(dt)
 	local step = math.clamp(delta, -speed * dt, speed * dt)
 	local nextX = math.clamp(self.Position.X + step, self.MinX, self.MaxX)
 	local facing = nextX >= self.Position.X and 1 or -1
+	-- Um passo pesado a cada trecho percorrido; mais rápido e mais agudo quando ele caça.
+	self.StepDistance += math.abs(nextX - self.Position.X)
+	if self.StepDistance >= (isHunting and 3.4 or 2.6) then
+		self.StepDistance = 0
+		self.Steps = (self.Steps or 0) + 1
+		if self.StepSound then
+			self.StepSound.PlaybackSpeed = (isHunting and 0.62 or 0.48) + (self.Steps % 3) * 0.03
+			self.StepSound:Play()
+		end
+	end
 	self.Position = Vector3.new(nextX, 0, self.PatrolZ)
 	local bodyCFrame = CFrame.lookAt(self.Position + Vector3.new(0, 0.05, 0), self.Position + Vector3.new(facing, 0.05, 0))
 	self.Model:PivotTo(bodyCFrame)
@@ -2667,7 +2992,7 @@ local function roomFurniture(parent, roomId, centerX, side, centerZ)
 		tvText.Size = UDim2.fromScale(1, 1)
 		tvText.BackgroundColor3 = Color3.fromRGB(24, 32, 35)
 		tvText.BackgroundTransparency = 0
-		tvText.Text = "03:17\\nSEM SINAL"
+		tvText.Text = "03:17\nSEM SINAL"
 		tvText.TextColor3 = Color3.fromRGB(161, 177, 180)
 		tvText.Font = Enum.Font.Code
 		tvText.TextScaled = true
@@ -3049,13 +3374,13 @@ teaser.TextYAlignment = Enum.TextYAlignment.Top
 local startButton = button(menu, "Comecar", UDim2.new(0.075, 0, 0.58, 0), UDim2.new(0.28, 0, 0.075, 0), "INICIAR INVESTIGAÇÃO", true)
 local shopMenuButton = button(menu, "Cosmeticos", UDim2.new(0.075, 0, 0.67, 0), UDim2.new(0.28, 0, 0.065, 0), "COSMÉTICOS OPCIONAIS", false)
 local chaptersButton = button(menu, "Capitulos", UDim2.new(0.075, 0, 0.75, 0), UDim2.new(0.28, 0, 0.065, 0), "CAPÍTULOS", false)
-local version = label(menu, "Versao", UDim2.new(0.075, 0, 0.92, 0), UDim2.new(0.34, 0, 0.035, 0), "PROTÓTIPO ROBLOX  •  0.1.0", Enum.Font.Gotham, 12, COLORS.muted)
+local version = label(menu, "Versao", UDim2.new(0.075, 0, 0.92, 0), UDim2.new(0.34, 0, 0.035, 0), "VERSÃO 1.0  •  1 A 4 JOGADORES", Enum.Font.Gotham, 12, COLORS.muted)
 
 local chapterPanel = panel("SelecaoCapitulos", UDim2.new(0.72, 0, 0.78, 0), UDim2.new(0.14, 0, 0.11, 0))
 chapterPanel.BackgroundTransparency = 0.02
 local chapterHeader = label(chapterPanel, "Cabecalho", UDim2.new(0.055, 0, 0.035, 0), UDim2.new(0.72, 0, 0.09, 0), "CAMPANHA  •  12 CAPÍTULOS", Enum.Font.Garamond, 29, COLORS.text)
 chapterHeader.TextXAlignment = Enum.TextXAlignment.Left
-label(chapterPanel, "Duracao", UDim2.new(0.06, 0, 0.125, 0), UDim2.new(0.85, 0, 0.055, 0), "Meta de duração: pelo menos 165 min • tempos ainda não validados em sessões", Enum.Font.Gotham, 13, COLORS.muted)
+label(chapterPanel, "Duracao", UDim2.new(0.06, 0, 0.125, 0), UDim2.new(0.85, 0, 0.055, 0), "Cada capítulo continua a história do anterior. Jogue sozinho ou em equipe.", Enum.Font.Gotham, 13, COLORS.muted)
 local chapterClose = button(chapterPanel, "Fechar", UDim2.new(0.82, 0, 0.04, 0), UDim2.new(0.12, 0, 0.075, 0), "VOLTAR", false)
 local chapterList = Instance.new("ScrollingFrame")
 chapterList.Name = "Lista"
@@ -3080,13 +3405,12 @@ chapterPadding.PaddingLeft = UDim.new(0, 9)
 chapterPadding.PaddingRight = UDim.new(0, 9)
 chapterPadding.Parent = chapterList
 for _, chapter in ipairs(Campaign.Chapters) do
-	local status = chapter.playable and "DISPONÍVEL" or "EM DESENVOLVIMENTO"
 	local row = button(
 		chapterList,
 		"Capitulo" .. tostring(chapter.id),
 		UDim2.new(),
 		UDim2.new(1, -18, 0, 48),
-		string.format("%02d  •  %s   |   %d–%d min   |   %s", chapter.id, chapter.title, chapter.minMinutes, chapter.maxMinutes, status),
+		string.format("%02d  •  %s", chapter.id, chapter.title),
 		chapter.playable
 	)
 	row.LayoutOrder = chapter.id
@@ -3104,7 +3428,7 @@ for _, chapter in ipairs(Campaign.Chapters) do
 		end)
 	end
 end
-label(chapterPanel, "Aviso", UDim2.new(0.06,0,0.89,0), UDim2.new(0.88,0,0.06,0), "Capitulos 1 a 12 estao na build experimental. Revisao visual e testes de campanha ainda pendentes.", Enum.Font.Gotham, 13, COLORS.gold)
+label(chapterPanel, "Aviso", UDim2.new(0.06,0,0.89,0), UDim2.new(0.88,0,0.06,0), "Os capítulos concluídos ficam salvos na sua conta.", Enum.Font.Gotham, 13, COLORS.gold)
 
 local controls = Instance.new("Frame")
 controls.Name = "Controles"
@@ -3175,7 +3499,95 @@ local docClose = button(documentPanel, "Fechar", UDim2.new(0.69, 0, 0.06, 0), UD
 docClose.ZIndex = 82
 docClose.Active = true
 docClose.Selectable = true
+-- Só aparece no fim de um capítulo: leva a equipe inteira para o seguinte.
+local docNext = button(documentPanel, "Proximo", UDim2.new(0.08, 0, 0.8, 0), UDim2.new(0.5, 0, 0.14, 0), "PRÓXIMO CAPÍTULO  →", true)
+docNext.ZIndex = 82
+docNext.Active = true
+docNext.Selectable = true
+docNext.Visible = false
 
+
+-- Sons: só arquivos que já vêm instalados com o Roblox, tocados em tons diferentes.
+local SoundService = game:GetService("SoundService")
+local SOUNDS = {
+	click = { id = "rbxasset://sounds/volume_slider.ogg", volume = 0.45, speed = 1 },
+	pickup = { id = "rbxasset://sounds/volume_slider.ogg", volume = 0.6, speed = 1.4 },
+	deny = { id = "rbxasset://sounds/volume_slider.ogg", volume = 0.5, speed = 0.55 },
+	paper = { id = "rbxasset://sounds/action_get_up.mp3", volume = 0.3, speed = 1.5 },
+	scare = { id = "rbxasset://sounds/impact_explosion_03.mp3", volume = 0.4, speed = 0.4 },
+	caught = { id = "rbxasset://sounds/impact_explosion_03.mp3", volume = 0.75, speed = 0.7 },
+	heart = { id = "rbxasset://sounds/action_jump_land.mp3", volume = 0.5, speed = 0.45 },
+}
+local soundCache = {}
+local function playSound(name)
+	local spec = SOUNDS[name]
+	if not spec then
+		return
+	end
+	local sound = soundCache[name]
+	if not sound then
+		sound = Instance.new("Sound")
+		sound.Name = "Linha11_" .. name
+		sound.SoundId = spec.id
+		sound.Volume = spec.volume
+		sound.PlaybackSpeed = spec.speed
+		sound.Parent = SoundService
+		soundCache[name] = sound
+	end
+	sound:Play()
+end
+
+-- Escurecimento nas bordas quando o Ouvinte está perto, e clarão quando ele pega o jogador.
+local dangerFrame = Instance.new("Frame")
+dangerFrame.Name = "Perigo"
+dangerFrame.Size = UDim2.fromScale(1, 1)
+dangerFrame.BackgroundColor3 = Color3.fromRGB(46, 6, 6)
+dangerFrame.BackgroundTransparency = 1
+dangerFrame.BorderSizePixel = 0
+dangerFrame.Active = false
+dangerFrame.Visible = false
+dangerFrame.ZIndex = 1
+dangerFrame.Parent = gui
+local flashFrame = Instance.new("Frame")
+flashFrame.Name = "Apagao"
+flashFrame.Size = UDim2.fromScale(1, 1)
+flashFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+flashFrame.BackgroundTransparency = 1
+flashFrame.BorderSizePixel = 0
+flashFrame.Active = false
+flashFrame.Visible = false
+flashFrame.ZIndex = 60
+flashFrame.Parent = gui
+local function flashCaught()
+	flashFrame.BackgroundTransparency = 0
+	flashFrame.Visible = true
+	local fade = TweenService:Create(flashFrame, TweenInfo.new(1.6, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { BackgroundTransparency = 1 })
+	fade:Play()
+	task.delay(1.7, function()
+		if flashFrame.BackgroundTransparency >= 0.99 then
+			flashFrame.Visible = false
+		end
+	end)
+end
+
+-- O botão principal vira "continuar" para quem já concluiu algum capítulo.
+local function nextChapterToPlay()
+	local progress = player:GetAttribute("Linha11Progress")
+	if typeof(progress) ~= "number" or progress < 1 or progress >= #Campaign.Chapters then
+		return 1
+	end
+	return progress + 1
+end
+local function refreshStartButton()
+	local chapterId = nextChapterToPlay()
+	if chapterId > 1 then
+		startButton.Text = string.format("CONTINUAR  •  CAPÍTULO %d", chapterId)
+	else
+		startButton.Text = "INICIAR INVESTIGAÇÃO"
+	end
+end
+player:GetAttributeChangedSignal("Linha11Progress"):Connect(refreshStartButton)
+refreshStartButton()
 local keypadPanel = panel("Teclado", UDim2.new(0.37, 0, 0.69, 0), UDim2.new(0.315, 0, 0.155, 0))
 label(keypadPanel, "Titulo", UDim2.new(0.08, 0, 0.035, 0), UDim2.new(0.84, 0, 0.09, 0), "ARQUIVO 303", Enum.Font.Garamond, 24, COLORS.gold, Enum.TextXAlignment.Center)
 local codeDisplay = label(keypadPanel, "Codigo", UDim2.new(0.1, 0, 0.13, 0), UDim2.new(0.8, 0, 0.1, 0), "— — — —", Enum.Font.GothamMedium, 25, COLORS.text, Enum.TextXAlignment.Center)
@@ -3401,25 +3813,42 @@ local function closeDocument()
 		return
 	end
 	documentPanel.Visible = false
+	docNext.Visible = false
 	if finalShown then
+		-- Fim de capítulo: fechar aqui devolve o jogador ao menu e avisa o servidor.
 		finalShown = false
 		playing = false
 		hud.Visible = false
 		shopHudButton.Visible = false
+		dangerFrame.Visible = false
 		overlay.Visible = true
 		menu.Visible = true
 		menuActive = true
-		docClose.Text = "FECHAR"
+		docClose.Text = "FECHAR  ×"
 		player.CameraMode = Enum.CameraMode.Classic
 		UserInputService.MouseBehavior = Enum.MouseBehavior.Default
 		UserInputService.MouseIconEnabled = true
+		modalActive = true
+		remote:FireServer("Leave")
+		refreshStartButton()
 		showMenuCamera()
 	elseif playing then
 		setCapture(true)
 	end
 end
 
-docClose.Activated:Connect(closeDocument)
+docClose.Activated:Connect(function()
+	playSound("click")
+	closeDocument()
+end)
+docNext.Activated:Connect(function()
+	if not finalShown then
+		return
+	end
+	playSound("click")
+	docNext.Visible = false
+	remote:FireServer("NextChapter")
+end)
 UserInputService.InputBegan:Connect(function(input)
 	if input.KeyCode == Enum.KeyCode.Escape and documentPanel.Visible then
 		closeDocument()
@@ -3560,7 +3989,22 @@ end
 
 remote.OnClientEvent:Connect(function(eventName, data)
 	if eventName == "StartGame" then
+		-- Também chega quando a equipe avança de capítulo: fecha o texto final que estiver aberto.
+		finalShown = false
+		documentPanel.Visible = false
+		docNext.Visible = false
+		keypadPanel.Visible = false
+		local oldEnding = gui:FindFirstChild("Finais")
+		if oldEnding then
+			oldEnding.Visible = false
+		end
+		setCapture(false)
+		dangerFrame.Visible = false
 		hudTitle.Text = data.chapterTitle or "DISTRITO 11  /  ANDAR 3"
+		introHeader.Text = data.chapterTitle or "ORDEM DE SERVIÇO  •  02:41"
+		if data.state then
+			updateState(data.state)
+		end
 		chapterPanel.Visible = false
 		overlay.Visible = false
 		menu.Visible = false
@@ -3576,7 +4020,15 @@ remote.OnClientEvent:Connect(function(eventName, data)
 		updateState(data)
 	elseif eventName == "Message" then
 		showToast(data.text or "", data.kind)
+		if data.kind == "scare" then
+			playSound("scare")
+		elseif data.kind == "success" then
+			playSound("pickup")
+		elseif data.kind == "error" then
+			playSound("deny")
+		end
 	elseif eventName == "Document" then
+		playSound("paper")
 		showDocument(data)
 	elseif eventName == "OpenKeypad" then
 		openKeypad()
@@ -3590,10 +4042,19 @@ remote.OnClientEvent:Connect(function(eventName, data)
 		documentPanel.Visible = true
 		docTitle.Text = data.title or "FIM"
 		docText.Text = data.text or ""
-		docClose.Text = eventName == "ChapterComplete" and "VOLTAR AO MENU  ×" or "ENCERRAR TURNO  ×"
+		docClose.Text = "MENU  ×"
+		if data.nextChapterId then
+			docNext.Text = string.format("CAPÍTULO %d  •  %s  →", data.nextChapterId, data.nextTitle or "")
+			docNext.Visible = true
+		else
+			docNext.Visible = false
+		end
+		playSound("scare")
 		setCapture(false)
 	elseif eventName == "Caught" then
 		showToast(data.text or "O Ouvinte encontrou você.", "error")
+		playSound("caught")
+		flashCaught()
 	end
 end)
 
@@ -3619,7 +4080,8 @@ shopMenuButton.Activated:Connect(shopFunction)
 shopHudButton.Activated:Connect(shopFunction)
 
 startButton.Activated:Connect(function()
-	remote:FireServer("Start", 1)
+	playSound("click")
+	remote:FireServer("Start", nextChapterToPlay())
 end)
 
 local function toggleFlashlight(_, inputState)
@@ -3689,6 +4151,50 @@ task.defer(function()
 	end
 end)
 
+
+-- Aviso de proximidade: quanto mais perto o Ouvinte, mais escuras as bordas e mais rápido o batimento.
+local DANGER_RANGE = 62
+local function listenerDistance()
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return math.huge
+	end
+	local best = math.huge
+	for _, area in ipairs(workspace:GetChildren()) do
+		if string.sub(area.Name, 1, 7) == "Linha11" then
+			local creature = area:FindFirstChild("Ouvinte")
+			if creature and creature:GetAttribute("Awake") then
+				local distance = (creature:GetPivot().Position - root.Position).Magnitude
+				if distance < best then
+					best = distance
+				end
+			end
+		end
+	end
+	return best
+end
+
+task.spawn(function()
+	local nextBeat = 0
+	while true do
+		task.wait(0.25)
+		local distance = playing and listenerDistance() or math.huge
+		if distance < DANGER_RANGE then
+			local intensity = 1 - distance / DANGER_RANGE
+			dangerFrame.Visible = true
+			dangerFrame.BackgroundTransparency = 1 - intensity * 0.42
+			local now = os.clock()
+			if now >= nextBeat then
+				nextBeat = now + 1.15 - intensity * 0.8
+				playSound("heart")
+			end
+		elseif dangerFrame.Visible then
+			dangerFrame.Visible = false
+			dangerFrame.BackgroundTransparency = 1
+		end
+	end
+end)
 local characterAudioConnection
 
 local function softenDefaultFootsteps(character)

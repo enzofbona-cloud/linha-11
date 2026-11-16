@@ -76,9 +76,9 @@ local function furniture(parent,id,theme)
 		for _,x in ipairs({15,35,55,75,95}) do part(parent,id,"Pilar_Tunel",Vector3.new(.5,10,18),pos(id,x,5,0),Color3.fromRGB(66,65,60),Enum.Material.Concrete) end
 		local battery=part(parent,id,"Bateria_Pesada",Vector3.new(4,3,3),pos(id,38,1.5,4),Color3.fromRGB(44,53,52),Enum.Material.Metal)
 		batteries[id]={part=battery,from=battery.CFrame,to=CFrame.new(pos(id,75,1.5,0))}
-		anchor(parent,id,"Alca_Bateria_A",36,2.5,2,"C7_LiftA","Segurar","Alca A",1)
-		anchor(parent,id,"Alca_Bateria_B",40,2.5,6,"C7_LiftB","Segurar","Alca B",1)
-		anchor(parent,id,"Receptaculo_Bateria",75,2,0,"C7_BatterySocket","Conectar","Suporte da subestacao",.7)
+		anchor(parent,id,"Alca_Bateria_A",36,2.5,2,"C7_LiftA","Segurar","Alça A",1)
+		anchor(parent,id,"Alca_Bateria_B",40,2.5,6,"C7_LiftB","Segurar","Alça B",1)
+		anchor(parent,id,"Receptaculo_Bateria",75,2,0,"C7_BatterySocket","Conectar","Suporte da subestação",.7)
 	elseif theme=="triage" then
 		for _,x in ipairs({15,36,57,78}) do
 			part(parent,id,"Maca_Triagem",Vector3.new(7,1.1,3),pos(id,x,1.2,-7),Color3.fromRGB(92,93,87),Enum.Material.Metal)
@@ -159,8 +159,24 @@ function Map.BuildAll()
 		local old=workspace:FindFirstChild("Linha11Chapter"..id.."World"); if old then old:Destroy() end
 		buildOne(id)
 	end
-	for _,world in pairs(worlds) do for _,item in ipairs(world:GetDescendants()) do if item:IsA("ProximityPrompt") then table.insert(prompts,item) end end end
+	-- As interações já entram na lista quando são criadas (função anchor).
 	return worlds,spawns,prompts
+end
+-- Remonta só um capítulo e devolve o mundo, o ponto de início e as interações novas.
+function Map.Rebuild(id)
+	local old=worlds[id] or workspace:FindFirstChild("Linha11Chapter"..id.."World")
+	if old then
+		for index=#prompts,1,-1 do
+			if prompts[index]:IsDescendantOf(old) then table.remove(prompts,index) end
+		end
+		old:Destroy()
+	end
+	batteries[id]=nil
+	local before=#prompts
+	buildOne(id)
+	local fresh={}
+	for index=before+1,#prompts do table.insert(fresh,prompts[index]) end
+	return worlds[id],spawns[id],fresh
 end
 function Map.GetAIConfig(id)
 	local b=base(id); return {minX=b+2,maxX=b+106,pingMinX=b-8,pingMaxX=b+112,startX=b+101,z=0}

@@ -34,7 +34,7 @@ jobs:
           echo "30f11c9cde8be2dc0e3066d210705532aac3726a2db89a6c5078080b6faa6cf8  /tmp/luau.zip" | sha256sum -c -
           mkdir -p /tmp/luau
           unzip -q /tmp/luau.zip -d /tmp/luau
-          chmod +x /tmp/luau/luau-compile
+          chmod +x /tmp/luau/luau-compile /tmp/luau/luau
 
       - name: Check Luau syntax
         shell: bash
@@ -44,6 +44,10 @@ jobs:
             /tmp/luau/luau-compile "$file" >/dev/null
             echo "Luau OK: $file"
           done < <(find roblox/src -type f -name '*.lua' -print0)
+
+      - name: Play the whole campaign in the simulator
+        shell: bash
+        run: LUAU=/tmp/luau/luau node roblox/tools/sim/run.mjs
 
       - name: Install Rojo 7.7.1
         shell: bash

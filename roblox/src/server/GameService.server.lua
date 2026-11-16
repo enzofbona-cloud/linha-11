@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MarketplaceService = game:GetService("MarketplaceService")
 local RunService = game:GetService("RunService")
+local DataStoreService = game:GetService("DataStoreService")
 
 local Story = require(ReplicatedStorage.Shared.Story)
 local Chapter2Story = require(ReplicatedStorage.Shared.Chapter2Story)
@@ -27,44 +28,64 @@ local chapter2World, chapter2Spawn = Chapter2Map.Build()
 local chapter3World, chapter3Spawn = Chapter3Map.Build()
 local laterWorlds, laterSpawns, laterPrompts = LaterChapterMap.BuildAll()
 
-local mission = {
-	started = false,
-	key = false,
-	fuse = false,
-	power = false,
-	clues = { Clue03 = false, Clue1 = false, Clue7 = false },
-	archiveOpen = false,
-	tape = false,
-	phone = false,
-	crowbar = false,
-	relayOpen = false,
-	relay = { A = nil, B = nil },
-	ending = nil,
-	stage = 0,
-}
-local chapter2Mission = {
-	started = false,
-	phone = false,
-	photo = false,
-	serviceKey = false,
-	wiring = false,
-	power = false,
-	jacks = { A = nil, B = nil },
-	jacksConnected = false,
-	traced = false,
-	complete = false,
-	stage = 0,
-}
-local chapter3Mission = {
-	started=false, phone=false, log=false, route=false, controlKey=false,
-	switches={A=nil,B=nil}, power=false, elevatorOpened=false, recorder=false, complete=false, stage=0,
-}
+-- Estado de cada capítulo. As funções "novo..." devolvem o estado zerado, usado
+-- no começo e toda vez que um capítulo é reiniciado para outra equipe.
+local function newMission()
+	return {
+		started = false,
+		key = false,
+		fuse = false,
+		power = false,
+		clues = { Clue03 = false, Clue1 = false, Clue7 = false },
+		archiveOpen = false,
+		tape = false,
+		phone = false,
+		crowbar = false,
+		relayOpen = false,
+		relay = { A = nil, B = nil },
+		ending = nil,
+		stage = 0,
+	}
+end
+local function newChapter2Mission()
+	return {
+		started = false,
+		phone = false,
+		photo = false,
+		serviceKey = false,
+		wiring = false,
+		power = false,
+		jacks = { A = nil, B = nil },
+		jacksConnected = false,
+		traced = false,
+		complete = false,
+		stage = 0,
+	}
+end
+local function newChapter3Mission()
+	return {
+		started=false, phone=false, log=false, route=false, controlKey=false,
+		switches={A=nil,B=nil}, power=false, elevatorOpened=false, recorder=false, complete=false, stage=0,
+	}
+end
+local function newLaterMission()
+	return {started=false,found={},puzzleStep=0,lastPuzzlePlayer=nil,puzzleComplete=false,complete=false,choice=nil,batteryLift={A=nil,B=nil},batteryRaised=false,batteryMoved=false,stage=0}
+end
+local mission = newMission()
+local chapter2Mission = newChapter2Mission()
+local chapter3Mission = newChapter3Mission()
 local laterMissions, laterAis = {}, {}
 for chapterId=4,12 do
-	laterMissions[chapterId]={started=false,found={},puzzleStep=0,lastPuzzlePlayer=nil,puzzleComplete=false,complete=false,choice=nil,batteryLift={A=nil,B=nil},batteryRaised=false,batteryMoved=false}
+	laterMissions[chapterId]=newLaterMission()
 end
 local ensureLaterAI
+local connectPromptList
+local LAST_CHAPTER = 12
+-- Capítulo em andamento neste servidor (nil = ninguém jogando).
 local activeChapterId = nil
+-- Capítulos que já foram jogados neste servidor e precisam ser remontados antes de recomeçar.
+local usedChapters = {}
+local progressCache = {}
 local remoteCooldowns = {}
 local noiseCooldowns = {}
 local purchaseCooldowns = {}
@@ -79,21 +100,40 @@ local function startedPlayers()
 	return result
 end
 
+-- Texto do objetivo dos capítulos 4 a 12, conforme o que a equipe já fez.
+local function laterObjective(chapterId, m, foundCount)
+	local info = LaterChapterStory.Get(chapterId)
+	local objectives = info.Objectives
+	if m.complete then
+		return objectives[5]
+	elseif m.puzzleComplete then
+		return info.FinalChoice and objectives[3] or "Registrem a descoberta no caderno de campo, no fim da área."
+	elseif foundCount >= 3 then
+		if info.RequiresBattery and not m.batteryMoved then
+			return objectives[1]
+		end
+		return objectives[2]
+	elseif foundCount == 0 then
+		return "Examinem os três registros deixados nas mesas."
+	end
+	return string.format("Examinem os registros das mesas (%d de 3).", foundCount)
+end
+
 local function makeSnapshot()
 	if activeChapterId and activeChapterId >= 4 then
 		local m=laterMissions[activeChapterId]
 		local foundCount=0
 		for _,found in pairs(m.found) do if found then foundCount+=1 end end
-		return {chapterId=activeChapterId,stage=m.stage,objective=LaterChapterStory.Get(activeChapterId).Objectives[m.stage],foundCount=foundCount,puzzleStep=m.puzzleStep,puzzleComplete=m.puzzleComplete,batteryRaised=m.batteryRaised,batteryMoved=m.batteryMoved,choice=m.choice,complete=m.complete}
+		return {chapterId=activeChapterId,stage=m.stage,objective=laterObjective(activeChapterId,m,foundCount),foundCount=foundCount,puzzleStep=m.puzzleStep,puzzleComplete=m.puzzleComplete,batteryRaised=m.batteryRaised,batteryMoved=m.batteryMoved,choice=m.choice,complete=m.complete}
 	end
 	if activeChapterId == 3 then
-		return {chapterId=3,stage=chapter3Mission.stage,objective=Chapter3Story.GetObjective(chapter3Mission.stage),phone=chapter3Mission.phone,log=chapter3Mission.log,route=chapter3Mission.route,controlKey=chapter3Mission.controlKey,breakerA=chapter3Mission.switches.A~=nil,breakerB=chapter3Mission.switches.B~=nil,power=chapter3Mission.power,elevatorOpened=chapter3Mission.elevatorOpened,recorder=chapter3Mission.recorder,complete=chapter3Mission.complete}
+		return {chapterId=3,stage=chapter3Mission.stage,objective=Chapter3Story.GetObjective(math.max(chapter3Mission.stage-1,0)),phone=chapter3Mission.phone,log=chapter3Mission.log,route=chapter3Mission.route,controlKey=chapter3Mission.controlKey,breakerA=chapter3Mission.switches.A~=nil,breakerB=chapter3Mission.switches.B~=nil,power=chapter3Mission.power,elevatorOpened=chapter3Mission.elevatorOpened,recorder=chapter3Mission.recorder,complete=chapter3Mission.complete}
 	end
 	if activeChapterId == 2 then
 		return {
 			chapterId = 2,
 			stage = chapter2Mission.stage,
-			objective = Chapter2Story.GetObjective(chapter2Mission.stage),
+			objective = Chapter2Story.GetObjective(math.max(chapter2Mission.stage - 1, 0)),
 			phone = chapter2Mission.phone,
 			photo = chapter2Mission.photo,
 			serviceKey = chapter2Mission.serviceKey,
@@ -250,46 +290,6 @@ local function teleportToStart(player, requestedSpawn)
 	end
 end
 
-local function startPlayer(player, requestedChapterId)
-	local chapterId = typeof(requestedChapterId) == "number" and math.floor(requestedChapterId) or 1
-	if chapterId < 1 or chapterId > 12 then
-		tell(player, "Esse capítulo ainda está em desenvolvimento.", "info")
-		return
-	end
-	if activeChapterId and activeChapterId ~= chapterId then
-		tell(player, "A sessão já começou em outro capítulo. Escolham o mesmo capítulo para jogar juntos.", "error")
-		return
-	end
-	activeChapterId = chapterId
-	if chapterId>=4 then ensureLaterAI(chapterId); laterMissions[chapterId].started=true
-	elseif chapterId==2 then chapter2Mission.started=true
-	elseif chapterId==3 then chapter3Mission.started=true
-	else mission.started=true end
-	player:SetAttribute("Linha11Chapter", chapterId)
-	player:SetAttribute("Linha11Started", true)
-	player:SetAttribute("Linha11Hidden", false)
-	player:SetAttribute("Linha11IntroPending", true)
-	updateStage()
-	local character = player.Character
-	if character then
-		local laterSpawn=chapterId>=4 and laterSpawns[chapterId] or nil
-		local chapterSpawn=chapterId==2 and chapter2Spawn or (chapterId==3 and chapter3Spawn or (laterSpawn or spawnPoint))
-		teleportToStart(player,chapterSpawn)
-		local humanoid = character:FindFirstChildOfClass("Humanoid")
-		if humanoid then
-			humanoid.WalkSpeed = 0
-			humanoid.JumpPower = 0
-		end
-	end
-	send(player, "StartGame", {
-		chapterId = chapterId,
-		chapterTitle=chapterId==2 and Chapter2Story.Title or (chapterId==3 and Chapter3Story.Title or (chapterId>=4 and LaterChapterStory.Get(chapterId).Title or "Distrito 11 • Andar 3")),
-		prologue=chapterId==2 and Chapter2Story.Prologue or (chapterId==3 and Chapter3Story.Prologue or (chapterId>=4 and LaterChapterStory.Get(chapterId).Prologue or Story.Prologue)),
-		state = makeSnapshot(),
-	})
-	broadcast("MissionState", makeSnapshot())
-end
-
 local function setCharacterVisibility(character, hidden)
 	for _, item in ipairs(character:GetDescendants()) do
 		if item:IsA("BasePart") and item.Name ~= "HumanoidRootPart" then
@@ -320,26 +320,275 @@ local function handleCatch(player)
 	send(player, "Caught", { text = "O Ouvinte encontrou você. A equipe recuou para a entrada; a investigação continua." })
 end
 
-local ai = ListenerAI.new(world, function()
+local function allPlayers()
 	return Players:GetPlayers()
-end, handleCatch)
-local ai2 = ListenerAI.new(chapter2World, function()
-	return Players:GetPlayers()
-end, handleCatch, {
-	minX = 162,
-	maxX = 268,
-	pingMinX = 154,
-	pingMaxX = 276,
-	startX = 164,
-	z = 0,
-})
-local ai3=ListenerAI.new(chapter3World,function() return Players:GetPlayers() end,handleCatch,
-	{minX=303,maxX=404,pingMinX=292,pingMaxX=410,startX=397,z=0})
+end
+local AI2_CONFIG = { minX = 162, maxX = 268, pingMinX = 154, pingMaxX = 276, startX = 164, z = 0 }
+local AI3_CONFIG = { minX = 303, maxX = 404, pingMinX = 292, pingMaxX = 410, startX = 397, z = 0 }
+local ai = ListenerAI.new(world, allPlayers, handleCatch)
+local ai2 = ListenerAI.new(chapter2World, allPlayers, handleCatch, AI2_CONFIG)
+local ai3 = ListenerAI.new(chapter3World, allPlayers, handleCatch, AI3_CONFIG)
 ensureLaterAI=function(chapterId)
 	if not laterAis[chapterId] then
-		laterAis[chapterId]=ListenerAI.new(laterWorlds[chapterId],function() return Players:GetPlayers() end,handleCatch,LaterChapterMap.GetAIConfig(chapterId))
+		laterAis[chapterId]=ListenerAI.new(laterWorlds[chapterId],allPlayers,handleCatch,LaterChapterMap.GetAIConfig(chapterId))
 	end
 	return laterAis[chapterId]
+end
+
+-- Remonta um capítulo do zero: mapa, portas, luzes, criatura e progresso.
+local function resetChapter(chapterId)
+	if chapterId == 1 then
+		ai:Destroy()
+		world, spawnPoint = MapBuilder.Build()
+		MapBuilder.SetPower(false)
+		mission = newMission()
+		ai = ListenerAI.new(world, allPlayers, handleCatch)
+		connectPromptList(MapBuilder.GetPrompts())
+	elseif chapterId == 2 then
+		ai2:Destroy()
+		chapter2World, chapter2Spawn = Chapter2Map.Build()
+		chapter2Mission = newChapter2Mission()
+		ai2 = ListenerAI.new(chapter2World, allPlayers, handleCatch, AI2_CONFIG)
+		connectPromptList(Chapter2Map.GetPrompts())
+	elseif chapterId == 3 then
+		ai3:Destroy()
+		chapter3World, chapter3Spawn = Chapter3Map.Build()
+		chapter3Mission = newChapter3Mission()
+		ai3 = ListenerAI.new(chapter3World, allPlayers, handleCatch, AI3_CONFIG)
+		connectPromptList(Chapter3Map.GetPrompts())
+	else
+		if laterAis[chapterId] then
+			laterAis[chapterId]:Destroy()
+			laterAis[chapterId] = nil
+		end
+		local newWorld, newSpawn, newPrompts = LaterChapterMap.Rebuild(chapterId)
+		laterWorlds[chapterId] = newWorld
+		laterSpawns[chapterId] = newSpawn
+		laterMissions[chapterId] = newLaterMission()
+		connectPromptList(newPrompts)
+	end
+	usedChapters[chapterId] = nil
+end
+
+local function chapterSpawn(chapterId)
+	if chapterId == 2 then return chapter2Spawn end
+	if chapterId == 3 then return chapter3Spawn end
+	if chapterId >= 4 then return laterSpawns[chapterId] or spawnPoint end
+	return spawnPoint
+end
+
+local function chapterTitle(chapterId)
+	if chapterId == 2 then return Chapter2Story.Title end
+	if chapterId == 3 then return Chapter3Story.Title end
+	if chapterId >= 4 then return LaterChapterStory.Get(chapterId).Title end
+	return "O Primeiro Chamado"
+end
+
+local function chapterPrologue(chapterId)
+	if chapterId == 2 then return Chapter2Story.Prologue end
+	if chapterId == 3 then return Chapter3Story.Prologue end
+	if chapterId >= 4 then return LaterChapterStory.Get(chapterId).Prologue end
+	return Story.Prologue
+end
+
+local function isChapterComplete(chapterId)
+	if chapterId == 1 then return mission.ending ~= nil end
+	if chapterId == 2 then return chapter2Mission.complete end
+	if chapterId == 3 then return chapter3Mission.complete end
+	return laterMissions[chapterId] ~= nil and laterMissions[chapterId].complete
+end
+
+-- Tira o jogador do esconderijo sem depender do guarda-roupa (troca de capítulo, saída, renascimento).
+local function unhide(player)
+	if not player:GetAttribute("Linha11Hidden") then
+		return
+	end
+	player:SetAttribute("Linha11Hidden", false)
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if root then
+		root.Anchored = false
+	end
+	if character then
+		setCharacterVisibility(character, false)
+	end
+end
+
+local function startPlayer(player, requestedChapterId)
+	local chapterId = typeof(requestedChapterId) == "number" and math.floor(requestedChapterId) or 1
+	if chapterId < 1 or chapterId > LAST_CHAPTER then
+		tell(player, "Esse capítulo não existe.", "info")
+		return
+	end
+	if activeChapterId and #startedPlayers() == 0 then
+		activeChapterId = nil
+	end
+	if activeChapterId and activeChapterId ~= chapterId then
+		-- Já existe uma equipe jogando neste servidor: o jogador entra no capítulo dela.
+		chapterId = activeChapterId
+		tell(player, "Sua equipe já está no capítulo " .. chapterId .. ". Você entrou junto com ela.", "info")
+	end
+	if not activeChapterId then
+		if usedChapters[chapterId] then
+			resetChapter(chapterId)
+		end
+		usedChapters[chapterId] = true
+		activeChapterId = chapterId
+	end
+	if chapterId>=4 then ensureLaterAI(chapterId); laterMissions[chapterId].started=true
+	elseif chapterId==2 then chapter2Mission.started=true
+	elseif chapterId==3 then chapter3Mission.started=true
+	else mission.started=true end
+	unhide(player)
+	player:SetAttribute("Linha11Chapter", chapterId)
+	player:SetAttribute("Linha11Started", true)
+	player:SetAttribute("Linha11IntroPending", true)
+	updateStage()
+	local character = player.Character
+	if character then
+		teleportToStart(player, chapterSpawn(chapterId))
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.WalkSpeed = 0
+			humanoid.JumpPower = 0
+		end
+	end
+	send(player, "StartGame", {
+		chapterId = chapterId,
+		chapterTitle = string.format("CAPÍTULO %d  •  %s", chapterId, chapterTitle(chapterId)),
+		prologue = chapterPrologue(chapterId),
+		state = makeSnapshot(),
+	})
+	broadcast("MissionState", makeSnapshot())
+end
+
+-- O jogador volta ao menu. Se era o último da equipe, o servidor fica livre para outro capítulo.
+local function leaveSession(player)
+	if not player:GetAttribute("Linha11Started") then
+		return
+	end
+	unhide(player)
+	player:SetAttribute("Linha11Started", false)
+	player:SetAttribute("Linha11IntroPending", false)
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		humanoid.WalkSpeed = 16
+		humanoid.JumpPower = 42
+	end
+	if #startedPlayers() == 0 then
+		activeChapterId = nil
+	end
+end
+
+-- Leva a equipe inteira para o capítulo seguinte, depois de concluir o atual.
+local function advanceChapter(player)
+	local current = activeChapterId
+	if not current or not player:GetAttribute("Linha11Started") then
+		return
+	end
+	if not isChapterComplete(current) then
+		tell(player, "Concluam o capítulo atual antes de avançar.", "objective")
+		return
+	end
+	if current >= LAST_CHAPTER then
+		leaveSession(player)
+		return
+	end
+	local team = startedPlayers()
+	for _, member in ipairs(team) do
+		member:SetAttribute("Linha11Started", false)
+	end
+	activeChapterId = nil
+	for _, member in ipairs(team) do
+		startPlayer(member, current + 1)
+	end
+end
+
+-- Quem a equipe deve esperar numa etapa de dupla: outro jogador da sessão que esteja por perto.
+-- Assim um parceiro parado longe (ou que saiu do teclado) não trava quem está jogando.
+local function partnerNearby(player)
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return false
+	end
+	for _, other in ipairs(startedPlayers()) do
+		if other ~= player then
+			local otherRoot = other.Character and other.Character:FindFirstChild("HumanoidRootPart")
+			if otherRoot and (otherRoot.Position - root.Position).Magnitude <= 70 then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+-- Progresso salvo: o maior capítulo que o jogador já concluiu.
+local progressStore = nil
+do
+	local ok, store = pcall(function()
+		return DataStoreService:GetDataStore("Linha11Progresso_v1")
+	end)
+	if ok then
+		progressStore = store
+	end
+end
+
+local function loadProgress(player)
+	player:SetAttribute("Linha11Progress", 0)
+	if not progressStore then
+		return
+	end
+	task.spawn(function()
+		local ok, value = pcall(function()
+			return progressStore:GetAsync("u_" .. player.UserId)
+		end)
+		if ok and typeof(value) == "number" and player.Parent == Players then
+			local known = player:GetAttribute("Linha11Progress") or 0
+			player:SetAttribute("Linha11Progress", math.clamp(math.max(known, math.floor(value)), 0, LAST_CHAPTER))
+		end
+	end)
+end
+
+local function saveProgress(player, chapterId)
+	local known = player:GetAttribute("Linha11Progress") or 0
+	if chapterId <= known then
+		return
+	end
+	player:SetAttribute("Linha11Progress", chapterId)
+	if not progressStore then
+		return
+	end
+	local userId = player.UserId
+	task.spawn(function()
+		local ok, err = pcall(function()
+			progressStore:UpdateAsync("u_" .. userId, function(old)
+				if typeof(old) == "number" and old >= chapterId then
+					return nil
+				end
+				return chapterId
+			end)
+		end)
+		if not ok then
+			warn("Linha 11: não foi possível salvar o progresso:", err)
+		end
+	end)
+end
+
+-- Encerra o capítulo para a equipe: mostra o texto final, salva o progresso e
+-- informa qual é o próximo capítulo (se houver).
+local function finishChapter(chapterId, content, eventName)
+	local hasNext = chapterId < LAST_CHAPTER
+	local payload = {
+		title = content.title,
+		text = content.text,
+		chapterId = chapterId,
+		nextChapterId = hasNext and chapterId + 1 or nil,
+		nextTitle = hasNext and chapterTitle(chapterId + 1) or nil,
+	}
+	for _, member in ipairs(startedPlayers()) do
+		saveProgress(member, chapterId)
+	end
+	broadcast(eventName or "ChapterComplete", payload)
 end
 
 local function setPlayerPass(player, passKey, owned)
@@ -415,9 +664,12 @@ local function setupPlayer(player)
 	player:SetAttribute("Linha11Hidden", false)
 	player:SetAttribute("Linha11IntroPending", false)
 	loadPassOwnership(player)
+	loadProgress(player)
 	player.CharacterAdded:Connect(function(character)
 		character:WaitForChild("HumanoidRootPart", 8)
 		task.wait(0.15)
+		-- quem morreu escondido volta visível e solto
+		player:SetAttribute("Linha11Hidden", false)
 		if player:GetAttribute("Linha11Started") then
 			teleportToStart(player)
 			if player:GetAttribute("Linha11IntroPending") then
@@ -494,7 +746,20 @@ remote.OnServerEvent:Connect(function(player, action, value)
 	remoteCooldowns[player] = now
 
 	if action == "Start" then
+		if player:GetAttribute("Linha11Started") then
+			return
+		end
 		startPlayer(player, value)
+		return
+	end
+
+	if action == "NextChapter" then
+		advanceChapter(player)
+		return
+	end
+
+	if action == "Leave" then
+		leaveSession(player)
 		return
 	end
 
@@ -584,7 +849,7 @@ remote.OnServerEvent:Connect(function(player, action, value)
 		end
 		mission.ending = value
 		local ending = Story.Endings[value]
-		broadcast("Ending", ending)
+		finishChapter(1, ending, "Ending")
 		publishState()
 	end
 end)
@@ -676,8 +941,7 @@ local function handleChapter2Prompt(player, prompt, id)
 			tell(player, "Esse ponto já está conectado. Ativem o outro lado.", "info")
 			return
 		end
-		local activeCount = #startedPlayers()
-		if activeCount >= 2 and otherJack and otherJack.player == player then
+		if partnerNearby(player) and otherJack and otherJack.player == player then
 			tell(player, "O outro ponto precisa ser acionado pelo parceiro.", "objective")
 			return
 		end
@@ -707,7 +971,7 @@ local function handleChapter2Prompt(player, prompt, id)
 		elseif not chapter2Mission.complete then
 			chapter2Mission.complete = true
 			publishState()
-			broadcast("ChapterComplete", Chapter2Story.Completion)
+			finishChapter(2, Chapter2Story.Completion)
 		else
 			tell(player, "O registro já foi confirmado.", "info")
 		end
@@ -723,38 +987,39 @@ local function handleChapter3Prompt(player,prompt,id)
 	local now=os.clock()
 	if id=="C3_Phone" then
 		chapter3Mission.phone=true; showChapter3Document(player,"Phone")
-		tellAll("O ramal toca sem cabo. No corredor, alguma coisa responde com tres batidas.","scare")
+		tellAll("O ramal toca sem cabo. No corredor, alguma coisa responde com três batidas.","scare")
 	elseif id=="C3_Log" then chapter3Mission.log=true; showChapter3Document(player,"Log")
 	elseif id=="C3_Route" then chapter3Mission.route=true; showChapter3Document(player,"Route")
 	elseif id=="C3_Key" then
-		if not(chapter3Mission.log and chapter3Mission.route) then tell(player,"Compare o livro do elevador e o aviso de manutencao.","objective")
-		else chapter3Mission.controlKey=true; Chapter3Map.SetTechDoorOpen(true); showChapter3Document(player,"Key"); tellAll("A porta da sala tecnica sobe. Do elevador vem um unico toque.","success") end
+		if not(chapter3Mission.log and chapter3Mission.route) then tell(player,"Compare o livro do elevador e o aviso de manutenção.","objective")
+		else chapter3Mission.controlKey=true; Chapter3Map.SetTechDoorOpen(true); showChapter3Document(player,"Key"); tellAll("A porta da sala técnica sobe. Do elevador vem um único toque.","success") end
 	elseif id=="C3_BreakerA" or id=="C3_BreakerB" then
 		if not(chapter3Mission.log and chapter3Mission.route and chapter3Mission.controlKey) then tell(player,"Faltam a chave e os registros para identificar o retorno.","objective"); return end
-		if chapter3Mission.power then tell(player,"O retorno A/B ja esta fechado.","info"); return end
+		if chapter3Mission.power then tell(player,"O retorno A/B já está fechado.","info"); return end
 		local side=id=="C3_BreakerA" and "A" or "B"; local other=side=="A" and "B" or "A"
 		local otherSwitch=chapter3Mission.switches[other]
 		if otherSwitch and now-otherSwitch.time>12 then
 			chapter3Mission.switches.A=nil; chapter3Mission.switches.B=nil
 			Chapter3Map.SetBreaker("A",false); Chapter3Map.SetBreaker("B",false)
-			tellAll("O retorno caiu. Fechem os dois disjuntores com poucos segundos de diferenca.","error"); publishState(); return
+			tellAll("O retorno caiu. Fechem os dois disjuntores com poucos segundos de diferença.","error"); publishState(); return
 		end
-		if chapter3Mission.switches[side] then tell(player,"Esse disjuntor ja foi acionado.","info"); return end
-		if otherSwitch and #startedPlayers()>=2 and otherSwitch.player==player then tell(player,"O outro lado precisa do parceiro.","objective"); return end
+		if chapter3Mission.switches[side] then tell(player,"Esse disjuntor já foi acionado.","info"); return end
+		if otherSwitch and partnerNearby(player) and otherSwitch.player==player then tell(player,"O outro lado precisa do parceiro.","objective"); return end
 		chapter3Mission.switches[side]={player=player,time=now}; Chapter3Map.SetBreaker(side,true); ai3:Ping(prompt.Parent.Position,95)
 		if otherSwitch and now-otherSwitch.time<=12 then
 			chapter3Mission.power=true; Chapter3Map.SetPower(true); ai3:Wake(); ai3:Ping(prompt.Parent.Position,110)
 			tellAll("As luzes voltam. O elevador abre por dentro, embora o cabo ainda esteja solto.","scare")
-		else tellAll("Um disjuntor travou. O parceiro precisa fechar o outro em ate 12 segundos.","objective") end
+		else tellAll("Um disjuntor travou. O parceiro precisa fechar o outro em até 12 segundos.","objective") end
 	elseif id=="C3_ElevatorCall" then
-		if not chapter3Mission.power then tell(player,"O painel nao responde. Fechem juntos A e B.","objective")
-		else chapter3Mission.elevatorOpened=true; Chapter3Map.SetElevatorOpen(true); tellAll("A cabine esta vazia; um gravador continua girando no chao.","story") end
+		if not chapter3Mission.power then tell(player,"O painel não responde. Fechem juntos A e B.","objective")
+		else chapter3Mission.elevatorOpened=true; Chapter3Map.SetElevatorOpen(true); tellAll("A cabine está vazia; um gravador continua girando no chão.","story") end
 	elseif id=="C3_Recorder" then
-		if not chapter3Mission.elevatorOpened then tell(player,"O gravador esta alem das portas fechadas.","objective")
+		if not chapter3Mission.elevatorOpened then tell(player,"O gravador está além das portas fechadas.","objective")
 		else chapter3Mission.recorder=true; showChapter3Document(player,"Recorder"); tellAll("A fita repete o indicativo da equipe, gravado antes do despacho.","scare") end
 	elseif id=="C3_Report" then
 		if not chapter3Mission.recorder then tell(player,"Levem o gravador ao patamar e registrem a descoberta.","objective")
-		else chapter3Mission.complete=true; publishState(); broadcast("ChapterComplete",Chapter3Story.Completion) end
+		elseif not chapter3Mission.complete then chapter3Mission.complete=true; publishState(); finishChapter(3,Chapter3Story.Completion)
+		else tell(player,"O registro já foi confirmado.","info") end
 	end
 	publishState()
 end
@@ -777,47 +1042,54 @@ local function handleLaterChapterPrompt(player,prompt,id)
 			if foundCount==0 then tellAll("A primeira pista liga o local ao ramal 11.","story") end
 		end
 	elseif chapterId==7 and (action=="LiftA" or action=="LiftB") then
-		if foundCount<3 then tell(player,"Leiam o diagrama, a etiqueta e a ordem da subestacao antes de mover a bateria.","objective")
-		elseif m.batteryRaised then tell(player,"A bateria ja foi levantada pela equipe.","info")
+		if foundCount<3 then tell(player,"Leiam o diagrama, a etiqueta e a ordem da subestação antes de mover a bateria.","objective")
+		elseif m.batteryRaised then tell(player,"A bateria já foi levantada pela equipe.","info")
 		else
 			local side=action=="LiftA" and "A" or "B"; local other=side=="A" and "B" or "A"
 			local otherLift=m.batteryLift[other]
-			if otherLift and now-otherLift.time>12 then m.batteryLift.A=nil; m.batteryLift.B=nil; tellAll("A bateria volta ao suporte. Tentem levantar as duas alcas juntas.","error")
-			elseif otherLift and #startedPlayers()>=2 and otherLift.player==player then tell(player,"A segunda alca precisa do parceiro.","objective")
+			if otherLift and now-otherLift.time>12 then m.batteryLift.A=nil; m.batteryLift.B=nil; tellAll("A bateria volta ao suporte. Tentem levantar as duas alças juntas.","error")
+			elseif otherLift and partnerNearby(player) and otherLift.player==player then tell(player,"A segunda alça precisa do parceiro.","objective")
 			else
 				m.batteryLift[side]={player=player,time=now}
 				if otherLift and now-otherLift.time<=12 then
 					m.batteryRaised=true; LaterChapterMap.MoveBattery(7)
-					tellAll("A equipe levanta a bateria pesada e a desliza ate o receptaculo. Um dos cabos se parte no tunel.","scare")
+					tellAll("A equipe levanta a bateria pesada e a desliza até o receptáculo. Um dos cabos se parte no túnel.","scare")
 					local monster=laterAis[7]; if monster then monster:Wake(); monster:Ping(prompt.Parent.Position,100) end
-				else tellAll("Uma alca esta presa. O parceiro precisa segurar a outra em ate 12 segundos.","objective") end
+				else tellAll("Uma alça está presa. O parceiro precisa segurar a outra em até 12 segundos.","objective") end
 			end
 		end
 	elseif chapterId==7 and action=="BatterySocket" then
-		if not m.batteryRaised then tell(player,"A bateria ainda esta presa ao suporte.","objective")
-		else m.batteryMoved=true; tellAll("A bateria encaixa no receptaculo. O painel dos tres trechos acende.","success") end
+		if not m.batteryRaised then tell(player,"A bateria ainda está presa ao suporte.","objective")
+		else m.batteryMoved=true; tellAll("A bateria encaixa no receptáculo. O painel dos três trechos acende.","success") end
 	elseif string.match(action,"^Step[A-C]$") then
-		if foundCount<3 then tell(player,"Encontrem as tres pistas antes de mexer nos controles.","objective")
-		elseif chapterId==7 and not m.batteryMoved then tell(player,"Levem a bateria ao receptaculo antes de fechar os trechos.","objective")
-		elseif m.puzzleComplete then tell(player,"A sequencia ja foi confirmada. Sigam para o registro final.","info")
+		if foundCount<3 then tell(player,"Encontrem as três pistas antes de mexer nos controles.","objective")
+		elseif chapterId==7 and not m.batteryMoved then tell(player,"Levem a bateria ao receptáculo antes de fechar os trechos.","objective")
+		elseif m.puzzleComplete then tell(player,"A sequência já foi confirmada. Sigam para o registro final.","info")
 		else
 			local step=string.sub(action,5)
 			local expected=info.PuzzleOrder[m.puzzleStep+1]
 			local nextIndex=m.puzzleStep+1
 			if step~=expected then
 				m.puzzleStep=0; m.lastPuzzlePlayer=nil
-				tellAll("O mecanismo rejeita a ordem. Leiam a sequencia nas pistas e recomecem.","error")
+				m.mistakes=(m.mistakes or 0)+1
+				if m.mistakes>=2 then
+					-- Depois de errar duas vezes a equipe ganha a dica do controle que faltava, para ninguém ficar preso.
+					local wanted=info.StepLabels[expected]
+					tellAll(string.format("O mecanismo rejeita a ordem e volta ao início. Dica: nesse ponto o controle certo era “%s”.",wanted.Action),"error")
+				else
+					tellAll("O mecanismo rejeita a ordem e volta ao início. Releiam as pistas e recomecem.","error")
+				end
 				local monster=laterAis[chapterId]; if monster then monster:Wake(); monster:Ping(prompt.Parent.Position,95) end
-			elseif info.CoopStep and info.CoopStep>0 and nextIndex==info.CoopStep and #startedPlayers()>=2 and m.lastPuzzlePlayer==player then
+			elseif info.CoopStep and info.CoopStep>0 and nextIndex==info.CoopStep and partnerNearby(player) and m.lastPuzzlePlayer==player then
 				tell(player,"Esta etapa exige que o parceiro assuma o outro controle.","objective")
 			else
 				m.puzzleStep=nextIndex; m.lastPuzzlePlayer=player
 				local monster=laterAis[chapterId]; if monster then monster:Wake(); monster:Ping(prompt.Parent.Position,85) end
 				if m.puzzleStep>=#info.PuzzleOrder then
 					m.puzzleComplete=true
-					tellAll("A sequencia fecha. Um sinal atravessa o ambiente e o registro final fica acessivel.","success")
+					tellAll("A sequência fecha. Um sinal atravessa o ambiente e o registro final fica acessível.","success")
 					if monster then monster:Ping(prompt.Parent.Position,110) end
-				else tellAll("Controle aceito. A proxima etapa do circuito esta ativa.","objective") end
+				else tellAll("Controle aceito. A próxima etapa do circuito está ativa.","objective") end
 			end
 		end
 	elseif action=="Report" then
@@ -825,15 +1097,15 @@ local function handleLaterChapterPrompt(player,prompt,id)
 		elseif chapterId==12 then tell(player,"Escolham transmitir a prova ou cortar a linha nos controles do repetidor.","objective")
 		elseif not m.complete then
 			m.complete=true
-			broadcast("ChapterComplete",info.Completion)
-		else tell(player,"Este capitulo ja foi registrado.","info") end
+			finishChapter(chapterId,info.Completion)
+		else tell(player,"Este capítulo já foi registrado.","info") end
 	elseif chapterId==12 and (action=="Transmit" or action=="Cut") then
 		if not m.puzzleComplete then tell(player,"Fechem o circuito antes de decidir o destino da chamada.","objective")
 		elseif not m.complete then
 			local key=action=="Transmit" and "Transmit" or "Cut"
 			m.choice=key; m.complete=true
-			broadcast("ChapterComplete",info.Endings[key])
-		else tell(player,"A decisao da equipe ja foi tomada.","info") end
+			finishChapter(chapterId,info.Endings[key])
+		else tell(player,"A decisão da equipe já foi tomada.","info") end
 	end
 	publishState()
 end
@@ -1007,8 +1279,7 @@ local function handlePrompt(player, prompt)
 				publishState()
 				return
 			end
-			local activeCount = #startedPlayers()
-			if activeCount >= 2 and otherLever and otherLever.player == player then
+			if partnerNearby(player) and otherLever and otherLever.player == player then
 				tell(player, "A outra alavanca precisa ser ativada pelo parceiro.", "objective")
 				return
 			end
@@ -1038,7 +1309,7 @@ local function handlePrompt(player, prompt)
 	end
 end
 
-local function connectPromptList(list)
+connectPromptList = function(list)
 	for _,prompt in ipairs(list) do prompt.Triggered:Connect(function(player) handlePrompt(player,prompt) end) end
 end
 connectPromptList(MapBuilder.GetPrompts())
@@ -1071,6 +1342,11 @@ Players.PlayerRemoving:Connect(function(player)
 		if mission.relay[side] and mission.relay[side].player == player then
 			mission.relay[side] = nil
 		end
+	end
+	-- Se era o último da equipe, o servidor fica livre para a próxima começar do zero.
+	player:SetAttribute("Linha11Started", false)
+	if #startedPlayers() == 0 then
+		activeChapterId = nil
 	end
 end)
 
