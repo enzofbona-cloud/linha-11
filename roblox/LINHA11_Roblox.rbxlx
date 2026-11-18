@@ -136,11 +136,11 @@ LaterChapterStory.Chapters = {
 		Prologue={"A Central foi lacrada depois da evacuação.","Onze chamadas continuam na mesa, cada uma com um horário diferente.","A gravação mais recente tem a voz de um operador que afirma estar sozinho."},
 		Objectives={[0]="Examine os rolos e o quadro de despacho.",[1]="Encontre as três fichas que ainda têm horário legível.",[2]="Reordene as chamadas na mesa de gravação.",[3]="Reproduza a fita integral e registre a origem do despacho.",[4]="A ordem da evacuação foi emitida daqui, antes do primeiro chamado.",[5]="Capítulo concluído."},
 		Clues={
-			{title="FICHA DE DESPACHO A",text="02:41 — ramal 11 — solicitada ambulância para o Distrito 11. A linha estava muda durante 19 segundos antes da resposta."},
+			{title="FICHA DE DESPACHO A",text="02:41 — ramal 11 — solicitada ambulância para o Distrito 11. A linha estava muda durante 19 segundos antes da resposta. Na mesa de gravação, as fichas só tocam na ordem em que as chamadas aconteceram."},
 			{title="FICHA DE DESPACHO B",text="03:02 — ordem interna: preparar retirada total. Campo de autorização sem assinatura; carimbo aplicado 15 minutos depois."},
 			{title="FICHA DE DESPACHO C",text="03:17 — chamada recebida da sala de operação, que estava vazia segundo o controle de acesso."},
 		},
-		PuzzleOrder={"A","C","B"}, CoopStep=0,
+		PuzzleOrder={"A","B","C"}, CoopStep=0,
 		StepLabels={A={Action="02:41",Object="Rolo 1"},B={Action="03:02",Object="Rolo 2"},C={Action="03:17",Object="Rolo 3"}},
 		Completion={title="CAPÍTULO 5 • CENTRAL DE CHAMADAS",text="A ordem de retirada foi registrada antes de qualquer pedido de ajuda. A fita original foi levada ao Arquivo Municipal; a cópia da Central foi editada. O número de custódia termina em 0317."},
 	},
@@ -151,10 +151,10 @@ LaterChapterStory.Chapters = {
 		Clues={
 			{title="FOLHA DE SAÍDA",text="A lista foi impressa às 03:17. O campo 'saída confirmada' está marcado, mas o livro de portaria não registra veículos no perímetro."},
 			{title="CARIMBO DE CUSTÓDIA",text="A matriz do carimbo foi usada antes da folha existir. O lote do carimbo pertence ao turno seguinte."},
-			{title="FICHA DE TRANSFERÊNCIA",text="Destino apagado. Quantidade: onze volumes. Responsável: R. Vale. Um segundo carimbo aponta para a Linha de Serviço."},
+			{title="FICHA DE TRANSFERÊNCIA",text="Destino apagado. Quantidade: onze volumes. Responsável: R. Vale. Um segundo carimbo aponta para a Linha de Serviço. No verso, o arquivista anotou a ordem real dos papéis: primeiro o carimbo, depois a custódia, por último a impressão."},
 		},
 		PuzzleOrder={"B","C","A"}, CoopStep=0,
-		StepLabels={A={Action="Impressao",Object="Etapa 1"},B={Action="Carimbo",Object="Etapa 2"},C={Action="Custodia",Object="Etapa 3"}},
+		StepLabels={A={Action="Impressão",Object="Etapa 1"},B={Action="Carimbo",Object="Etapa 2"},C={Action="Custódia",Object="Etapa 3"}},
 		Completion={title="CAPÍTULO 6 • ARQUIVO 03:17",text="A fita original não contém uma lista de passageiros. Contém onze ramais ativos e um pedido para manter a Linha de Serviço ligada. O nome R. Vale aparece novamente na subestação."},
 	},
 	[7] = {
@@ -162,12 +162,12 @@ LaterChapterStory.Chapters = {
 		Prologue={"A Linha de Serviço passa por baixo do perímetro evacuado.","A bateria de emergência foi removida do suporte e deixada no túnel.","A porta atrás de vocês não vai continuar aberta por muito tempo."},
 		Objectives={[0]="Encontre o suporte e as duas alças da bateria pesada.",[1]="Levante a bateria em dupla e leve-a ao receptáculo.",[2]="Restaure os três trechos do circuito na ordem do diagrama.",[3]="Abra a passagem de retorno e recupere o registro da subestação.",[4]="O consumo da linha coincide com a ala de triagem.",[5]="Capítulo concluído."},
 		Clues={
-			{title="DIAGRAMA DE CABOS",text="Trecho 1 alimenta a ala de triagem. Trecho 2 retorna ao repetidor. Trecho 3 foi ligado depois da evacuação por alguém que conhecia o circuito."},
+			{title="DIAGRAMA DE CABOS",text="Trecho 1 alimenta a ala de triagem. Trecho 2 retorna ao repetidor. Trecho 3 foi ligado depois da evacuação por alguém que conhecia o circuito. A lápis, no canto: religar o 1, depois o 3, e o 2 por último."},
 			{title="ETIQUETA DA BATERIA",text="Bateria de chumbo, 86 kg. Transporte com duas pessoas. A alça esquerda está travada."},
 			{title="ORDEM DA SUBESTAÇÃO",text="Manter ativo até receber confirmação da triagem. Assinatura: R. Vale. A hora foi escrita por cima: 03:17."},
 		},
 		PuzzleOrder={"A","C","B"}, CoopStep=2, RequiresBattery=true,
-		StepLabels={A={Action="TRECHO 1",Object="Distribuicao"},B={Action="TRECHO 2",Object="Retorno"},C={Action="TRECHO 3",Object="Repetidor"}},
+		StepLabels={A={Action="TRECHO 1",Object="Distribuição"},B={Action="TRECHO 2",Object="Retorno"},C={Action="TRECHO 3",Object="Repetidor"}},
 		Completion={title="CAPÍTULO 7 • LINHA DE SERVIÇO",text="A bateria manteve um circuito vivo sob o bairro. O ramal vai para o abrigo de triagem. A última mensagem da subestação pede para conferir as pulseiras antes de desligar qualquer coisa."},
 	},
 	[8] = {
@@ -176,7 +176,7 @@ LaterChapterStory.Chapters = {
 		Objectives={[0]="Compare o mapa das camas com as pulseiras.",[1]="Procure a ficha da enfermaria e a lista de entrada.",[2]="Ligue a luz da ala e confira as três estações de suprimentos.",[3]="Registre quem foi atendido e quem nunca chegou.",[4]="O endereço de transferência leva ao Bloco 11.",[5]="Capítulo concluído."},
 		Clues={
 			{title="MAPA DAS CAMAS",text="Onze camas foram reservadas. A equipe marcou os leitos como ocupados, mas a contagem de cobertores permaneceu zero."},
-			{title="FICHA DA ENFERMARIA",text="Nenhum paciente registrado. A linha de observação foi preenchida com a mesma frase: 'aguardando transporte'."},
+			{title="FICHA DA ENFERMARIA",text="Nenhum paciente registrado. A linha de observação foi preenchida com a mesma frase: 'aguardando transporte'. O protocolo da enfermaria manda conferir as fichas primeiro, as pulseiras depois e os suprimentos por último."},
 			{title="LISTA DE ENTRADA",text="A lista tem onze nomes, todos recebidos às 03:17. A assinatura do recebedor é R. Vale; o endereço é Bloco 11, apartamento 11."},
 		},
 		PuzzleOrder={"B","A","C"}, CoopStep=2,
@@ -190,7 +190,7 @@ LaterChapterStory.Chapters = {
 		Clues={
 			{title="ETIQUETA 11-A",text="Nome: Elisa Moura. Conteúdo: uma chave de casa, duas fotografias e um cartão de ônibus sem validação."},
 			{title="ETIQUETA 11-B",text="Nome: Davi Nunes. Conteúdo: um relógio parado às 03:17 e uma ficha de abrigo em branco."},
-			{title="LIVRO DE ENTRADA",text="Nenhuma chave foi entregue. Todos os apartamentos aparecem ocupados antes da data oficial de transferência."},
+			{title="LIVRO DE ENTRADA",text="Nenhuma chave foi entregue. Todos os apartamentos aparecem ocupados antes da data oficial de transferência. A fechadura da sala de recebimento abre na ordem do livro: recepção, 11-B e 11-A."},
 		},
 		PuzzleOrder={"C","B","A"}, CoopStep=1,
 		StepLabels={A={Action="11-A",Object="Fechadura"},B={Action="11-B",Object="Trava"},C={Action="RECEPÇÃO",Object="Registro"}},
@@ -215,11 +215,11 @@ LaterChapterStory.Chapters = {
 		Objectives={[0]="Encontre o rolo integral e o painel de transmissão.",[1]="Compare a fita física com o sinal ao vivo.",[2]="Sincronize o gravador e mantenha a transmissão protegida em dupla.",[3]="Ouça o depoimento completo e registre a identidade da testemunha.",[4]="R. Vale afirma que recebeu uma chamada de dentro do distrito.",[5]="Capítulo concluído."},
 		Clues={
 			{title="ROLO INTEGRAL",text="A fita tem onze canais separados. O canal 11 contém uma pessoa pedindo ajuda; os outros dez repetem a resposta do operador."},
-			{title="SINAL AO VIVO",text="A voz identifica R. Vale como operadora da noite da evacuação. Ela diz que a ordem chegou pelo canal de emergência, sem origem registrada."},
+			{title="SINAL AO VIVO",text="A voz identifica R. Vale como operadora da noite da evacuação. Ela diz que a ordem chegou pelo canal de emergência, sem origem registrada. Para gravar sem perder o sinal: antena primeiro, depois a mesa, e só então a fita."},
 			{title="ANOTAÇÃO DA TESTEMUNHA",text="A operadora escreveu: 'Eu mudei o relatório porque a voz usou meu nome. Não sei se veio da linha ou de dentro da sala.'"},
 		},
 		PuzzleOrder={"B","C","A"}, CoopStep=2,
-		StepLabels={A={Action="FITA",Object="Gravador"},B={Action="ANTENA",Object="Sinal ao vivo"},C={Action="MESA",Object="Transmissao"}},
+		StepLabels={A={Action="FITA",Object="Gravador"},B={Action="ANTENA",Object="Sinal ao vivo"},C={Action="MESA",Object="Transmissão"}},
 		Completion={title="CAPÍTULO 11 • A TESTEMUNHA",text="R. Vale confirma que adulterou a ordem de saída, mas nega ter criado a chamada. A fita original registra um detalhe que ela não contou: uma segunda respiração no microfone, antes de qualquer voz."},
 	},
 	[12] = {
@@ -229,7 +229,7 @@ LaterChapterStory.Chapters = {
 		Clues={
 			{title="FIO DO 304",text="O fio novo atrás do espelho não alimentava o apartamento. Ele levava a uma caixa instalada no dia da evacuação."},
 			{title="REGISTRO DE R. VALE",text="A testemunha escreveu que a chamada pedia dois nomes. O formulário de despacho foi alterado depois que ela respondeu."},
-			{title="ÚLTIMA TRANSCRIÇÃO",text="A fita contém o primeiro chamado e o último ao mesmo tempo. A voz do outro lado diz: 'Não desliguem. Ainda falta alguém atender.'"},
+			{title="ÚLTIMA TRANSCRIÇÃO",text="A fita contém o primeiro chamado e o último ao mesmo tempo. A voz do outro lado diz: 'Não desliguem. Ainda falta alguém atender.' Na margem, a letra de R. Vale: sincronize a linha, abra o painel, feche o retorno."},
 		},
 		PuzzleOrder={"C","A","B"}, CoopStep=2, FinalChoice=true,
 		StepLabels={A={Action="ABRIR PAINEL",Object="Repetidor"},B={Action="RETORNO",Object="Circuito"},C={Action="SINCRONIZAR",Object="Linha"}},
@@ -337,12 +337,12 @@ Story.Objectives = {
 
 Story.Endings = {
 	Transmit = {
-		title = "A LINHA FICA ABERTA",
-		text = "A fita é enviada à central. As onze chamadas chegam ao público, junto com o relatório que a prefeitura enterrou. O repetidor responde com uma décima segunda chamada — agora de dentro da viatura.",
+		title = "CAPÍTULO 1 • A LINHA FICA ABERTA",
+		text = "A equipe manda a fita para a central. A transmissão chega cortada: só a primeira chamada passa inteira. Então o telefone do 304 volta a tocar, e a central confirma que a ligação vem de dentro do apartamento.",
 	},
 	Cut = {
-		title = "SILÊNCIO NO DISTRITO 11",
-		text = "O repetidor é cortado. O prédio fica em silêncio e os dois técnicos deixam o Aurora com a fita. A cidade ainda não conhece a verdade, mas, pela primeira vez em dezessete anos, ninguém atende do outro lado.",
+		title = "CAPÍTULO 1 • SILÊNCIO NO ANDAR",
+		text = "A equipe corta o repetidor do terceiro andar e guarda a fita. Por alguns segundos, o prédio fica em silêncio. Então o telefone do 304 toca de novo, sem nenhuma linha ligada a ele.",
 	},
 }
 
@@ -2265,11 +2265,11 @@ local function furniture(parent,id,theme)
 		for _,x in ipairs({4,100}) do part(parent,id,"Poste_Rua",Vector3.new(.25,9,.25),pos(id,x,4.5,-9),metal,Enum.Material.Metal); part(parent,id,"Luminaria_Rua",Vector3.new(2,.18,.7),pos(id,x,9,-9),Color3.fromRGB(51,53,52),Enum.Material.Metal) end
 		for _,x in ipairs({28,33,89,94}) do part(parent,id,"Barreira_Evacuacao",Vector3.new(1.4,3,.5),pos(id,x,1.5,-8),Color3.fromRGB(119,42,34),Enum.Material.Metal) end
 	elseif theme=="callcenter" then
-		for _,x in ipairs({23,43,63,83}) do
-			part(parent,id,"Mesa_Despacho",Vector3.new(9, .28,4),pos(id,x,2,1),wood,Enum.Material.WoodPlanks)
-			part(parent,id,"Console_Operador",Vector3.new(5,1.1,1.7),pos(id,x,2.7,.2),metal,Enum.Material.Metal)
-			for n=1,5 do part(parent,id,"Botao_Ramal",Vector3.new(.35,.16,.35),pos(id,x-2.2+n*.8,3.35,-.3),Color3.fromRGB(118,83,54),Enum.Material.Neon,0,false) end
-			part(parent,id,"Cadeira_Operador",Vector3.new(2,2.3,2),pos(id,x,1.15,4.2),fabric,Enum.Material.Fabric)
+		for _,x in ipairs({23,45,58,84}) do
+			part(parent,id,"Mesa_Despacho",Vector3.new(9, .28,4),pos(id,x,2,-9),wood,Enum.Material.WoodPlanks)
+			part(parent,id,"Console_Operador",Vector3.new(5,1.1,1.7),pos(id,x,2.7,-9.8),metal,Enum.Material.Metal)
+			for n=1,5 do part(parent,id,"Botao_Ramal",Vector3.new(.35,.16,.35),pos(id,x-2.2+n*.8,3.35,-10.3),Color3.fromRGB(118,83,54),Enum.Material.Neon,0,false) end
+			part(parent,id,"Cadeira_Operador",Vector3.new(2,2.3,2),pos(id,x,1.15,-5.8),fabric,Enum.Material.Fabric)
 		end
 		part(parent,id,"Quadro_Canais",Vector3.new(18,7,.3),pos(id,53,6,-11.6),metal,Enum.Material.CorrodedMetal)
 	elseif theme=="archive" then
@@ -2278,20 +2278,20 @@ local function furniture(parent,id,theme)
 			for n=1,5 do part(parent,id,"Prateleira_Arquivo",Vector3.new(3,.18,5.7),pos(id,x+1.7,.8+n*1.35,-8),wood,Enum.Material.Wood) end
 			for n=1,3 do part(parent,id,"Caixa_Arquivo",Vector3.new(1.7,1,1.2),pos(id,x+1,1.1+n*1.65,-8),Color3.fromRGB(94,79,58),Enum.Material.WoodPlanks) end
 		end
-		part(parent,id,"Mesa_Consulta",Vector3.new(10,.25,4),pos(id,52,2,5),wood,Enum.Material.WoodPlanks)
+		part(parent,id,"Mesa_Consulta",Vector3.new(10,.25,4),pos(id,24,2,8),wood,Enum.Material.WoodPlanks)
 	elseif theme=="tunnel" then
 		for _,z in ipairs({-8,8}) do
 			part(parent,id,"Duto_Servico",Vector3.new(102,.8,.8),pos(id,54,8,z),metal,Enum.Material.Metal,0,false,Enum.PartType.Cylinder)
 			part(parent,id,"Cabo_Power",Vector3.new(102,.24,.24),pos(id,54,6.8,z),Color3.fromRGB(25,25,23),Enum.Material.Rubber,0,false)
 		end
-		for _,x in ipairs({15,35,55,75,95}) do part(parent,id,"Pilar_Tunel",Vector3.new(.5,10,18),pos(id,x,5,0),Color3.fromRGB(66,65,60),Enum.Material.Concrete) end
+		for _,x in ipairs({25,48,70,95}) do for _,z in ipairs({-11,11}) do part(parent,id,"Pilar_Tunel",Vector3.new(1.2,10,2.6),pos(id,x,5,z),Color3.fromRGB(66,65,60),Enum.Material.Concrete) end end
 		local battery=part(parent,id,"Bateria_Pesada",Vector3.new(4,3,3),pos(id,38,1.5,4),Color3.fromRGB(44,53,52),Enum.Material.Metal)
 		batteries[id]={part=battery,from=battery.CFrame,to=CFrame.new(pos(id,75,1.5,0))}
 		anchor(parent,id,"Alca_Bateria_A",36,2.5,2,"C7_LiftA","Segurar","Alça A",1)
 		anchor(parent,id,"Alca_Bateria_B",40,2.5,6,"C7_LiftB","Segurar","Alça B",1)
 		anchor(parent,id,"Receptaculo_Bateria",75,2,0,"C7_BatterySocket","Conectar","Suporte da subestação",.7)
 	elseif theme=="triage" then
-		for _,x in ipairs({15,36,57,78}) do
+		for _,x in ipairs({15,44,57,80}) do
 			part(parent,id,"Maca_Triagem",Vector3.new(7,1.1,3),pos(id,x,1.2,-7),Color3.fromRGB(92,93,87),Enum.Material.Metal)
 			part(parent,id,"Colchao_Triagem",Vector3.new(6.7,.35,2.8),pos(id,x,1.9,-7),Color3.fromRGB(153,147,130),Enum.Material.Fabric)
 			part(parent,id,"Biombo_Triagem",Vector3.new(.15,6,5),pos(id,x+5,3,-8),Color3.fromRGB(125,121,111),Enum.Material.Fabric,.18,false)
@@ -2313,9 +2313,9 @@ local function furniture(parent,id,theme)
 		end
 	elseif theme=="radio" then
 		for _,x in ipairs({20,50,80}) do
-			part(parent,id,"Console_Radio",Vector3.new(8,1.1,3),pos(id,x,2.4,4),metal,Enum.Material.Metal)
-			part(parent,id,"Gravador_Bobina",Vector3.new(3,1.8,1),pos(id,x,3.8,3),Color3.fromRGB(38,40,39),Enum.Material.Metal)
-			for _,dx in ipairs({-1,1}) do part(parent,id,"Bobina",Vector3.new(1.2,.18,1.2),pos(id,x+dx,4.8,2.4),Color3.fromRGB(112,99,78),Enum.Material.Metal,0,false,Enum.PartType.Cylinder) end
+			part(parent,id,"Console_Radio",Vector3.new(8,1.1,3),pos(id,x,2.4,-9),metal,Enum.Material.Metal)
+			part(parent,id,"Gravador_Bobina",Vector3.new(3,1.8,1),pos(id,x,3.8,-10),Color3.fromRGB(38,40,39),Enum.Material.Metal)
+			for _,dx in ipairs({-1,1}) do part(parent,id,"Bobina",Vector3.new(1.2,.18,1.2),pos(id,x+dx,4.8,-10.6),Color3.fromRGB(112,99,78),Enum.Material.Metal,0,false,Enum.PartType.Cylinder) end
 		end
 		part(parent,id,"Mastro_Antena",Vector3.new(.35,25,.35),pos(id,96,12,0),metal,Enum.Material.Metal)
 		for _,y in ipairs({6,13,20}) do part(parent,id,"Braco_Antena",Vector3.new(12,.22,.22),pos(id,96,y,0),metal,Enum.Material.Metal,0,false) end
@@ -2325,7 +2325,7 @@ local function furniture(parent,id,theme)
 			part(parent,id,"Mesa_Telefone",Vector3.new(5,2,3),pos(id,x+8,1,7),wood,Enum.Material.WoodPlanks)
 			part(parent,id,"Telefone_Emergencia",Vector3.new(1.4,.6,1),pos(id,x+8,2.3,6),metal,Enum.Material.Metal)
 		end
-		part(parent,id,"Rack_Repetidor",Vector3.new(7,9,4),pos(id,88,4.5,-7),metal,Enum.Material.CorrodedMetal)
+		part(parent,id,"Rack_Repetidor",Vector3.new(7,9,4),pos(id,80,4.5,-8),metal,Enum.Material.CorrodedMetal)
 	end
 end
 local function buildOne(id)
@@ -2344,8 +2344,9 @@ local function buildOne(id)
 	end
 	furniture(folder,id,theme)
 	for _,x in ipairs({12,48,86}) do light(folder,id,x,0) end
+	local clueX={15,44,55}
 	for i=1,3 do
-		local x=15+(i-1)*20
+		local x=clueX[i]
 		part(folder,id,"Mesa_Pista_"..i,Vector3.new(4,.24,2.8),pos(id,x,1.8,3),Color3.fromRGB(75,57,43),Enum.Material.WoodPlanks)
 		document(folder,id,i,x,1.95,3)
 	end
@@ -2359,7 +2360,7 @@ local function buildOne(id)
 		anchor(folder,id,"Transmitir_Prova",91,2,6,"C12_Transmit","Transmitir","Prova integral",.75)
 		anchor(folder,id,"Cortar_Linha",91,2,-6,"C12_Cut","Cortar","Repetidor principal",.75)
 	end
-	if id==8 then anchor(folder,id,"Esconder_Atrás_Biombo",54,2,-7,"Hide_Triage","Esconder","Biombo da enfermaria",.6) end
+	if id==8 then anchor(folder,id,"Esconder_Atrás_Biombo",49,2,-7,"Hide_Triage","Esconder","Biombo da enfermaria",.6) end
 	local s=Instance.new("SpawnLocation"); s.Name="InicioCapitulo"..id; s.Size=Vector3.new(4,.6,4); s.Position=pos(id,4,.1,0)
 	s.Anchored=true; s.Transparency=1; s.CanCollide=false; s.Neutral=true; s.Duration=0; s.Parent=folder
 	worlds[id]=folder; spawns[id]=s

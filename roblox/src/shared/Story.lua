@@ -59,12 +59,12 @@ Story.Objectives = {
 
 Story.Endings = {
 	Transmit = {
-		title = "A LINHA FICA ABERTA",
-		text = "A fita é enviada à central. As onze chamadas chegam ao público, junto com o relatório que a prefeitura enterrou. O repetidor responde com uma décima segunda chamada — agora de dentro da viatura.",
+		title = "CAPÍTULO 1 • A LINHA FICA ABERTA",
+		text = "A equipe manda a fita para a central. A transmissão chega cortada: só a primeira chamada passa inteira. Então o telefone do 304 volta a tocar, e a central confirma que a ligação vem de dentro do apartamento.",
 	},
 	Cut = {
-		title = "SILÊNCIO NO DISTRITO 11",
-		text = "O repetidor é cortado. O prédio fica em silêncio e os dois técnicos deixam o Aurora com a fita. A cidade ainda não conhece a verdade, mas, pela primeira vez em dezessete anos, ninguém atende do outro lado.",
+		title = "CAPÍTULO 1 • SILÊNCIO NO ANDAR",
+		text = "A equipe corta o repetidor do terceiro andar e guarda a fita. Por alguns segundos, o prédio fica em silêncio. Então o telefone do 304 toca de novo, sem nenhuma linha ligada a ele.",
 	},
 }
 

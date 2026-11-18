@@ -54,11 +54,11 @@ local function furniture(parent,id,theme)
 		for _,x in ipairs({4,100}) do part(parent,id,"Poste_Rua",Vector3.new(.25,9,.25),pos(id,x,4.5,-9),metal,Enum.Material.Metal); part(parent,id,"Luminaria_Rua",Vector3.new(2,.18,.7),pos(id,x,9,-9),Color3.fromRGB(51,53,52),Enum.Material.Metal) end
 		for _,x in ipairs({28,33,89,94}) do part(parent,id,"Barreira_Evacuacao",Vector3.new(1.4,3,.5),pos(id,x,1.5,-8),Color3.fromRGB(119,42,34),Enum.Material.Metal) end
 	elseif theme=="callcenter" then
-		for _,x in ipairs({23,43,63,83}) do
-			part(parent,id,"Mesa_Despacho",Vector3.new(9, .28,4),pos(id,x,2,1),wood,Enum.Material.WoodPlanks)
-			part(parent,id,"Console_Operador",Vector3.new(5,1.1,1.7),pos(id,x,2.7,.2),metal,Enum.Material.Metal)
-			for n=1,5 do part(parent,id,"Botao_Ramal",Vector3.new(.35,.16,.35),pos(id,x-2.2+n*.8,3.35,-.3),Color3.fromRGB(118,83,54),Enum.Material.Neon,0,false) end
-			part(parent,id,"Cadeira_Operador",Vector3.new(2,2.3,2),pos(id,x,1.15,4.2),fabric,Enum.Material.Fabric)
+		for _,x in ipairs({23,45,58,84}) do
+			part(parent,id,"Mesa_Despacho",Vector3.new(9, .28,4),pos(id,x,2,-9),wood,Enum.Material.WoodPlanks)
+			part(parent,id,"Console_Operador",Vector3.new(5,1.1,1.7),pos(id,x,2.7,-9.8),metal,Enum.Material.Metal)
+			for n=1,5 do part(parent,id,"Botao_Ramal",Vector3.new(.35,.16,.35),pos(id,x-2.2+n*.8,3.35,-10.3),Color3.fromRGB(118,83,54),Enum.Material.Neon,0,false) end
+			part(parent,id,"Cadeira_Operador",Vector3.new(2,2.3,2),pos(id,x,1.15,-5.8),fabric,Enum.Material.Fabric)
 		end
 		part(parent,id,"Quadro_Canais",Vector3.new(18,7,.3),pos(id,53,6,-11.6),metal,Enum.Material.CorrodedMetal)
 	elseif theme=="archive" then
@@ -67,20 +67,20 @@ local function furniture(parent,id,theme)
 			for n=1,5 do part(parent,id,"Prateleira_Arquivo",Vector3.new(3,.18,5.7),pos(id,x+1.7,.8+n*1.35,-8),wood,Enum.Material.Wood) end
 			for n=1,3 do part(parent,id,"Caixa_Arquivo",Vector3.new(1.7,1,1.2),pos(id,x+1,1.1+n*1.65,-8),Color3.fromRGB(94,79,58),Enum.Material.WoodPlanks) end
 		end
-		part(parent,id,"Mesa_Consulta",Vector3.new(10,.25,4),pos(id,52,2,5),wood,Enum.Material.WoodPlanks)
+		part(parent,id,"Mesa_Consulta",Vector3.new(10,.25,4),pos(id,24,2,8),wood,Enum.Material.WoodPlanks)
 	elseif theme=="tunnel" then
 		for _,z in ipairs({-8,8}) do
 			part(parent,id,"Duto_Servico",Vector3.new(102,.8,.8),pos(id,54,8,z),metal,Enum.Material.Metal,0,false,Enum.PartType.Cylinder)
 			part(parent,id,"Cabo_Power",Vector3.new(102,.24,.24),pos(id,54,6.8,z),Color3.fromRGB(25,25,23),Enum.Material.Rubber,0,false)
 		end
-		for _,x in ipairs({15,35,55,75,95}) do part(parent,id,"Pilar_Tunel",Vector3.new(.5,10,18),pos(id,x,5,0),Color3.fromRGB(66,65,60),Enum.Material.Concrete) end
+		for _,x in ipairs({25,48,70,95}) do for _,z in ipairs({-11,11}) do part(parent,id,"Pilar_Tunel",Vector3.new(1.2,10,2.6),pos(id,x,5,z),Color3.fromRGB(66,65,60),Enum.Material.Concrete) end end
 		local battery=part(parent,id,"Bateria_Pesada",Vector3.new(4,3,3),pos(id,38,1.5,4),Color3.fromRGB(44,53,52),Enum.Material.Metal)
 		batteries[id]={part=battery,from=battery.CFrame,to=CFrame.new(pos(id,75,1.5,0))}
 		anchor(parent,id,"Alca_Bateria_A",36,2.5,2,"C7_LiftA","Segurar","Alça A",1)
 		anchor(parent,id,"Alca_Bateria_B",40,2.5,6,"C7_LiftB","Segurar","Alça B",1)
 		anchor(parent,id,"Receptaculo_Bateria",75,2,0,"C7_BatterySocket","Conectar","Suporte da subestação",.7)
 	elseif theme=="triage" then
-		for _,x in ipairs({15,36,57,78}) do
+		for _,x in ipairs({15,44,57,80}) do
 			part(parent,id,"Maca_Triagem",Vector3.new(7,1.1,3),pos(id,x,1.2,-7),Color3.fromRGB(92,93,87),Enum.Material.Metal)
 			part(parent,id,"Colchao_Triagem",Vector3.new(6.7,.35,2.8),pos(id,x,1.9,-7),Color3.fromRGB(153,147,130),Enum.Material.Fabric)
 			part(parent,id,"Biombo_Triagem",Vector3.new(.15,6,5),pos(id,x+5,3,-8),Color3.fromRGB(125,121,111),Enum.Material.Fabric,.18,false)
@@ -102,9 +102,9 @@ local function furniture(parent,id,theme)
 		end
 	elseif theme=="radio" then
 		for _,x in ipairs({20,50,80}) do
-			part(parent,id,"Console_Radio",Vector3.new(8,1.1,3),pos(id,x,2.4,4),metal,Enum.Material.Metal)
-			part(parent,id,"Gravador_Bobina",Vector3.new(3,1.8,1),pos(id,x,3.8,3),Color3.fromRGB(38,40,39),Enum.Material.Metal)
-			for _,dx in ipairs({-1,1}) do part(parent,id,"Bobina",Vector3.new(1.2,.18,1.2),pos(id,x+dx,4.8,2.4),Color3.fromRGB(112,99,78),Enum.Material.Metal,0,false,Enum.PartType.Cylinder) end
+			part(parent,id,"Console_Radio",Vector3.new(8,1.1,3),pos(id,x,2.4,-9),metal,Enum.Material.Metal)
+			part(parent,id,"Gravador_Bobina",Vector3.new(3,1.8,1),pos(id,x,3.8,-10),Color3.fromRGB(38,40,39),Enum.Material.Metal)
+			for _,dx in ipairs({-1,1}) do part(parent,id,"Bobina",Vector3.new(1.2,.18,1.2),pos(id,x+dx,4.8,-10.6),Color3.fromRGB(112,99,78),Enum.Material.Metal,0,false,Enum.PartType.Cylinder) end
 		end
 		part(parent,id,"Mastro_Antena",Vector3.new(.35,25,.35),pos(id,96,12,0),metal,Enum.Material.Metal)
 		for _,y in ipairs({6,13,20}) do part(parent,id,"Braco_Antena",Vector3.new(12,.22,.22),pos(id,96,y,0),metal,Enum.Material.Metal,0,false) end
@@ -114,7 +114,7 @@ local function furniture(parent,id,theme)
 			part(parent,id,"Mesa_Telefone",Vector3.new(5,2,3),pos(id,x+8,1,7),wood,Enum.Material.WoodPlanks)
 			part(parent,id,"Telefone_Emergencia",Vector3.new(1.4,.6,1),pos(id,x+8,2.3,6),metal,Enum.Material.Metal)
 		end
-		part(parent,id,"Rack_Repetidor",Vector3.new(7,9,4),pos(id,88,4.5,-7),metal,Enum.Material.CorrodedMetal)
+		part(parent,id,"Rack_Repetidor",Vector3.new(7,9,4),pos(id,80,4.5,-8),metal,Enum.Material.CorrodedMetal)
 	end
 end
 local function buildOne(id)
@@ -133,8 +133,9 @@ local function buildOne(id)
 	end
 	furniture(folder,id,theme)
 	for _,x in ipairs({12,48,86}) do light(folder,id,x,0) end
+	local clueX={15,44,55}
 	for i=1,3 do
-		local x=15+(i-1)*20
+		local x=clueX[i]
 		part(folder,id,"Mesa_Pista_"..i,Vector3.new(4,.24,2.8),pos(id,x,1.8,3),Color3.fromRGB(75,57,43),Enum.Material.WoodPlanks)
 		document(folder,id,i,x,1.95,3)
 	end
@@ -148,7 +149,7 @@ local function buildOne(id)
 		anchor(folder,id,"Transmitir_Prova",91,2,6,"C12_Transmit","Transmitir","Prova integral",.75)
 		anchor(folder,id,"Cortar_Linha",91,2,-6,"C12_Cut","Cortar","Repetidor principal",.75)
 	end
-	if id==8 then anchor(folder,id,"Esconder_Atrás_Biombo",54,2,-7,"Hide_Triage","Esconder","Biombo da enfermaria",.6) end
+	if id==8 then anchor(folder,id,"Esconder_Atrás_Biombo",49,2,-7,"Hide_Triage","Esconder","Biombo da enfermaria",.6) end
 	local s=Instance.new("SpawnLocation"); s.Name="InicioCapitulo"..id; s.Size=Vector3.new(4,.6,4); s.Position=pos(id,4,.1,0)
 	s.Anchored=true; s.Transparency=1; s.CanCollide=false; s.Neutral=true; s.Duration=0; s.Parent=folder
 	worlds[id]=folder; spawns[id]=s

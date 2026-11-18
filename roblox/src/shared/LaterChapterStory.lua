@@ -19,11 +19,11 @@ LaterChapterStory.Chapters = {
 		Prologue={"A Central foi lacrada depois da evacuação.","Onze chamadas continuam na mesa, cada uma com um horário diferente.","A gravação mais recente tem a voz de um operador que afirma estar sozinho."},
 		Objectives={[0]="Examine os rolos e o quadro de despacho.",[1]="Encontre as três fichas que ainda têm horário legível.",[2]="Reordene as chamadas na mesa de gravação.",[3]="Reproduza a fita integral e registre a origem do despacho.",[4]="A ordem da evacuação foi emitida daqui, antes do primeiro chamado.",[5]="Capítulo concluído."},
 		Clues={
-			{title="FICHA DE DESPACHO A",text="02:41 — ramal 11 — solicitada ambulância para o Distrito 11. A linha estava muda durante 19 segundos antes da resposta."},
+			{title="FICHA DE DESPACHO A",text="02:41 — ramal 11 — solicitada ambulância para o Distrito 11. A linha estava muda durante 19 segundos antes da resposta. Na mesa de gravação, as fichas só tocam na ordem em que as chamadas aconteceram."},
 			{title="FICHA DE DESPACHO B",text="03:02 — ordem interna: preparar retirada total. Campo de autorização sem assinatura; carimbo aplicado 15 minutos depois."},
 			{title="FICHA DE DESPACHO C",text="03:17 — chamada recebida da sala de operação, que estava vazia segundo o controle de acesso."},
 		},
-		PuzzleOrder={"A","C","B"}, CoopStep=0,
+		PuzzleOrder={"A","B","C"}, CoopStep=0,
 		StepLabels={A={Action="02:41",Object="Rolo 1"},B={Action="03:02",Object="Rolo 2"},C={Action="03:17",Object="Rolo 3"}},
 		Completion={title="CAPÍTULO 5 • CENTRAL DE CHAMADAS",text="A ordem de retirada foi registrada antes de qualquer pedido de ajuda. A fita original foi levada ao Arquivo Municipal; a cópia da Central foi editada. O número de custódia termina em 0317."},
 	},
@@ -34,10 +34,10 @@ LaterChapterStory.Chapters = {
 		Clues={
 			{title="FOLHA DE SAÍDA",text="A lista foi impressa às 03:17. O campo 'saída confirmada' está marcado, mas o livro de portaria não registra veículos no perímetro."},
 			{title="CARIMBO DE CUSTÓDIA",text="A matriz do carimbo foi usada antes da folha existir. O lote do carimbo pertence ao turno seguinte."},
-			{title="FICHA DE TRANSFERÊNCIA",text="Destino apagado. Quantidade: onze volumes. Responsável: R. Vale. Um segundo carimbo aponta para a Linha de Serviço."},
+			{title="FICHA DE TRANSFERÊNCIA",text="Destino apagado. Quantidade: onze volumes. Responsável: R. Vale. Um segundo carimbo aponta para a Linha de Serviço. No verso, o arquivista anotou a ordem real dos papéis: primeiro o carimbo, depois a custódia, por último a impressão."},
 		},
 		PuzzleOrder={"B","C","A"}, CoopStep=0,
-		StepLabels={A={Action="Impressao",Object="Etapa 1"},B={Action="Carimbo",Object="Etapa 2"},C={Action="Custodia",Object="Etapa 3"}},
+		StepLabels={A={Action="Impressão",Object="Etapa 1"},B={Action="Carimbo",Object="Etapa 2"},C={Action="Custódia",Object="Etapa 3"}},
 		Completion={title="CAPÍTULO 6 • ARQUIVO 03:17",text="A fita original não contém uma lista de passageiros. Contém onze ramais ativos e um pedido para manter a Linha de Serviço ligada. O nome R. Vale aparece novamente na subestação."},
 	},
 	[7] = {
@@ -45,12 +45,12 @@ LaterChapterStory.Chapters = {
 		Prologue={"A Linha de Serviço passa por baixo do perímetro evacuado.","A bateria de emergência foi removida do suporte e deixada no túnel.","A porta atrás de vocês não vai continuar aberta por muito tempo."},
 		Objectives={[0]="Encontre o suporte e as duas alças da bateria pesada.",[1]="Levante a bateria em dupla e leve-a ao receptáculo.",[2]="Restaure os três trechos do circuito na ordem do diagrama.",[3]="Abra a passagem de retorno e recupere o registro da subestação.",[4]="O consumo da linha coincide com a ala de triagem.",[5]="Capítulo concluído."},
 		Clues={
-			{title="DIAGRAMA DE CABOS",text="Trecho 1 alimenta a ala de triagem. Trecho 2 retorna ao repetidor. Trecho 3 foi ligado depois da evacuação por alguém que conhecia o circuito."},
+			{title="DIAGRAMA DE CABOS",text="Trecho 1 alimenta a ala de triagem. Trecho 2 retorna ao repetidor. Trecho 3 foi ligado depois da evacuação por alguém que conhecia o circuito. A lápis, no canto: religar o 1, depois o 3, e o 2 por último."},
 			{title="ETIQUETA DA BATERIA",text="Bateria de chumbo, 86 kg. Transporte com duas pessoas. A alça esquerda está travada."},
 			{title="ORDEM DA SUBESTAÇÃO",text="Manter ativo até receber confirmação da triagem. Assinatura: R. Vale. A hora foi escrita por cima: 03:17."},
 		},
 		PuzzleOrder={"A","C","B"}, CoopStep=2, RequiresBattery=true,
-		StepLabels={A={Action="TRECHO 1",Object="Distribuicao"},B={Action="TRECHO 2",Object="Retorno"},C={Action="TRECHO 3",Object="Repetidor"}},
+		StepLabels={A={Action="TRECHO 1",Object="Distribuição"},B={Action="TRECHO 2",Object="Retorno"},C={Action="TRECHO 3",Object="Repetidor"}},
 		Completion={title="CAPÍTULO 7 • LINHA DE SERVIÇO",text="A bateria manteve um circuito vivo sob o bairro. O ramal vai para o abrigo de triagem. A última mensagem da subestação pede para conferir as pulseiras antes de desligar qualquer coisa."},
 	},
 	[8] = {
@@ -59,7 +59,7 @@ LaterChapterStory.Chapters = {
 		Objectives={[0]="Compare o mapa das camas com as pulseiras.",[1]="Procure a ficha da enfermaria e a lista de entrada.",[2]="Ligue a luz da ala e confira as três estações de suprimentos.",[3]="Registre quem foi atendido e quem nunca chegou.",[4]="O endereço de transferência leva ao Bloco 11.",[5]="Capítulo concluído."},
 		Clues={
 			{title="MAPA DAS CAMAS",text="Onze camas foram reservadas. A equipe marcou os leitos como ocupados, mas a contagem de cobertores permaneceu zero."},
-			{title="FICHA DA ENFERMARIA",text="Nenhum paciente registrado. A linha de observação foi preenchida com a mesma frase: 'aguardando transporte'."},
+			{title="FICHA DA ENFERMARIA",text="Nenhum paciente registrado. A linha de observação foi preenchida com a mesma frase: 'aguardando transporte'. O protocolo da enfermaria manda conferir as fichas primeiro, as pulseiras depois e os suprimentos por último."},
 			{title="LISTA DE ENTRADA",text="A lista tem onze nomes, todos recebidos às 03:17. A assinatura do recebedor é R. Vale; o endereço é Bloco 11, apartamento 11."},
 		},
 		PuzzleOrder={"B","A","C"}, CoopStep=2,
@@ -73,7 +73,7 @@ LaterChapterStory.Chapters = {
 		Clues={
 			{title="ETIQUETA 11-A",text="Nome: Elisa Moura. Conteúdo: uma chave de casa, duas fotografias e um cartão de ônibus sem validação."},
 			{title="ETIQUETA 11-B",text="Nome: Davi Nunes. Conteúdo: um relógio parado às 03:17 e uma ficha de abrigo em branco."},
-			{title="LIVRO DE ENTRADA",text="Nenhuma chave foi entregue. Todos os apartamentos aparecem ocupados antes da data oficial de transferência."},
+			{title="LIVRO DE ENTRADA",text="Nenhuma chave foi entregue. Todos os apartamentos aparecem ocupados antes da data oficial de transferência. A fechadura da sala de recebimento abre na ordem do livro: recepção, 11-B e 11-A."},
 		},
 		PuzzleOrder={"C","B","A"}, CoopStep=1,
 		StepLabels={A={Action="11-A",Object="Fechadura"},B={Action="11-B",Object="Trava"},C={Action="RECEPÇÃO",Object="Registro"}},
@@ -98,11 +98,11 @@ LaterChapterStory.Chapters = {
 		Objectives={[0]="Encontre o rolo integral e o painel de transmissão.",[1]="Compare a fita física com o sinal ao vivo.",[2]="Sincronize o gravador e mantenha a transmissão protegida em dupla.",[3]="Ouça o depoimento completo e registre a identidade da testemunha.",[4]="R. Vale afirma que recebeu uma chamada de dentro do distrito.",[5]="Capítulo concluído."},
 		Clues={
 			{title="ROLO INTEGRAL",text="A fita tem onze canais separados. O canal 11 contém uma pessoa pedindo ajuda; os outros dez repetem a resposta do operador."},
-			{title="SINAL AO VIVO",text="A voz identifica R. Vale como operadora da noite da evacuação. Ela diz que a ordem chegou pelo canal de emergência, sem origem registrada."},
+			{title="SINAL AO VIVO",text="A voz identifica R. Vale como operadora da noite da evacuação. Ela diz que a ordem chegou pelo canal de emergência, sem origem registrada. Para gravar sem perder o sinal: antena primeiro, depois a mesa, e só então a fita."},
 			{title="ANOTAÇÃO DA TESTEMUNHA",text="A operadora escreveu: 'Eu mudei o relatório porque a voz usou meu nome. Não sei se veio da linha ou de dentro da sala.'"},
 		},
 		PuzzleOrder={"B","C","A"}, CoopStep=2,
-		StepLabels={A={Action="FITA",Object="Gravador"},B={Action="ANTENA",Object="Sinal ao vivo"},C={Action="MESA",Object="Transmissao"}},
+		StepLabels={A={Action="FITA",Object="Gravador"},B={Action="ANTENA",Object="Sinal ao vivo"},C={Action="MESA",Object="Transmissão"}},
 		Completion={title="CAPÍTULO 11 • A TESTEMUNHA",text="R. Vale confirma que adulterou a ordem de saída, mas nega ter criado a chamada. A fita original registra um detalhe que ela não contou: uma segunda respiração no microfone, antes de qualquer voz."},
 	},
 	[12] = {
@@ -112,7 +112,7 @@ LaterChapterStory.Chapters = {
 		Clues={
 			{title="FIO DO 304",text="O fio novo atrás do espelho não alimentava o apartamento. Ele levava a uma caixa instalada no dia da evacuação."},
 			{title="REGISTRO DE R. VALE",text="A testemunha escreveu que a chamada pedia dois nomes. O formulário de despacho foi alterado depois que ela respondeu."},
-			{title="ÚLTIMA TRANSCRIÇÃO",text="A fita contém o primeiro chamado e o último ao mesmo tempo. A voz do outro lado diz: 'Não desliguem. Ainda falta alguém atender.'"},
+			{title="ÚLTIMA TRANSCRIÇÃO",text="A fita contém o primeiro chamado e o último ao mesmo tempo. A voz do outro lado diz: 'Não desliguem. Ainda falta alguém atender.' Na margem, a letra de R. Vale: sincronize a linha, abra o painel, feche o retorno."},
 		},
 		PuzzleOrder={"C","A","B"}, CoopStep=2, FinalChoice=true,
 		StepLabels={A={Action="ABRIR PAINEL",Object="Repetidor"},B={Action="RETORNO",Object="Circuito"},C={Action="SINCRONIZAR",Object="Linha"}},

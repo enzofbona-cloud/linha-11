@@ -47,7 +47,7 @@ jobs:
 
       - name: Play the whole campaign in the simulator
         shell: bash
-        run: LUAU=/tmp/luau/luau node roblox/tools/sim/run.mjs
+        run: LUAU=/tmp/luau/luau node roblox/tools/sim/run.mjs && LUAU=/tmp/luau/luau node roblox/tools/sim/run.mjs geometry.luau
 
       - name: Install Rojo 7.7.1
         shell: bash
